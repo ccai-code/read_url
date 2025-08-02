@@ -276,6 +276,9 @@ class MCPHtmlServer {
 
       // 处理POST请求 - MCP协议
       if (req.method === 'POST') {
+        // 检查是否是/mcp端点
+        const url = new URL(req.url, `http://localhost:${port}`);
+        
         res.setHeader('Content-Type', 'application/json');
         
         // 读取请求体
@@ -285,38 +288,158 @@ class MCPHtmlServer {
         });
 
         req.on('end', async () => {
+          let request = null;
           try {
-            const request = JSON.parse(body);
+            request = JSON.parse(body);
             let response;
 
-            // 处理MCP协议请求
-            if (request.method === 'tools/list') {
-              response = {
-                tools: [
-                  {
-                    name: 'read_link',
-                    description: '读取网页内容或图片OCR识别',
-                    inputSchema: {
-                      type: 'object',
-                      properties: {
-                        url: {
-                          type: 'string',
-                          description: '要读取的网页URL或图片URL'
-                        }
-                      },
-                      required: ['url']
+            // 处理/mcp端点的MCP协议初始化
+            if (url.pathname === '/mcp') {
+              if (request.method === 'initialize') {
+                // 处理初始化请求
+                response = {
+                  jsonrpc: '2.0',
+                  id: request.id,
+                  result: {
+                    protocolVersion: '2024-11-05',
+                    capabilities: {
+                      tools: {},
+                      resources: {},
+                      logging: {}
+                    },
+                    serverInfo: {
+                      name: 'mcp-html-server',
+                      version: '1.0.0'
                     }
                   }
-                ]
-              };
-            } else if (request.method === 'tools/call') {
-              if (request.params.name === 'read_link') {
-                response = await this.handleReadLink(request.params.arguments.url);
+                };
+                console.log('🤝 MCP Initialize request received');
+              } else if (request.method === 'notifications/initialized') {
+                // 处理初始化完成通知
+                response = {
+                  jsonrpc: '2.0',
+                  id: request.id || null,
+                  result: {}
+                };
+                console.log('✅ MCP Initialized notification received');
+              } else if (request.method === 'ping') {
+                // 处理ping请求
+                response = {
+                  jsonrpc: '2.0',
+                  id: request.id,
+                  result: {}
+                };
+                console.log('🏓 Ping request received');
+              } else if (request.method === 'resources/list') {
+                // 处理资源列表请求
+                response = {
+                  jsonrpc: '2.0',
+                  id: request.id,
+                  result: {
+                    resources: [
+                      {
+                        uri: 'web://content',
+                        name: 'Web Content Reader',
+                        description: '读取网页内容和图片OCR识别',
+                        mimeType: 'text/plain'
+                      }
+                    ]
+                  }
+                };
+              } else if (request.method === 'resources/read') {
+                // 处理资源读取请求
+                const uri = request.params.uri;
+                if (uri === 'web://content') {
+                  response = {
+                    jsonrpc: '2.0',
+                    id: request.id,
+                    result: {
+                      contents: [
+                        {
+                          uri: uri,
+                          mimeType: 'text/plain',
+                          text: 'Web Content Reader - 支持读取网页内容和图片OCR识别。使用read_link工具来处理具体的URL。'
+                        }
+                      ]
+                    }
+                  };
+                } else {
+                  throw new Error(`Unknown resource URI: ${uri}`);
+                }
+              } else if (request.method === 'tools/list') {
+                response = {
+                  jsonrpc: '2.0',
+                  id: request.id,
+                  result: {
+                    tools: [
+                      {
+                        name: 'read_link',
+                        description: '读取网页内容或图片OCR识别',
+                        inputSchema: {
+                          type: 'object',
+                          properties: {
+                            url: {
+                              type: 'string',
+                              description: '要读取的网页URL或图片URL'
+                            }
+                          },
+                          required: ['url']
+                        }
+                      }
+                    ]
+                  }
+                };
+              } else if (request.method === 'tools/call') {
+                if (request.params.name === 'read_link') {
+                  const result = await this.handleReadLink(request.params.arguments.url);
+                  response = {
+                    jsonrpc: '2.0',
+                    id: request.id,
+                    result: {
+                      content: [
+                        {
+                          type: 'text',
+                          text: JSON.stringify(result, null, 2)
+                        }
+                      ]
+                    }
+                  };
+                } else {
+                  throw new Error(`Unknown tool: ${request.params.name}`);
+                }
               } else {
-                throw new Error(`Unknown tool: ${request.params.name}`);
+                throw new Error(`Unknown method: ${request.method}`);
               }
             } else {
-              throw new Error(`Unknown method: ${request.method}`);
+              // 处理非/mcp端点的传统MCP协议请求
+              if (request.method === 'tools/list') {
+                response = {
+                  tools: [
+                    {
+                      name: 'read_link',
+                      description: '读取网页内容或图片OCR识别',
+                      inputSchema: {
+                        type: 'object',
+                        properties: {
+                          url: {
+                            type: 'string',
+                            description: '要读取的网页URL或图片URL'
+                          }
+                        },
+                        required: ['url']
+                      }
+                    }
+                  ]
+                };
+              } else if (request.method === 'tools/call') {
+                if (request.params.name === 'read_link') {
+                  response = await this.handleReadLink(request.params.arguments.url);
+                } else {
+                  throw new Error(`Unknown tool: ${request.params.name}`);
+                }
+              } else {
+                throw new Error(`Unknown method: ${request.method}`);
+              }
             }
 
             res.writeHead(200);
@@ -325,8 +448,15 @@ class MCPHtmlServer {
             console.error('Request processing error:', error);
             res.writeHead(400);
             res.end(JSON.stringify({
-              error: error.message,
-              type: 'request_error'
+              jsonrpc: '2.0',
+              id: request?.id || null,
+              error: {
+                code: -32603,
+                message: error.message,
+                data: {
+                  type: 'request_error'
+                }
+              }
             }));
           }
         });
@@ -352,7 +482,9 @@ class MCPHtmlServer {
     httpServer.listen(port, () => {
       console.log(`🚀 MCP SSE Server started on port ${port}`);
       console.log(`📡 Server endpoint: http://localhost:${port}`);
+      console.log(`🤝 MCP Protocol endpoint: http://localhost:${port}/mcp`);
       console.log(`🔧 Available tools: read_link`);
+      console.log(`💡 Supports MCP initialize/initialized handshake`);
     });
 
     return httpServer;
