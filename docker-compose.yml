@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mcp-html-server:
+    build: .
+    container_name: mcp-html-server
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # 如果需要持久化数据，可以添加卷映射
+      - ./logs:/app/logs
+    networks:
+      - mcp-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('Health check')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  mcp-network:
+    driver: bridge
+
+volumes:
+  logs:
+    driver: local

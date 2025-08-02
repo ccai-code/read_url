@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "mcp-html-server": {
+      "transport": {
+        "type": "http",
+        "url": "http://localhost:3000"
+      },
+      "description": "HTTP协议MCP服务器，支持网页内容爬取和图片OCR识别",
+      "capabilities": {
+        "tools": true
+      },
+      "endpoints": {
+        "tools/list": "获取可用工具列表",
+        "tools/call": "调用指定工具"
+      },
+      "features": {
+        "read_link": "网页内容爬取和图片OCR识别"
+      }
+    }
+  }
+}
