@@ -1,7 +1,7 @@
 {
-  "mcpServers": {
-    "mcp-html-server": {
-      "url": "http://localhost:3000"
+    "mcpServers": {
+        "mcp-html-server": {
+            "url": "http://localhost:3000/mcp"
+        }
     }
-  }
 }

@@ -5,6 +5,8 @@ services:
     build: .
     container_name: mcp-html-server
     restart: unless-stopped
+    privileged: true
+    user: "0:0"  # 以root用户运行
     ports:
       - "80:80"
     environment:
@@ -15,7 +17,7 @@ services:
     networks:
       - mcp-network
     healthcheck:
-      test: ["CMD", "node", "-e", "console.log('Health check')"]
+      test: [ "CMD", "node", "-e", "console.log('Health check')" ]
       interval: 30s
       timeout: 10s
       retries: 3

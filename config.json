@@ -1,0 +1,16 @@
+{
+    "qwen": {
+        "apiKey": "sk-2ff62bb6952442febafbb4d5d67d0657",
+        "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "model": "qwen-vl-plus"
+    },
+    "glm4": {
+        "apiKey": "4afb340776d44c49ad1df197a2ed5b25.d7g3EMXpzlflIGPZ",
+        "baseUrl": "https://open.bigmodel.cn/api/paas/v4",
+        "model": "glm-4"
+    },
+    "fallback": {
+        "useOCR": false,
+        "maxFileSize": 10485760
+    }
+}

@@ -13,13 +13,7 @@ RUN npm ci --only=production
 # 复制应用代码
 COPY . .
 
-# 创建非root用户
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S mcp -u 1001
-
-# 更改文件所有权
-RUN chown -R mcp:nodejs /app
-USER mcp
+# 以root权限运行，移除用户切换
 
 # 暴露端口（如果需要HTTP模式）
 EXPOSE 80

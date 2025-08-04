@@ -1,25 +1,36 @@
 {
   "name": "mcp-html-server",
-  "version": "1.0.0",
-  "description": "MCP server for reading URLs and OCR image processing",
+  "version": "2.0.0",
+  "description": "MCP server for reading URLs and OCR image processing with AI integration",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "node --watch index.js"
+    "dev": "node --watch index.js",
+    "test": "node test.js",
+    "test-image": "node test-image.js",
+    "test-ai": "node test-ai-models.js",
+    "test-qwen": "node test-qwen-api.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "axios": "^1.6.0",
+    "canvas": "^3.1.2",
     "cheerio": "^1.0.0-rc.12",
+    "form-data": "^4.0.1",
+    "mammoth": "^1.8.0",
+    "openai": "^5.11.0",
+    "pdf-parse": "^1.1.1",
+    "sharp": "^0.33.0",
     "tesseract.js": "^5.0.0",
-    "sharp": "^0.33.0"
+    "xlsx": "^0.18.5"
   },
   "keywords": [
     "mcp",
     "server",
     "html",
-    "ocr"
+    "ocr",
+    "ai"
   ],
   "author": "",
   "license": "MIT"

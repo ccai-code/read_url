@@ -6,13 +6,21 @@ import Tesseract from 'tesseract.js';
 import sharp from 'sharp';
 import { createServer } from 'http';
 import { URL } from 'url';
+import fs from 'fs';
+import { AIServices } from './ai-services.js';
 
 class MCPHtmlServer {
   constructor() {
+    // 加载配置
+    this.loadConfig();
+
+    // 初始化AI服务
+    this.aiServices = new AIServices(this.config);
+
     this.server = new Server(
       {
-        name: 'mcp-html-server',
-        version: '1.0.0',
+        name: 'mcp-html-server-enhanced',
+        version: '2.0.0',
       },
       {
         capabilities: {
@@ -25,20 +33,42 @@ class MCPHtmlServer {
     this.setupRequestHandlers();
   }
 
+  loadConfig() {
+    try {
+      const configPath = './config.json';
+      if (fs.existsSync(configPath)) {
+        this.config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      } else {
+        console.warn('配置文件不存在，使用默认配置');
+        this.config = {
+          fallback: { useOCR: true, maxFileSize: 10485760 }
+        };
+      }
+    } catch (error) {
+      console.error('加载配置文件失败:', error.message);
+      this.config = {
+        fallback: { useOCR: true, maxFileSize: 10485760 }
+      };
+    }
+  }
+
   setupToolHandlers() {
-    // 注册读取链接工具
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       return {
         tools: [
           {
             name: 'read_link',
-            description: '读取链接内容，支持网页爬取和图片OCR识别',
+            description: '读取链接内容，支持网页、图片、PDF、Word文档、Excel表格、视频文件等多种格式，使用AI大模型进行智能识别',
             inputSchema: {
               type: 'object',
               properties: {
                 url: {
                   type: 'string',
-                  description: '要读取的链接URL，可以是网页或图片链接'
+                  description: '要读取的链接URL，支持网页、图片(jpg,png,gif等)、PDF、Word文档(doc,docx)、Excel表格(xls,xlsx)、视频文件(mp4,avi,mov,mkv)等'
+                },
+                prompt: {
+                  type: 'string',
+                  description: '可选：自定义AI分析提示词，用于指导AI如何处理内容'
                 }
               },
               required: ['url']
@@ -52,31 +82,38 @@ class MCPHtmlServer {
       const { name, arguments: args } = request.params;
 
       if (name === 'read_link') {
-        return await this.handleReadLink(args.url);
+        return await this.handleReadLink(args.url, args.prompt);
       }
 
       throw new Error(`Unknown tool: ${name}`);
     });
   }
 
-  async handleReadLink(url) {
+  async handleReadLink(url, customPrompt) {
     try {
-      // 验证URL格式
       const parsedUrl = new URL(url);
+      console.log(`🔍 开始处理链接: ${url}`);
 
-      // 获取响应头来判断内容类型
-      const headResponse = await axios.head(url, {
-        timeout: 10000,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      // 检测Bing图片搜索链接
+      if (parsedUrl.hostname.includes('bing.com') && parsedUrl.pathname.includes('/images/search')) {
+        const mediaUrl = parsedUrl.searchParams.get('mediaurl');
+        if (mediaUrl) {
+          const decodedImageUrl = decodeURIComponent(mediaUrl);
+          console.log(`🔍 检测到Bing图片搜索，提取实际图片链接: ${decodedImageUrl}`);
+          return await this.processImage(decodedImageUrl, customPrompt);
         }
-      });
+      }
 
-      const contentType = headResponse.headers['content-type'] || '';
+      // 获取文件信息
+      const { contentType, buffer } = await this.downloadFile(url);
 
-      // 判断是否为图片
-      if (contentType.startsWith('image/')) {
-        return await this.processImage(url);
+      // 检测文件类型
+      const fileType = this.detectFileType(url, contentType);
+
+      if (this.isImageType(contentType, url)) {
+        return await this.processImageWithAI(buffer, customPrompt);
+      } else if (fileType && ['pdf', 'doc', 'docx', 'xlsx', 'xls', 'mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
+        return await this.processDocumentWithAI(buffer, fileType, customPrompt);
       } else {
         return await this.processWebpage(url);
       }
@@ -85,10 +122,181 @@ class MCPHtmlServer {
         content: [
           {
             type: 'text',
-            text: `错误：无法处理链接 ${url}。错误信息：${error.message}`
+            text: `❌ 处理链接失败: ${error.message}`
           }
         ]
       };
+    }
+  }
+
+  async downloadFile(url) {
+    const response = await axios.get(url, {
+      responseType: 'arraybuffer',
+      timeout: 30000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      },
+      maxContentLength: this.config.fallback.maxFileSize
+    });
+
+    return {
+      contentType: response.headers['content-type'] || '',
+      buffer: Buffer.from(response.data)
+    };
+  }
+
+  async processImageWithAI(imageBuffer, customPrompt) {
+    console.log('🖼️ 使用AI处理图片...');
+
+    // 优先使用通义千问
+    if (this.config.qwen?.apiKey) {
+      const result = await this.aiServices.analyzeImageWithQwen(imageBuffer, customPrompt);
+      if (result.success) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `🤖 通义千问图片分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
+            }
+          ]
+        };
+      }
+    }
+
+    // 降级到OCR
+    if (this.config.fallback.useOCR) {
+      console.log('⚠️ AI服务不可用，降级使用OCR...');
+      return await this.processImageBuffer(imageBuffer, 'image/jpeg');
+    }
+
+    throw new Error('图片处理服务不可用');
+  }
+
+  async processDocumentWithAI(documentBuffer, fileType, customPrompt) {
+    console.log(`📄 使用AI处理${fileType.toUpperCase()}文档...`);
+
+    // 对于新支持的文件类型（Excel、视频），优先使用通义千问
+    if (['xlsx', 'xls', 'mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
+      if (this.config.qwen?.apiKey) {
+        try {
+          console.log('🤖 使用通义千问处理文档...');
+          const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
+          if (result.success) {
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+                }
+              ]
+            };
+          }
+        } catch (error) {
+          console.error('❌ 通义千问处理失败:', error.message);
+        }
+      }
+    }
+
+    // 优先使用GLM-4处理传统文档格式
+    if (this.config.glm4?.apiKey && ['pdf', 'doc', 'docx'].includes(fileType)) {
+      try {
+        console.log('🤖 尝试使用GLM-4处理文档...');
+        const result = await this.aiServices.processDocumentWithGLM4(documentBuffer, fileType, customPrompt);
+        if (result.success) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `🤖 GLM-4文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
+              }
+            ]
+          };
+        }
+      } catch (error) {
+        console.error('❌ GLM-4处理失败:', error.message);
+      }
+    }
+
+    // 通义千问作为备选方案处理传统格式
+    if (this.config.qwen?.apiKey && ['pdf', 'doc', 'docx'].includes(fileType)) {
+      try {
+        console.log('🤖 使用通义千问作为备选方案...');
+        const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
+        if (result.success) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+              }
+            ]
+          };
+        }
+      } catch (error) {
+        console.error('❌ 通义千问处理失败:', error.message);
+      }
+    }
+
+    // 使用火山引擎处理文档
+    if (this.config.volcengine?.accessKey && ['pdf', 'doc', 'docx', 'txt'].includes(fileType)) {
+      const result = await this.aiServices.processDocumentWithVolcengine(documentBuffer, fileType, customPrompt);
+      if (result.success) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `🚀 火山引擎文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
+            }
+          ]
+        };
+      }
+    }
+
+    // 降级到本地PDF处理
+    if (fileType === 'pdf') {
+      console.log('⚠️ AI服务不可用，使用本地PDF解析...');
+      return await this.processPDFLocally(documentBuffer, customPrompt);
+    }
+
+    throw new Error(`${fileType.toUpperCase()}文档处理服务不可用`);
+  }
+
+  async processPDFLocally(pdfBuffer, customPrompt) {
+    try {
+      console.log('📄 正在使用本地pdf-parse解析PDF...');
+
+      // 直接使用pdf-parse的lib文件，绕过有问题的index.js
+      const pdfParseLib = await import('./node_modules/pdf-parse/lib/pdf-parse.js');
+      const pdfParse = pdfParseLib.default;
+
+      const pdfData = await pdfParse(pdfBuffer);
+      const extractedText = pdfData.text;
+
+      console.log(`✅ PDF解析成功，提取了 ${extractedText.length} 个字符`);
+
+      // 清理和格式化文本
+      const cleanedText = extractedText
+        .replace(/\s+/g, ' ')
+        .replace(/\n\s*\n/g, '\n')
+        .trim();
+
+      // 限制输出长度
+      const maxLength = 8000;
+      const finalText = cleanedText.length > maxLength
+        ? cleanedText.substring(0, maxLength) + '...\n\n(内容已截断，仅显示前' + maxLength + '个字符)'
+        : cleanedText;
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `📄 PDF文档内容提取结果:\n\n${finalText}\n\n📊 文档信息:\n- 页数: ${pdfData.numpages}\n- 文本长度: ${extractedText.length} 字符\n- 文件大小: ${(pdfBuffer.length / 1024).toFixed(2)} KB`
+          }
+        ]
+      };
+    } catch (error) {
+      console.error('❌ PDF解析失败:', error.message);
+      throw new Error(`PDF解析失败: ${error.message}`);
     }
   }
 
@@ -171,11 +379,20 @@ class MCPHtmlServer {
         timeout: 15000,
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+        },
+        maxContentLength: 10 * 1024 * 1024 // 限制10MB
       });
 
+      return await this.processImageBuffer(response.data, response.headers['content-type'] || 'image/jpeg');
+    } catch (error) {
+      throw new Error(`图片下载失败：${error.message}`);
+    }
+  }
+
+  async processImageBuffer(buffer, contentType) {
+    try {
       // 使用sharp处理图片（如果需要）
-      let imageBuffer = Buffer.from(response.data);
+      let imageBuffer = Buffer.from(buffer);
 
       try {
         // 尝试优化图片以提高OCR准确性
@@ -186,7 +403,7 @@ class MCPHtmlServer {
           .toBuffer();
       } catch (sharpError) {
         console.warn('图片处理失败，使用原始图片:', sharpError.message);
-        imageBuffer = Buffer.from(response.data);
+        imageBuffer = Buffer.from(buffer);
       }
 
       // 使用Tesseract进行OCR识别
@@ -224,6 +441,16 @@ class MCPHtmlServer {
     }
   }
 
+  detectFileType(url, contentType) {
+    return this.aiServices.detectFileType(url, contentType);
+  }
+
+  isImageType(contentType, url) {
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.tiff', '.ico'];
+    const urlLower = url.toLowerCase();
+    return contentType?.startsWith('image/') || imageExtensions.some(ext => urlLower.endsWith(ext));
+  }
+
   setupRequestHandlers() {
     // 设置错误处理
     this.server.onerror = (error) => {
@@ -242,7 +469,7 @@ class MCPHtmlServer {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Last-Event-ID');
-      
+
       // 处理OPTIONS预检请求
       if (req.method === 'OPTIONS') {
         res.writeHead(200);
@@ -256,21 +483,21 @@ class MCPHtmlServer {
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
         res.writeHead(200);
-        
+
         // 发送初始化事件
         res.write('event: initialized\n');
         res.write('data: {"type":"initialized"}\n\n');
-        
+
         // 保持连接活跃
         const keepAlive = setInterval(() => {
           res.write('event: ping\n');
           res.write('data: {"type":"ping"}\n\n');
         }, 30000);
-        
+
         req.on('close', () => {
           clearInterval(keepAlive);
         });
-        
+
         return;
       }
 
@@ -278,9 +505,9 @@ class MCPHtmlServer {
       if (req.method === 'POST') {
         // 检查是否是/mcp端点
         const url = new URL(req.url, `http://localhost:${port}`);
-        
+
         res.setHeader('Content-Type', 'application/json');
-        
+
         // 读取请求体
         let body = '';
         req.on('data', chunk => {
@@ -469,7 +696,7 @@ class MCPHtmlServer {
             type: 'connection_error'
           }));
         });
-        
+
         return;
       }
 
@@ -491,19 +718,34 @@ class MCPHtmlServer {
   }
 }
 
+// 导出类以供测试使用
+export { MCPHtmlServer };
+
 // 启动服务器
-const server = new MCPHtmlServer();
+console.log('🚀 正在启动MCP HTML服务器...');
 
-// 检查命令行参数
-const args = process.argv.slice(2);
-const portIndex = args.indexOf('--port');
-const port = portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000;
+try {
+  const server = new MCPHtmlServer();
+  console.log('✅ 服务器实例创建成功');
 
-// 启动HTTP服务器
-server.startHttpServer(port).catch(console.error);
+  const args = process.argv.slice(2);
+  const portIndex = args.indexOf('--port');
+  const port = portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000;
 
-// 优雅关闭
-process.on('SIGINT', () => {
-  console.log('\nShutting down MCP HTTP Server...');
-  process.exit(0);
-});
+  console.log(`🔧 配置端口: ${port}`);
+
+  server.startHttpServer(port).then(() => {
+    console.log('✅ 服务器启动完成');
+  }).catch((error) => {
+    console.error('❌ 服务器启动失败:', error);
+    process.exit(1);
+  });
+
+  process.on('SIGINT', () => {
+    console.log('\n正在关闭服务器...');
+    process.exit(0);
+  });
+} catch (error) {
+  console.error('❌ 创建服务器实例失败:', error);
+  process.exit(1);
+}
