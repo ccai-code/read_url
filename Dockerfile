@@ -1,5 +1,23 @@
 # 使用官方Node.js运行时作为基础镜像
-FROM node:18-alpine
+FROM node:20-alpine
+
+# 配置国内镜像源
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+# 安装构建依赖和系统库
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    musl-dev \
+    giflib-dev \
+    pixman-dev \
+    pangomm-dev \
+    libjpeg-turbo-dev \
+    freetype-dev
 
 # 设置工作目录
 WORKDIR /app
@@ -7,8 +25,9 @@ WORKDIR /app
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
-# 安装依赖
-RUN npm ci --only=production
+# 配置npm使用国内镜像源并安装依赖
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm ci --omit=dev
 
 # 复制应用代码
 COPY . .
