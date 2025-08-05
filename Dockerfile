@@ -25,16 +25,9 @@ WORKDIR /app
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
-# 设置环境变量优化构建
-ENV NODE_ENV=production
-ENV NPM_CONFIG_LOGLEVEL=warn
-ENV NPM_CONFIG_PROGRESS=false
-
 # 配置npm使用国内镜像源并安装依赖
 RUN npm config set registry https://registry.npmmirror.com && \
-    npm config set cache /tmp/.npm && \
-    npm config set network-timeout 300000 && \
-    npm ci --omit=dev --no-audit --no-fund --prefer-offline --verbose
+    npm ci --omit=dev
 
 # 复制应用代码
 COPY . .
