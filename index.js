@@ -9,11 +9,7 @@ import { URL } from 'url';
 import fs from 'fs';
 import { AIServices } from './ai-services.js';
 
-// 全局服务器状态跟踪
-let serverInstance = null;
-let isServerStarting = false;
-
-// 检查Canvas模块是否可用
+// 检查canvas是否可用
 let canvasAvailable = false;
 try {
   await import('canvas');
@@ -52,7 +48,7 @@ class MCPHtmlServer {
       // 优先加载生产环境配置
       const productionConfigPath = './config.production.json';
       const configPath = './config.json';
-      
+
       let selectedConfigPath = configPath;
       if (fs.existsSync(productionConfigPath)) {
         selectedConfigPath = productionConfigPath;
@@ -66,7 +62,7 @@ class MCPHtmlServer {
         };
         return;
       }
-      
+
       this.config = JSON.parse(fs.readFileSync(selectedConfigPath, 'utf8'));
       console.log('✅ 配置文件加载成功');
     } catch (error) {
@@ -489,42 +485,18 @@ class MCPHtmlServer {
   }
 
   async startHttpServer(port = 3000) {
-    // 检查是否已有服务器实例在运行
-    if (serverInstance) {
-      console.log('⚠️ 服务器实例已存在，跳过启动');
-      return null;
-    }
-
-    // 检查是否正在启动中
-    if (isServerStarting) {
-      console.log('⚠️ 服务器正在启动中，请等待');
-      return null;
-    }
-
-    isServerStarting = true;
-    console.log(`🔧 开始启动服务器，端口: ${port}`);
-
-    // 改进的端口检测逻辑
+    // 检查端口是否已被占用
     const isPortInUse = (port) => {
       return new Promise((resolve) => {
         const server = createServer();
-        server.listen(port, '0.0.0.0', () => {
-          server.close(() => {
-            console.log(`✅ 端口 ${port} 可用`);
-            resolve(false);
-          });
-        }).on('error', (err) => {
-          console.log(`⚠️ 端口 ${port} 检测失败: ${err.code}`);
-          resolve(true);
-        });
+        server.listen(port, () => {
+          server.close(() => resolve(false));
+        }).on('error', () => resolve(true));
       });
     };
 
-    // 检查端口占用
-    const portBusy = await isPortInUse(port);
-    if (portBusy) {
-      console.log(`❌ 端口 ${port} 已被占用，无法启动服务器`);
-      isServerStarting = false; // 重置状态
+    if (await isPortInUse(port)) {
+      console.log(`⚠️ 端口 ${port} 已被占用，服务器可能已在运行`);
       return null;
     }
 
@@ -582,7 +554,7 @@ class MCPHtmlServer {
           let request = null;
           try {
             request = JSON.parse(body);
-            
+
             // 记录请求日志（仅在开发环境）
             if (process.env.NODE_ENV === 'development') {
               console.log('MCP Request:', JSON.stringify(request, null, 2));
@@ -785,22 +757,22 @@ class MCPHtmlServer {
             if (!response || typeof response !== 'object') {
               throw new Error('Invalid response format');
             }
-            
+
             // 确保所有响应都有jsonrpc字段
             if (!response.jsonrpc) {
               response.jsonrpc = '2.0';
             }
-            
+
             // 记录响应日志（仅在开发环境）
             if (process.env.NODE_ENV === 'development') {
               console.log('MCP Response:', JSON.stringify(response, null, 2));
             }
-            
+
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(response));
           } catch (error) {
             console.error('Request processing error:', error);
-            
+
             // 确保错误响应格式正确
             const errorResponse = {
               jsonrpc: '2.0',
@@ -814,7 +786,7 @@ class MCPHtmlServer {
                 }
               }
             };
-            
+
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(errorResponse));
           }
@@ -822,7 +794,7 @@ class MCPHtmlServer {
 
         req.on('error', (error) => {
           console.error('Request error:', error);
-          
+
           const errorResponse = {
             jsonrpc: '2.0',
             id: null,
@@ -835,7 +807,7 @@ class MCPHtmlServer {
               }
             }
           };
-          
+
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(errorResponse));
         });
@@ -849,28 +821,15 @@ class MCPHtmlServer {
     });
 
     // 启动HTTP服务器
-    return new Promise((resolve, reject) => {
-      httpServer.listen(port, '0.0.0.0', () => {
-        // 设置全局状态
-        serverInstance = httpServer;
-        isServerStarting = false;
-        
-        console.log(`🚀 MCP SSE Server started on port ${port}`);
-        console.log(`📡 Server endpoint: http://localhost:${port}`);
-        console.log(`🤝 MCP Protocol endpoint: http://localhost:${port}/mcp`);
-        console.log(`🔧 Available tools: read_link`);
-        console.log(`💡 Supports MCP initialize/initialized handshake`);
-        
-        resolve(httpServer);
-      }).on('error', (error) => {
-        // 重置状态
-        isServerStarting = false;
-        serverInstance = null;
-        
-        console.error(`❌ 服务器启动失败: ${error.message}`);
-        reject(error);
-      });
+    httpServer.listen(port, () => {
+      console.log(`🚀 MCP SSE Server started on port ${port}`);
+      console.log(`📡 Server endpoint: http://localhost:${port}`);
+      console.log(`🤝 MCP Protocol endpoint: http://localhost:${port}/mcp`);
+      console.log(`🔧 Available tools: read_link`);
+      console.log(`💡 Supports MCP initialize/initialized handshake`);
     });
+
+    return httpServer;
   }
 }
 
@@ -879,25 +838,7 @@ export { MCPHtmlServer };
 
 // 启动服务器
 // 只在直接运行此文件时启动服务器
-// 修复Windows路径问题，使用更可靠的检测方法
-const isMainModule = () => {
-  try {
-    const currentFile = new URL(import.meta.url).pathname;
-    const mainFile = process.argv[1];
-    
-    // 标准化路径比较
-    const normalizedCurrent = currentFile.replace(/^\//,'').replace(/\//g, '\\');
-    const normalizedMain = mainFile.replace(/\//g, '\\');
-    
-    return normalizedCurrent === normalizedMain;
-  } catch (error) {
-    // 如果检测失败，默认不启动
-    console.log('⚠️ 无法检测模块运行状态，跳过自动启动');
-    return false;
-  }
-};
-
-if (isMainModule()) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   console.log('🚀 正在启动MCP HTML服务器...');
 
   try {
@@ -922,23 +863,10 @@ if (isMainModule()) {
       process.exit(1);
     });
 
-    // 优雅关闭服务器
-    const gracefulShutdown = () => {
-      console.log('\n🔄 正在关闭服务器...');
-      if (serverInstance) {
-        serverInstance.close(() => {
-          console.log('✅ 服务器已关闭');
-          serverInstance = null;
-          isServerStarting = false;
-          process.exit(0);
-        });
-      } else {
-        process.exit(0);
-      }
-    };
-
-    process.on('SIGINT', gracefulShutdown);
-    process.on('SIGTERM', gracefulShutdown);
+    process.on('SIGINT', () => {
+      console.log('\n正在关闭服务器...');
+      process.exit(0);
+    });
   } catch (error) {
     console.error('❌ 创建服务器实例失败:', error);
     process.exit(1);

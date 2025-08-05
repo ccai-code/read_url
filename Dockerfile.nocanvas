@@ -17,8 +17,7 @@ RUN apk add --no-cache \
     cairo-dev \
     pango-dev \
     libjpeg-turbo-dev \
-    giflib-dev \
-    wget
+    giflib-dev
 
 # 复制package文件
 COPY package.nocanvas.json ./package.json
@@ -35,8 +34,11 @@ RUN npm config set registry https://registry.npmmirror.com && \
 # 复制应用代码
 COPY . .
 
+# 设置环境变量让应用监听80端口
+ENV PORT=80
+
 # 暴露端口
 EXPOSE 80
 
-# 启动应用，明确指定端口参数
-CMD ["node", "index.js", "--port", "80"]
+# 启动应用
+CMD ["node", "index.js"]
