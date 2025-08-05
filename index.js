@@ -884,9 +884,11 @@ const isMainModule = () => {
   try {
     const currentFile = new URL(import.meta.url).pathname;
     const mainFile = process.argv[1];
+    
     // 标准化路径比较
     const normalizedCurrent = currentFile.replace(/^\//,'').replace(/\//g, '\\');
     const normalizedMain = mainFile.replace(/\//g, '\\');
+    
     return normalizedCurrent === normalizedMain;
   } catch (error) {
     // 如果检测失败，默认不启动
