@@ -34,8 +34,11 @@ RUN npm config set registry https://registry.npmmirror.com && \
 # 复制应用代码
 COPY . .
 
+# 设置环境变量让应用监听80端口
+ENV PORT=80
+
 # 暴露端口
-EXPOSE 3000
+EXPOSE 80
 
 # 启动应用
 CMD ["node", "index.js"]

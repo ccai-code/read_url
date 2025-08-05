@@ -1,543 +1,345 @@
-部署详情 / get-url / 020
-020
-创建中
+部署详情 / get-url / 024
+024
+部署失败
 基本信息
 服务名	
 get-url
 开始时间	
-2025-08-05 21:58:59
+2025-08-05 22:28:54
 状态	
-创建中
+部署失败
+处理建议	点击查看常见服务部署失败问题，自行快速排查
 日志
-2025-08-05 21:59:09 Started by user coding
-2025-08-05 21:59:09 Running in Durability level: MAX_SURVIVABILITY
-2025-08-05 21:59:12 Pipeline Start of Pipeline
-2025-08-05 21:59:12 Pipeline node
-2025-08-05 21:59:12 Running on Jenkins in /root/workspace
-2025-08-05 21:59:12 Pipeline {
-2025-08-05 21:59:12 Pipeline stage
-2025-08-05 21:59:12 Pipeline { (检出软件包)
-2025-08-05 21:59:13 Stage "检出软件包" skipped due to when conditional
-2025-08-05 21:59:13 Pipeline }
-2025-08-05 21:59:13 Pipeline // stage
-2025-08-05 21:59:13 Pipeline stage
-2025-08-05 21:59:13 Pipeline { (检出 ZIP 包)
-2025-08-05 21:59:13 Stage "检出 ZIP 包" skipped due to when conditional
-2025-08-05 21:59:13 Pipeline }
-2025-08-05 21:59:13 Pipeline // stage
-2025-08-05 21:59:13 Pipeline stage
-2025-08-05 21:59:13 Pipeline { (检出代码仓库)
-2025-08-05 21:59:13 Pipeline sh
-2025-08-05 21:59:13 + git clone ****** .
-2025-08-05 21:59:13 Cloning into '.'...
-2025-08-05 21:59:15 Pipeline sh
-2025-08-05 21:59:15 + git checkout main
-2025-08-05 21:59:15 Already on 'main'
-2025-08-05 21:59:15 Your branch is up to date with 'origin/main'.
-2025-08-05 21:59:15 Pipeline }
-2025-08-05 21:59:15 Pipeline // stage
-2025-08-05 21:59:15 Pipeline stage
-2025-08-05 21:59:15 Pipeline { (写入 dockerfile)
-2025-08-05 21:59:15 Stage "写入 dockerfile" skipped due to when conditional
-2025-08-05 21:59:15 Pipeline }
-2025-08-05 21:59:15 Pipeline // stage
-2025-08-05 21:59:15 Pipeline stage
-2025-08-05 21:59:15 Pipeline { (构建 Docker 镜像)
-2025-08-05 21:59:15 Pipeline sh
-2025-08-05 21:59:15 + docker login -u ****** -p ****** ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-020-20250805215906
-2025-08-05 21:59:15 WARNING! Using --password via the CLI is insecure. Use --password-stdin.
-2025-08-05 21:59:15 WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
-2025-08-05 21:59:15 Configure a credential helper to remove this warning. See
-2025-08-05 21:59:15 https://docs.docker.com/engine/reference/commandline/login/#credentials-store
-2025-08-05 21:59:15
-2025-08-05 21:59:15 Login Succeeded
-2025-08-05 21:59:15 Pipeline sh
-2025-08-05 21:59:16 + docker build -f ././Dockerfile -t ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-020-20250805215906 .
-2025-08-05 21:59:16 #0 building with "default" instance using docker driver
-2025-08-05 21:59:16
-2025-08-05 21:59:16 #1 internal load .dockerignore
-2025-08-05 21:59:16 #1 transferring context: 323B done
-2025-08-05 21:59:16 #1 DONE 0.0s
-2025-08-05 21:59:16
-2025-08-05 21:59:16 #2 internal load build definition from Dockerfile
-2025-08-05 21:59:16 #2 transferring dockerfile: 1.04kB done
-2025-08-05 21:59:16 #2 DONE 0.0s
-2025-08-05 21:59:16
-2025-08-05 21:59:16 #3 internal load metadata for docker.io/library/node:20-alpine
-2025-08-05 21:59:17 #3 DONE 1.0s
-2025-08-05 21:59:17
-2025-08-05 21:59:17 #4 internal load build context
-2025-08-05 21:59:17 #4 transferring context: 151.19kB done
-2025-08-05 21:59:17 #4 DONE 0.0s
-2025-08-05 21:59:17
-2025-08-05 21:59:17 #5 1/7 FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
-2025-08-05 21:59:17 #5 resolve docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 0.0s done
-2025-08-05 21:59:17 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0B / 3.80MB 0.2s
-2025-08-05 21:59:17 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 0B / 42.99MB 0.2s
-2025-08-05 21:59:17 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0B / 1.26MB 0.2s
-2025-08-05 21:59:17 #5 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 445B / 445B 0.2s done
-2025-08-05 21:59:17 #5 sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 7.67kB / 7.67kB done
-2025-08-05 21:59:17 #5 sha256:ae6ee91a652d927de01d550c29f863a52f1da390c89df95f3ceba256d1e62604 1.72kB / 1.72kB done
-2025-08-05 21:59:17 #5 sha256:7cdef5a331927fafa250be6166052d8599bf5eb7b014342538c2cc79b70a081f 6.42kB / 6.42kB done
-2025-08-05 21:59:17 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 1.05MB / 3.80MB 0.4s
-2025-08-05 21:59:17 #5 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8
-2025-08-05 21:59:18 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 3.80MB / 3.80MB 0.5s done
-2025-08-05 21:59:18 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 5.24MB / 42.99MB 0.5s
-2025-08-05 21:59:18 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 1.26MB / 1.26MB 0.4s done
-2025-08-05 21:59:18 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 25.17MB / 42.99MB 0.7s
-2025-08-05 21:59:18 #5 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0.1s done
-2025-08-05 21:59:18 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 34.60MB / 42.99MB 0.8s
-2025-08-05 21:59:18 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 42.99MB / 42.99MB 0.9s done
-2025-08-05 21:59:18 #5 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e
-2025-08-05 21:59:19 #5 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 1.3s done
-2025-08-05 21:59:20 #5 extracting sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0.0s done
-2025-08-05 21:59:20 #5 extracting sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 done
-2025-08-05 21:59:20 #5 DONE 2.5s
-2025-08-05 21:59:20
-2025-08-05 21:59:20 #6 2/7 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
-2025-08-05 21:59:20 #6 DONE 0.8s
-2025-08-05 21:59:20
-2025-08-05 21:59:20 #7 3/7 RUN apk add --no-cache python3 make g++ cairo-dev jpeg-dev pango-dev musl-dev giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev
-2025-08-05 21:59:21 #7 0.278 fetch https://mirrors.aliyun.com/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
-2025-08-05 21:59:21 #7 0.460 fetch https://mirrors.aliyun.com/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
-2025-08-05 21:59:21 #7 1.125 (1/147) Installing cairo-tools (1.18.4-r0)
-2025-08-05 21:59:22 #7 1.145 (2/147) Installing libexpat (2.7.1-r0)
-2025-08-05 21:59:22 #7 1.170 (3/147) Installing brotli-libs (1.1.0-r2)
-2025-08-05 21:59:22 #7 1.302 (4/147) Installing libbz2 (1.0.8-r6)
-2025-08-05 21:59:22 #7 1.391 (5/147) Installing libpng (1.6.47-r0)
-2025-08-05 21:59:22 #7 1.416 (6/147) Installing freetype (2.13.3-r0)
-2025-08-05 21:59:22 #7 1.464 (7/147) Installing fontconfig (2.15.0-r3)
-2025-08-05 21:59:22 #7 1.539 (8/147) Installing expat (2.7.1-r0)
-2025-08-05 21:59:22 #7 1.566 (9/147) Installing pkgconf (2.4.3-r0)
-2025-08-05 21:59:22 #7 1.588 (10/147) Installing expat-dev (2.7.1-r0)
-2025-08-05 21:59:22 #7 1.641 (11/147) Installing bzip2-dev (1.0.8-r6)
-2025-08-05 21:59:22 #7 1.662 (12/147) Installing brotli (1.1.0-r2)
-2025-08-05 21:59:22 #7 1.679 (13/147) Installing brotli-dev (1.1.0-r2)
-2025-08-05 21:59:22 #7 1.702 (14/147) Installing zlib-dev (1.3.1-r2)
-2025-08-05 21:59:22 #7 1.722 (15/147) Installing libpng-dev (1.6.47-r0)
-2025-08-05 21:59:22 #7 1.743 (16/147) Installing freetype-dev (2.13.3-r0)
-2025-08-05 21:59:22 #7 1.779 (17/147) Installing fontconfig-dev (2.15.0-r3)
-2025-08-05 21:59:22 #7 1.796 (18/147) Installing libxau (1.0.12-r0)
-2025-08-05 21:59:22 #7 1.813 (19/147) Installing xorgproto (2024.1-r0)
-2025-08-05 21:59:22 #7 1.899 (20/147) Installing libxau-dev (1.0.12-r0)
-2025-08-05 21:59:22 #7 1.929 (21/147) Installing libmd (1.1.0-r0)
-2025-08-05 21:59:22 #7 1.992 (22/147) Installing libbsd (0.12.2-r0)
-2025-08-05 21:59:22 #7 2.011 (23/147) Installing libxdmcp (1.1.5-r1)
-2025-08-05 21:59:22 #7 2.028 (24/147) Installing libxcb (1.17.0-r0)
-2025-08-05 21:59:22 #7 2.067 (25/147) Installing libx11 (1.8.11-r0)
-2025-08-05 21:59:23 #7 2.271 (26/147) Installing libxext (1.3.6-r2)
-2025-08-05 21:59:23 #7 2.322 (27/147) Installing libffi (3.4.8-r0)
-2025-08-05 21:59:23 #7 2.387 (28/147) Installing gdbm (1.24-r0)
-2025-08-05 21:59:23 #7 2.406 (29/147) Installing xz-libs (5.8.1-r0)
-2025-08-05 21:59:23 #7 2.431 (30/147) Installing mpdecimal (4.0.1-r0)
-2025-08-05 21:59:23 #7 2.457 (31/147) Installing ncurses-terminfo-base (6.5_p20250503-r0)
-2025-08-05 21:59:23 #7 2.481 (32/147) Installing libncursesw (6.5_p20250503-r0)
-2025-08-05 21:59:23 #7 2.513 (33/147) Installing libpanelw (6.5_p20250503-r0)
-2025-08-05 21:59:23 #7 2.530 (34/147) Installing readline (8.2.13-r1)
-2025-08-05 21:59:23 #7 2.558 (35/147) Installing sqlite-libs (3.49.2-r1)
-2025-08-05 21:59:23 #7 2.811 (36/147) Installing python3 (3.12.11-r0)
-2025-08-05 21:59:25 #7 4.383 (37/147) Installing python3-pycache-pyc0 (3.12.11-r0)
-2025-08-05 21:59:26 #7 5.249 (38/147) Installing pyc (3.12.11-r0)
-2025-08-05 21:59:26 #7 5.249 (39/147) Installing xcb-proto-pyc (1.17.0-r0)
-2025-08-05 21:59:26 #7 5.341 (40/147) Installing python3-pyc (3.12.11-r0)
-2025-08-05 21:59:26 #7 5.341 (41/147) Installing xcb-proto (1.17.0-r0)
-2025-08-05 21:59:26 #7 5.374 (42/147) Installing libxdmcp-dev (1.1.5-r1)
-2025-08-05 21:59:26 #7 5.392 (43/147) Installing libxcb-dev (1.17.0-r0)
-2025-08-05 21:59:26 #7 5.431 (44/147) Installing xtrans (1.5.2-r0)
-2025-08-05 21:59:26 #7 5.454 (45/147) Installing libx11-dev (1.8.11-r0)
-2025-08-05 21:59:26 #7 5.520 (46/147) Installing libxext-dev (1.3.6-r2)
-2025-08-05 21:59:26 #7 5.538 (47/147) Installing libxrender (0.9.12-r0)
-2025-08-05 21:59:26 #7 5.555 (48/147) Installing libxrender-dev (0.9.12-r0)
-2025-08-05 21:59:26 #7 5.606 (49/147) Installing pixman (0.46.4-r0)
-2025-08-05 21:59:26 #7 5.648 (50/147) Installing pixman-dev (0.46.4-r0)
-2025-08-05 21:59:26 #7 5.665 (51/147) Installing util-macros (1.20.1-r0)
-2025-08-05 21:59:26 #7 5.684 (52/147) Installing xcb-util (0.4.1-r3)
-2025-08-05 21:59:26 #7 5.704 (53/147) Installing xcb-util-dev (0.4.1-r3)
-2025-08-05 21:59:26 #7 5.723 (54/147) Installing cairo (1.18.4-r0)
-2025-08-05 21:59:26 #7 5.856 (55/147) Installing libintl (0.24.1-r0)
-2025-08-05 21:59:26 #7 5.877 (56/147) Installing libeconf (0.6.3-r0)
-2025-08-05 21:59:26 #7 5.896 (57/147) Installing libblkid (2.41-r9)
-2025-08-05 21:59:26 #7 5.923 (58/147) Installing libmount (2.41-r9)
-2025-08-05 21:59:26 #7 5.949 (59/147) Installing pcre2 (10.43-r1)
-2025-08-05 21:59:26 #7 5.992 (60/147) Installing glib (2.84.3-r0)
-2025-08-05 21:59:27 #7 6.449 (61/147) Installing cairo-gobject (1.18.4-r0)
-2025-08-05 21:59:27 #7 6.467 (62/147) Installing libxml2 (2.13.8-r0)
-2025-08-05 21:59:27 #7 6.610 (63/147) Installing libxml2-utils (2.13.8-r0)
-2025-08-05 21:59:27 #7 6.664 (64/147) Installing docbook-xml (4.5-r10)
-2025-08-05 21:59:27 #7 6.719 Executing docbook-xml-4.5-r10.post-install
-2025-08-05 21:59:27 #7 6.727 (65/147) Installing libxslt (1.1.43-r3)
-2025-08-05 21:59:27 #7 6.846 (66/147) Installing docbook-xsl-ns (1.79.2-r11)
-2025-08-05 21:59:28 #7 7.373 Executing docbook-xsl-ns-1.79.2-r11.post-install
-2025-08-05 21:59:28 #7 7.395 (67/147) Installing docbook-xsl-nons (1.79.2-r11)
-2025-08-05 21:59:28 #7 7.850 Executing docbook-xsl-nons-1.79.2-r11.post-install
-2025-08-05 21:59:28 #7 7.871 (68/147) Installing docbook-xsl (1.79.2-r11)
-2025-08-05 21:59:28 #7 7.893 (69/147) Installing xz (5.8.1-r0)
-2025-08-05 21:59:28 #7 7.918 (70/147) Installing gettext-asprintf (0.24.1-r0)
-2025-08-05 21:59:28 #7 7.938 (71/147) Installing libunistring (1.3-r0)
-2025-08-05 21:59:28 #7 8.074 (72/147) Installing gettext-libs (0.24.1-r0)
-2025-08-05 21:59:29 #7 8.368 (73/147) Installing gettext-envsubst (0.24.1-r0)
-2025-08-05 21:59:29 #7 8.414 (74/147) Installing libgomp (14.2.0-r6)
-2025-08-05 21:59:29 #7 8.471 (75/147) Installing gettext (0.24.1-r0)
-2025-08-05 21:59:29 #7 8.714 (76/147) Installing gettext-dev (0.24.1-r0)
-2025-08-05 21:59:29 #7 8.921 (77/147) Installing py3-parsing (3.2.3-r0)
-2025-08-05 21:59:29 #7 8.959 (78/147) Installing py3-parsing-pyc (3.2.3-r0)
-2025-08-05 21:59:29 #7 9.043 (79/147) Installing py3-packaging (25.0-r0)
-2025-08-05 21:59:29 #7 9.139 (80/147) Installing py3-packaging-pyc (25.0-r0)
-2025-08-05 21:59:29 #7 9.182 (81/147) Installing linux-headers (6.14.2-r0)
-2025-08-05 21:59:30 #7 9.636 (82/147) Installing libffi-dev (3.4.8-r0)
-2025-08-05 21:59:30 #7 9.715 (83/147) Installing bsd-compat-headers (0.7.2-r6)
-2025-08-05 21:59:30 #7 9.734 (84/147) Installing libformw (6.5_p20250503-r0)
-2025-08-05 21:59:30 #7 9.759 (85/147) Installing libmenuw (6.5_p20250503-r0)
-2025-08-05 21:59:30 #7 9.778 (86/147) Installing libncurses++ (6.5_p20250503-r0)
-2025-08-05 21:59:30 #7 9.799 (87/147) Installing ncurses-dev (6.5_p20250503-r0)
-2025-08-05 21:59:30 #7 9.827 (88/147) Installing libedit (20250104.3.1-r1)
-2025-08-05 21:59:30 #7 9.851 (89/147) Installing libedit-dev (20250104.3.1-r1)
-2025-08-05 21:59:30 #7 9.869 (90/147) Installing libpcre2-16 (10.43-r1)
-2025-08-05 21:59:30 #7 9.915 (91/147) Installing libpcre2-32 (10.43-r1)
-2025-08-05 21:59:30 #7 10.01 (92/147) Installing pcre2-dev (10.43-r1)
-2025-08-05 21:59:30 #7 10.09 (93/147) Installing libuuid (2.41-r9)
-2025-08-05 21:59:30 #7 10.11 (94/147) Installing libfdisk (2.41-r9)
-2025-08-05 21:59:31 #7 10.16 (95/147) Installing liblastlog2 (2.41-r9)
-2025-08-05 21:59:31 #7 10.19 (96/147) Installing libsmartcols (2.41-r9)
-2025-08-05 21:59:31 #7 10.21 (97/147) Installing sqlite (3.49.2-r1)
-2025-08-05 21:59:31 #7 10.54 (98/147) Installing sqlite-dev (3.49.2-r1)
-2025-08-05 21:59:31 #7 10.65 (99/147) Installing util-linux-dev (2.41-r9)
-2025-08-05 21:59:31 #7 10.71 (100/147) Installing glib-dev (2.84.3-r0)
-2025-08-05 21:59:31 #7 11.22 (101/147) Installing cairo-dev (1.18.4-r0)
-2025-08-05 21:59:32 #7 11.30 (102/147) Installing libstdc++-dev (14.2.0-r6)
-2025-08-05 21:59:33 #7 12.23 (103/147) Installing jansson (2.14.1-r0)
-2025-08-05 21:59:33 #7 12.25 (104/147) Installing zstd-libs (1.5.7-r0)
-2025-08-05 21:59:33 #7 12.30 (105/147) Installing binutils (2.44-r2)
-2025-08-05 21:59:34 #7 13.11 (106/147) Installing libatomic (14.2.0-r6)
-2025-08-05 21:59:34 #7 13.12 (107/147) Installing gmp (6.3.0-r3)
-2025-08-05 21:59:34 #7 13.19 (108/147) Installing isl26 (0.26-r1)
-2025-08-05 21:59:34 #7 13.44 (109/147) Installing mpfr4 (4.2.1_p1-r0)
-2025-08-05 21:59:34 #7 13.63 (110/147) Installing mpc1 (1.3.1-r1)
-2025-08-05 21:59:34 #7 13.66 (111/147) Installing gcc (14.2.0-r6)
-2025-08-05 21:59:46 #7 24.59 (112/147) Installing musl-dev (1.2.5-r10)
-2025-08-05 21:59:46 #7 25.33 (113/147) Installing g++ (14.2.0-r6)
-2025-08-05 21:59:49 #7 28.66 (114/147) Installing giflib (5.2.2-r1)
-2025-08-05 21:59:49 #7 28.73 (115/147) Installing giflib-dev (5.2.2-r1)
-2025-08-05 21:59:49 #7 28.75 (116/147) Installing libjpeg-turbo (3.1.0-r0)
-2025-08-05 21:59:49 #7 28.79 (117/147) Installing libturbojpeg (3.1.0-r0)
-2025-08-05 21:59:49 #7 28.92 (118/147) Installing libjpeg-turbo-dev (3.1.0-r0)
-2025-08-05 21:59:49 #7 28.98 (119/147) Installing jpeg-dev (9f-r0)
-2025-08-05 21:59:49 #7 28.98 (120/147) Installing make (4.4.1-r3)
-2025-08-05 21:59:49 #7 29.01 (121/147) Installing libxft (2.3.8-r3)
-2025-08-05 21:59:49 #7 29.03 (122/147) Installing graphite2 (1.3.14-r6)
-2025-08-05 21:59:49 #7 29.07 (123/147) Installing harfbuzz (11.2.1-r0)
-2025-08-05 21:59:50 #7 29.19 (124/147) Installing fribidi (1.0.16-r1)
-2025-08-05 21:59:50 #7 29.21 (125/147) Installing pango (1.56.3-r0)
-2025-08-05 21:59:50 #7 29.35 (126/147) Installing pango-tools (1.56.3-r0)
-2025-08-05 21:59:50 #7 29.37 (127/147) Installing fribidi-dev (1.0.16-r1)
-2025-08-05 21:59:50 #7 29.39 (128/147) Installing harfbuzz-cairo (11.2.1-r0)
-2025-08-05 21:59:50 #7 29.41 (129/147) Installing harfbuzz-gobject (11.2.1-r0)
-2025-08-05 21:59:50 #7 29.43 (130/147) Installing icu-data-en (76.1-r1)
-2025-08-05 21:59:50 #7 29.67 Executing icu-data-en-76.1-r1.post-install
-2025-08-05 21:59:50 #7 29.67 *
-2025-08-05 21:59:50 #7 29.67 * If you need ICU with non-English locales and legacy charset support, install
-2025-08-05 21:59:50 #7 29.67 * package icu-data-full.
-2025-08-05 21:59:50 #7 29.67 *
-2025-08-05 21:59:50 #7 29.67 (131/147) Installing icu-libs (76.1-r1)
-2025-08-05 21:59:51 #7 30.22 (132/147) Installing harfbuzz-icu (11.2.1-r0)
-2025-08-05 21:59:51 #7 30.24 (133/147) Installing harfbuzz-subset (11.2.1-r0)
-2025-08-05 21:59:51 #7 30.35 (134/147) Installing graphite2-dev (1.3.14-r6)
-2025-08-05 21:59:51 #7 30.37 (135/147) Installing icu (76.1-r1)
-2025-08-05 21:59:51 #7 30.49 (136/147) Installing icu-dev (76.1-r1)
-2025-08-05 21:59:51 #7 30.64 (137/147) Installing harfbuzz-dev (11.2.1-r0)
-2025-08-05 21:59:51 #7 30.70 (138/147) Installing libxft-dev (2.3.8-r3)
-2025-08-05 21:59:51 #7 30.73 (139/147) Installing pango-dev (1.56.3-r0)
-2025-08-05 21:59:51 #7 30.77 (140/147) Installing libsigc++3 (3.6.0-r0)
-2025-08-05 21:59:51 #7 30.80 (141/147) Installing cairomm (1.18.0-r0)
-2025-08-05 21:59:51 #7 30.86 (142/147) Installing glibmm (2.84.0-r0)
-2025-08-05 21:59:51 #7 30.97 (143/147) Installing pangomm (2.54.0-r0)
-2025-08-05 21:59:51 #7 30.99 (144/147) Installing libsigc++3-dev (3.6.0-r0)
-2025-08-05 21:59:52 #7 31.07 (145/147) Installing cairomm-dev (1.18.0-r0)
-2025-08-05 21:59:52 #7 31.10 (146/147) Installing glibmm-dev (2.84.0-r0)
-2025-08-05 21:59:52 #7 31.22 (147/147) Installing pangomm-dev (2.54.0-r0)
-2025-08-05 21:59:52 #7 31.25 Executing busybox-1.37.0-r18.trigger
-2025-08-05 21:59:52 #7 31.26 Executing glib-2.84.3-r0.trigger
-2025-08-05 21:59:52 #7 31.26 No schema files found: doing nothing.
-2025-08-05 21:59:52 #7 31.27 OK: 383 MiB in 165 packages
-2025-08-05 21:59:54 #7 DONE 33.3s
-2025-08-05 21:59:54
-2025-08-05 21:59:54 #8 4/7 WORKDIR /app
-2025-08-05 21:59:54 #8 DONE 0.0s
-2025-08-05 21:59:54
-2025-08-05 21:59:54 #9 5/7 COPY package*.json ./
-2025-08-05 21:59:54 #9 DONE 0.0s
-2025-08-05 21:59:54
-2025-08-05 21:59:54 #10 6/7 RUN npm config set registry https://registry.npmmirror.com && npm config set fetch-timeout 600000 && npm config set fetch-retry-mintimeout 20000 && npm config set fetch-retry-maxtimeout 120000 && npm ci --omit=dev --verbose
-2025-08-05 21:59:55 #10 1.324 npm verbose cli /usr/local/bin/node /usr/local/bin/npm
-2025-08-05 21:59:55 #10 1.324 npm info using npm@10.8.2
-2025-08-05 21:59:55 #10 1.324 npm info using node@v20.19.4
-2025-08-05 21:59:55 #10 1.327 npm verbose title npm ci
-2025-08-05 21:59:55 #10 1.327 npm verbose argv "ci" "--omit" "dev" "--loglevel" "verbose"
-2025-08-05 21:59:55 #10 1.327 npm verbose logfile logs-max:10 dir:/root/.npm/_logs/2025-08-05T13_59_55_363Z-
-2025-08-05 21:59:55 #10 1.329 npm verbose logfile /root/.npm/_logs/2025-08-05T13_59_55_363Z-debug-0.log
-2025-08-05 21:59:56 #10 1.889 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-win32-x64
-2025-08-05 21:59:56 #10 1.890 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-win32-ia32
-2025-08-05 21:59:56 #10 1.890 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-wasm32
-2025-08-05 21:59:56 #10 1.890 npm verbose reify failed optional dependency /app/node_modules/@emnapi/runtime
-2025-08-05 21:59:56 #10 1.891 npm verbose reify failed optional dependency /app/node_modules/tslib
-2025-08-05 21:59:56 #10 1.891 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-linuxmusl-arm64
-2025-08-05 21:59:56 #10 1.891 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-linux-s390x
-2025-08-05 21:59:56 #10 1.892 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-linux-arm64
-2025-08-05 21:59:56 #10 1.892 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-linux-arm
-2025-08-05 21:59:56 #10 1.892 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-libvips-linuxmusl-arm64
-2025-08-05 21:59:56 #10 1.893 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-libvips-linux-s390x
-2025-08-05 21:59:56 #10 1.893 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-libvips-linux-arm64
-2025-08-05 21:59:56 #10 1.894 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-libvips-linux-arm
-2025-08-05 21:59:56 #10 1.894 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-libvips-darwin-x64
-2025-08-05 21:59:56 #10 1.894 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-libvips-darwin-arm64
-2025-08-05 21:59:56 #10 1.894 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-darwin-x64
-2025-08-05 21:59:56 #10 1.894 npm verbose reify failed optional dependency /app/node_modules/@img/sharp-darwin-arm64
-2025-08-05 21:59:56 #10 2.364 npm http fetch POST 404 https://registry.npmmirror.com/-/npm/v1/security/advisories/bulk 587ms
-2025-08-05 21:59:57 #10 2.962 npm http fetch GET 200 https://cdn.npmmirror.com/packages/vary/1.1.2/vary-1.1.2.tgz 1011ms (cache miss)
-2025-08-05 21:59:57 #10 2.980 npm http fetch GET 200 https://cdn.npmmirror.com/packages/which/2.0.2/which-2.0.2.tgz 1033ms (cache miss)
-2025-08-05 21:59:57 #10 2.993 npm http fetch GET 200 https://cdn.npmmirror.com/packages/webidl-conversions/3.0.1/webidl-conversions-3.0.1.tgz 1045ms (cache miss)
-2025-08-05 21:59:57 #10 2.995 npm http fetch GET 200 https://cdn.npmmirror.com/packages/whatwg-url/5.0.0/whatwg-url-5.0.0.tgz 1044ms (cache miss)
-2025-08-05 21:59:57 #10 3.012 npm http fetch GET 200 https://cdn.npmmirror.com/packages/wrappy/1.0.2/wrappy-1.0.2.tgz 1069ms (cache miss)
-2025-08-05 21:59:57 #10 3.027 npm http fetch GET 200 https://cdn.npmmirror.com/packages/whatwg-encoding/3.1.1/whatwg-encoding-3.1.1.tgz 1077ms (cache miss)
-2025-08-05 21:59:57 #10 3.027 npm http fetch GET 200 https://cdn.npmmirror.com/packages/util-deprecate/1.0.2/util-deprecate-1.0.2.tgz 1075ms (cache miss)
-2025-08-05 21:59:57 #10 3.027 npm http fetch GET 200 https://cdn.npmmirror.com/packages/word/0.3.0/word-0.3.0.tgz 1083ms (cache miss)
-2025-08-05 21:59:57 #10 3.028 npm http fetch GET 200 https://cdn.npmmirror.com/packages/unpipe/1.0.0/unpipe-1.0.0.tgz 1074ms (cache miss)
-2025-08-05 21:59:57 #10 3.049 npm http fetch GET 200 https://cdn.npmmirror.com/packages/whatwg-mimetype/4.0.0/whatwg-mimetype-4.0.0.tgz 1101ms (cache miss)
-2025-08-05 21:59:57 #10 3.049 npm http fetch GET 200 https://cdn.npmmirror.com/packages/wasm-feature-detect/1.8.0/wasm-feature-detect-1.8.0.tgz 1099ms (cache miss)
-2025-08-05 21:59:57 #10 3.050 npm http fetch GET 200 https://cdn.npmmirror.com/packages/tunnel-agent/0.6.0/tunnel-agent-0.6.0.tgz 1091ms (cache miss)
-2025-08-05 21:59:57 #10 3.065 npm http fetch GET 200 https://cdn.npmmirror.com/packages/type-is/2.0.1/type-is-2.0.1.tgz 1105ms (cache miss)
-2025-08-05 21:59:57 #10 3.098 npm http fetch GET 200 https://cdn.npmmirror.com/packages/toidentifier/1.0.1/toidentifier-1.0.1.tgz 1136ms (cache miss)
-2025-08-05 21:59:57 #10 3.099 npm http fetch GET 200 https://cdn.npmmirror.com/packages/strip-json-comments/2.0.1/strip-json-comments-2.0.1.tgz 1134ms (cache miss)
-2025-08-05 21:59:57 #10 3.099 npm http fetch GET 200 https://cdn.npmmirror.com/packages/tar-stream/2.2.0/tar-stream-2.2.0.tgz 1135ms (cache miss)
-2025-08-05 21:59:57 #10 3.124 npm http fetch GET 200 https://cdn.npmmirror.com/packages/statuses/2.0.2/statuses-2.0.2.tgz 1156ms (cache miss)
-2025-08-05 21:59:57 #10 3.124 npm http fetch GET 200 https://cdn.npmmirror.com/packages/string_decoder/1.3.0/string_decoder-1.3.0.tgz 1157ms (cache miss)
-2025-08-05 21:59:57 #10 3.141 npm http fetch GET 200 https://cdn.npmmirror.com/packages/side-channel-weakmap/1.0.2/side-channel-weakmap-1.0.2.tgz 1168ms (cache miss)
-2025-08-05 21:59:57 #10 3.144 npm http fetch GET 200 https://cdn.npmmirror.com/packages/ssf/0.11.2/ssf-0.11.2.tgz 1176ms (cache miss)
-2025-08-05 21:59:57 #10 3.145 npm http fetch GET 200 https://cdn.npmmirror.com/packages/side-channel-map/1.0.1/side-channel-map-1.0.1.tgz 1171ms (cache miss)
-2025-08-05 21:59:57 #10 3.160 npm http fetch GET 200 https://cdn.npmmirror.com/packages/simple-swizzle/0.2.2/simple-swizzle-0.2.2.tgz 1190ms (cache miss)
-2025-08-05 21:59:57 #10 3.161 npm http fetch GET 200 https://cdn.npmmirror.com/packages/simple-concat/1.0.1/simple-concat-1.0.1.tgz 1188ms (cache miss)
-2025-08-05 21:59:57 #10 3.161 npm http fetch GET 200 https://cdn.npmmirror.com/packages/sprintf-js/1.0.3/sprintf-js-1.0.3.tgz 1191ms (cache miss)
-2025-08-05 21:59:57 #10 3.161 npm http fetch GET 200 https://cdn.npmmirror.com/packages/simple-get/4.0.1/simple-get-4.0.1.tgz 1190ms (cache miss)
-2025-08-05 21:59:57 #10 3.179 npm http fetch GET 200 https://cdn.npmmirror.com/packages/tslib/2.8.1/tslib-2.8.1.tgz 1219ms (cache miss)
-2025-08-05 21:59:57 #10 3.206 npm http fetch GET 200 https://cdn.npmmirror.com/packages/side-channel-list/1.0.0/side-channel-list-1.0.0.tgz 1231ms (cache miss)
-2025-08-05 21:59:57 #10 3.206 npm http fetch GET 200 https://cdn.npmmirror.com/packages/shebang-regex/3.0.0/shebang-regex-3.0.0.tgz 1230ms (cache miss)
-2025-08-05 21:59:57 #10 3.207 npm http fetch GET 200 https://cdn.npmmirror.com/packages/side-channel/1.1.0/side-channel-1.1.0.tgz 1231ms (cache miss)
-2025-08-05 21:59:57 #10 3.207 npm http fetch GET 200 https://cdn.npmmirror.com/packages/shebang-command/2.0.0/shebang-command-2.0.0.tgz 1229ms (cache miss)
-2025-08-05 21:59:57 #10 3.223 npm http fetch GET 200 https://cdn.npmmirror.com/packages/setprototypeof/1.2.0/setprototypeof-1.2.0.tgz 1243ms (cache miss)
-2025-08-05 21:59:57 #10 3.223 npm http fetch GET 200 https://cdn.npmmirror.com/packages/setimmediate/1.0.5/setimmediate-1.0.5.tgz 1243ms (cache miss)
-2025-08-05 21:59:57 #10 3.264 npm http fetch GET 200 https://cdn.npmmirror.com/packages/serve-static/2.2.0/serve-static-2.2.0.tgz 1283ms (cache miss)
-2025-08-05 21:59:57 #10 3.265 npm http fetch GET 200 https://cdn.npmmirror.com/packages/safe-buffer/5.2.1/safe-buffer-5.2.1.tgz 1279ms (cache miss)
-2025-08-05 21:59:57 #10 3.265 npm http fetch GET 200 https://cdn.npmmirror.com/packages/send/1.2.0/send-1.2.0.tgz 1283ms (cache miss)
-2025-08-05 21:59:57 #10 3.266 npm http fetch GET 200 https://cdn.npmmirror.com/packages/safer-buffer/2.1.2/safer-buffer-2.1.2.tgz 1281ms (cache miss)
-2025-08-05 21:59:57 #10 3.293 npm http fetch GET 200 https://cdn.npmmirror.com/packages/regenerator-runtime/0.13.11/regenerator-runtime-0.13.11.tgz 1302ms (cache miss)
-2025-08-05 21:59:57 #10 3.293 npm http fetch GET 200 https://cdn.npmmirror.com/packages/router/2.2.0/router-2.2.0.tgz 1307ms (cache miss)
-2025-08-05 21:59:57 #10 3.319 npm http fetch GET 200 https://cdn.npmmirror.com/packages/range-parser/1.2.1/range-parser-1.2.1.tgz 1324ms (cache miss)
-2025-08-05 21:59:57 #10 3.336 npm http fetch GET 200 https://cdn.npmmirror.com/packages/rc/1.2.8/rc-1.2.8.tgz 1343ms (cache miss)
-2025-08-05 21:59:57 #10 3.337 npm http fetch GET 200 https://cdn.npmmirror.com/packages/raw-body/3.0.0/raw-body-3.0.0.tgz 1343ms (cache miss)
-2025-08-05 21:59:57 #10 3.337 npm http fetch GET 200 https://cdn.npmmirror.com/packages/pump/3.0.3/pump-3.0.3.tgz 1341ms (cache miss)
-2025-08-05 21:59:57 #10 3.338 npm http fetch GET 200 https://cdn.npmmirror.com/packages/proxy-from-env/1.1.0/proxy-from-env-1.1.0.tgz 1340ms (cache miss)
-2025-08-05 21:59:57 #10 3.355 npm http fetch GET 200 https://cdn.npmmirror.com/packages/punycode/2.3.1/punycode-2.3.1.tgz 1359ms (cache miss)
-2025-08-05 21:59:57 #10 3.384 npm http fetch GET 200 https://cdn.npmmirror.com/packages/process-nextick-args/2.0.1/process-nextick-args-2.0.1.tgz 1384ms (cache miss)
-2025-08-05 21:59:57 #10 3.384 npm http fetch GET 200 https://cdn.npmmirror.com/packages/pkce-challenge/5.0.0/pkce-challenge-5.0.0.tgz 1376ms (cache miss)
-2025-08-05 21:59:57 #10 3.400 npm http fetch GET 200 https://cdn.npmmirror.com/packages/path-is-absolute/1.0.1/path-is-absolute-1.0.1.tgz 1391ms (cache miss)
-2025-08-05 21:59:57 #10 3.403 npm http fetch GET 200 https://cdn.npmmirror.com/packages/proxy-addr/2.0.7/proxy-addr-2.0.7.tgz 1404ms (cache miss)
-2025-08-05 21:59:57 #10 3.426 npm http fetch GET 200 https://cdn.npmmirror.com/packages/parse5-htmlparser2-tree-adapter/7.1.0/parse5-htmlparser2-tree-adapter-7.1.0.tgz 1413ms (cache miss)
-2025-08-05 21:59:57 #10 3.429 npm http fetch GET 200 https://cdn.npmmirror.com/packages/path-to-regexp/8.2.0/path-to-regexp-8.2.0.tgz 1421ms (cache miss)
-2025-08-05 21:59:57 #10 3.443 npm http fetch GET 200 https://cdn.npmmirror.com/packages/parseurl/1.3.3/parseurl-1.3.3.tgz 1433ms (cache miss)
-2025-08-05 21:59:57 #10 3.444 npm http fetch GET 200 https://cdn.npmmirror.com/packages/option/0.2.4/option-0.2.4.tgz 1429ms (cache miss)
-2025-08-05 21:59:57 #10 3.444 npm http fetch GET 200 https://cdn.npmmirror.com/packages/parse5-parser-stream/7.1.2/parse5-parser-stream-7.1.2.tgz 1433ms (cache miss)
-2025-08-05 21:59:57 #10 3.471 npm http fetch GET 200 https://cdn.npmmirror.com/packages/prebuild-install/7.1.3/prebuild-install-7.1.3.tgz 1470ms (cache miss)
-2025-08-05 21:59:57 #10 3.471 npm http fetch GET 200 https://cdn.npmmirror.com/packages/path-key/3.1.1/path-key-3.1.1.tgz 1460ms (cache miss)
-2025-08-05 21:59:57 #10 3.475 npm http fetch GET 200 https://cdn.npmmirror.com/packages/once/1.4.0/once-1.4.0.tgz 1458ms (cache miss)
-2025-08-05 21:59:57 #10 3.476 npm http fetch GET 200 https://cdn.npmmirror.com/packages/opencollective-postinstall/2.0.3/opencollective-postinstall-2.0.3.tgz 1460ms (cache miss)
-2025-08-05 21:59:57 #10 3.498 npm http fetch GET 200 https://cdn.npmmirror.com/packages/wmf/1.0.2/wmf-1.0.2.tgz 1552ms (cache miss)
-2025-08-05 21:59:57 #10 3.501 npm http fetch GET 200 https://cdn.npmmirror.com/packages/negotiator/1.0.0/negotiator-1.0.0.tgz 1470ms (cache miss)
-2025-08-05 21:59:57 #10 3.522 npm http fetch GET 200 https://cdn.npmmirror.com/packages/on-finished/2.4.1/on-finished-2.4.1.tgz 1503ms (cache miss)
-2025-08-05 21:59:57 #10 3.522 npm http fetch GET 200 https://cdn.npmmirror.com/packages/object-assign/4.1.1/object-assign-4.1.1.tgz 1502ms (cache miss)
-2025-08-05 21:59:57 #10 3.547 npm http fetch GET 200 https://cdn.npmmirror.com/packages/xmlbuilder/10.1.1/xmlbuilder-10.1.1.tgz 1601ms (cache miss)
-2025-08-05 21:59:57 #10 3.548 npm http fetch GET 200 https://cdn.npmmirror.com/packages/tr46/0.0.3/tr46-0.0.3.tgz 1586ms (cache miss)
-2025-08-05 21:59:57 #10 3.550 npm http fetch GET 200 https://cdn.npmmirror.com/packages/node-abi/3.75.0/node-abi-3.75.0.tgz 1520ms (cache miss)
-2025-08-05 21:59:57 #10 3.590 npm http fetch GET 200 https://cdn.npmmirror.com/packages/node-ensure/0.0.0/node-ensure-0.0.0.tgz 1566ms (cache miss)
-2025-08-05 21:59:57 #10 3.590 npm http fetch GET 200 https://cdn.npmmirror.com/packages/napi-build-utils/2.0.0/napi-build-utils-2.0.0.tgz 1558ms (cache miss)
-2025-08-05 21:59:57 #10 3.612 npm http fetch GET 200 https://cdn.npmmirror.com/packages/node-fetch/2.7.0/node-fetch-2.7.0.tgz 1591ms (cache miss)
-2025-08-05 21:59:57 #10 3.613 npm http fetch GET 200 https://cdn.npmmirror.com/packages/mkdirp-classic/0.5.3/mkdirp-classic-0.5.3.tgz 1579ms (cache miss)
-2025-08-05 21:59:57 #10 3.613 npm http fetch GET 200 https://cdn.npmmirror.com/packages/mimic-response/3.1.0/mimic-response-3.1.0.tgz 1579ms (cache miss)
-2025-08-05 21:59:57 #10 3.654 npm http fetch GET 200 https://cdn.npmmirror.com/packages/ms/2.1.3/ms-2.1.3.tgz 1621ms (cache miss)
-2025-08-05 21:59:57 #10 3.679 npm http fetch GET 200 https://cdn.npmmirror.com/packages/mime-db/1.54.0/mime-db-1.54.0.tgz 1644ms (cache miss)
-2025-08-05 21:59:57 #10 3.680 npm http fetch GET 200 https://cdn.npmmirror.com/packages/media-typer/1.1.0/media-typer-1.1.0.tgz 1642ms (cache miss)
-2025-08-05 21:59:57 #10 3.681 npm http fetch GET 200 https://cdn.npmmirror.com/packages/lie/3.3.0/lie-3.3.0.tgz 1639ms (cache miss)
-2025-08-05 21:59:57 #10 3.698 npm http fetch GET 200 https://cdn.npmmirror.com/packages/merge-descriptors/2.0.0/merge-descriptors-2.0.0.tgz 1662ms (cache miss)
-2025-08-05 21:59:57 #10 3.699 npm http fetch GET 200 https://cdn.npmmirror.com/packages/math-intrinsics/1.1.0/math-intrinsics-1.1.0.tgz 1660ms (cache miss)
-2025-08-05 21:59:57 #10 3.700 npm http fetch GET 200 https://cdn.npmmirror.com/packages/isexe/2.0.0/isexe-2.0.0.tgz 1656ms (cache miss)
-2025-08-05 21:59:57 #10 3.700 npm http fetch GET 200 https://cdn.npmmirror.com/packages/isarray/1.0.0/isarray-1.0.0.tgz 1657ms (cache miss)
-2025-08-05 21:59:57 #10 3.724 npm http fetch GET 200 https://cdn.npmmirror.com/packages/json-schema-traverse/0.4.1/json-schema-traverse-0.4.1.tgz 1682ms (cache miss)
-2025-08-05 21:59:58 #10 3.724 npm http fetch GET 200 https://cdn.npmmirror.com/packages/is-promise/4.0.0/is-promise-4.0.0.tgz 1679ms (cache miss)
-2025-08-05 21:59:58 #10 3.746 npm http fetch GET 200 https://cdn.npmmirror.com/packages/mime-types/3.0.1/mime-types-3.0.1.tgz 1709ms (cache miss)
-2025-08-05 21:59:58 #10 3.747 npm http fetch GET 200 https://cdn.npmmirror.com/packages/is-url/1.2.4/is-url-1.2.4.tgz 1702ms (cache miss)
-2025-08-05 21:59:58 #10 3.747 npm http fetch GET 200 https://cdn.npmmirror.com/packages/is-electron/2.2.2/is-electron-2.2.2.tgz 1701ms (cache miss)
-2025-08-05 21:59:58 #10 3.774 npm http fetch GET 200 https://cdn.npmmirror.com/packages/immediate/3.0.6/immediate-3.0.6.tgz 1724ms (cache miss)
-2025-08-05 21:59:58 #10 3.794 npm http fetch GET 200 https://cdn.npmmirror.com/packages/ini/1.3.8/ini-1.3.8.tgz 1746ms (cache miss)
-2025-08-05 21:59:58 #10 3.795 npm http fetch GET 200 https://cdn.npmmirror.com/packages/is-arrayish/0.3.2/is-arrayish-0.3.2.tgz 1748ms (cache miss)
-2025-08-05 21:59:58 #10 3.815 npm http fetch GET 200 https://cdn.npmmirror.com/packages/readable-stream/3.6.2/readable-stream-3.6.2.tgz 1823ms (cache miss)
-2025-08-05 21:59:58 #10 3.817 npm http fetch GET 200 https://cdn.npmmirror.com/packages/inherits/2.0.4/inherits-2.0.4.tgz 1769ms (cache miss)
-2025-08-05 21:59:58 #10 3.840 npm http fetch GET 200 https://cdn.npmmirror.com/packages/ipaddr.js/1.9.1/ipaddr.js-1.9.1.tgz 1792ms (cache miss)
-2025-08-05 21:59:58 #10 3.840 npm http fetch GET 200 https://cdn.npmmirror.com/packages/ieee754/1.2.1/ieee754-1.2.1.tgz 1789ms (cache miss)
-2025-08-05 21:59:58 #10 3.862 npm http fetch GET 200 https://cdn.npmmirror.com/packages/hasown/2.0.2/hasown-2.0.2.tgz 1808ms (cache miss)
-2025-08-05 21:59:58 #10 3.878 npm http fetch GET 200 https://cdn.npmmirror.com/packages/tar-fs/2.1.3/tar-fs-2.1.3.tgz 1911ms (cache miss)
-2025-08-05 21:59:58 #10 3.880 npm http fetch GET 200 https://cdn.npmmirror.com/packages/http-errors/2.0.0/http-errors-2.0.0.tgz 1828ms (cache miss)
-2025-08-05 21:59:58 #10 3.882 npm http fetch GET 200 https://cdn.npmmirror.com/packages/gopd/1.2.0/gopd-1.2.0.tgz 1824ms (cache miss)
-2025-08-05 21:59:58 #10 3.882 npm http fetch GET 200 https://cdn.npmmirror.com/packages/get-proto/1.0.1/get-proto-1.0.1.tgz 1824ms (cache miss)
-2025-08-05 21:59:58 #10 3.882 npm http fetch GET 200 https://cdn.npmmirror.com/packages/fs-constants/1.0.0/fs-constants-1.0.0.tgz 1818ms (cache miss)
-2025-08-05 21:59:58 #10 3.883 npm http fetch GET 200 https://cdn.npmmirror.com/packages/finalhandler/2.1.0/finalhandler-2.1.0.tgz 1814ms (cache miss)
-2025-08-05 21:59:58 #10 3.902 npm http fetch GET 200 https://cdn.npmmirror.com/packages/get-intrinsic/1.3.0/get-intrinsic-1.3.0.tgz 1841ms (cache miss)
-2025-08-05 21:59:58 #10 3.926 npm http fetch GET 200 https://cdn.npmmirror.com/packages/function-bind/1.1.2/function-bind-1.1.2.tgz 1863ms (cache miss)
-2025-08-05 21:59:58 #10 3.926 npm http fetch GET 200 https://cdn.npmmirror.com/packages/forwarded/0.2.0/forwarded-0.2.0.tgz 1860ms (cache miss)
-2025-08-05 21:59:58 #10 3.927 npm http fetch GET 200 https://cdn.npmmirror.com/packages/fast-json-stable-stringify/2.1.0/fast-json-stable-stringify-2.1.0.tgz 1859ms (cache miss)
-2025-08-05 21:59:58 #10 3.954 npm http fetch GET 200 https://cdn.npmmirror.com/packages/fresh/2.0.0/fresh-2.0.0.tgz 1890ms (cache miss)
-2025-08-05 21:59:58 #10 3.954 npm http fetch GET 200 https://cdn.npmmirror.com/packages/frac/1.1.2/frac-1.1.2.tgz 1890ms (cache miss)
-2025-08-05 21:59:58 #10 3.955 npm http fetch GET 200 https://cdn.npmmirror.com/packages/follow-redirects/1.15.11/follow-redirects-1.15.11.tgz 1888ms (cache miss)
-2025-08-05 21:59:58 #10 3.955 npm http fetch GET 200 https://cdn.npmmirror.com/packages/github-from-package/0.0.0/github-from-package-0.0.0.tgz 1897ms (cache miss)
-2025-08-05 21:59:58 #10 3.956 npm http fetch GET 200 https://cdn.npmmirror.com/packages/fast-deep-equal/3.1.3/fast-deep-equal-3.1.3.tgz 1885ms (cache miss)
-2025-08-05 21:59:58 #10 3.973 npm http fetch GET 200 https://cdn.npmmirror.com/packages/has-tostringtag/1.0.2/has-tostringtag-1.0.2.tgz 1918ms (cache miss)
-2025-08-05 21:59:58 #10 3.974 npm http fetch GET 200 https://cdn.npmmirror.com/packages/eventsource-parser/3.0.3/eventsource-parser-3.0.3.tgz 1901ms (cache miss)
-2025-08-05 21:59:58 #10 3.974 npm http fetch GET 200 https://cdn.npmmirror.com/packages/expand-template/2.0.3/expand-template-2.0.3.tgz 1902ms (cache miss)
-2025-08-05 21:59:58 #10 3.975 npm http fetch GET 200 https://cdn.npmmirror.com/packages/escape-html/1.0.3/escape-html-1.0.3.tgz 1901ms (cache miss)
-2025-08-05 21:59:58 #10 4.010 npm http fetch GET 200 https://cdn.npmmirror.com/packages/qs/6.14.0/qs-6.14.0.tgz 2015ms (cache miss)
-2025-08-05 21:59:58 #10 4.012 npm http fetch GET 200 https://cdn.npmmirror.com/packages/nth-check/2.1.1/nth-check-2.1.1.tgz 1990ms (cache miss)
-2025-08-05 21:59:58 #10 4.013 npm http fetch GET 200 https://cdn.npmmirror.com/packages/lop/0.4.2/lop-0.4.2.tgz 1974ms (cache miss)
-2025-08-05 21:59:58 #10 4.014 npm http fetch GET 200 https://cdn.npmmirror.com/packages/has-symbols/1.1.0/has-symbols-1.1.0.tgz 1959ms (cache miss)
-2025-08-05 21:59:58 #10 4.015 npm http fetch GET 200 https://cdn.npmmirror.com/packages/form-data/4.0.4/form-data-4.0.4.tgz 1949ms (cache miss)
-2025-08-05 21:59:58 #10 4.016 npm http fetch GET 200 https://cdn.npmmirror.com/packages/etag/1.8.1/etag-1.8.1.tgz 1942ms (cache miss)
-2025-08-05 21:59:58 #10 4.017 npm http fetch GET 200 https://cdn.npmmirror.com/packages/es-errors/1.3.0/es-errors-1.3.0.tgz 1938ms (cache miss)
-2025-08-05 21:59:58 #10 4.044 npm http fetch GET 200 https://cdn.npmmirror.com/packages/end-of-stream/1.4.5/end-of-stream-1.4.5.tgz 1964ms (cache miss)
-2025-08-05 21:59:58 #10 4.073 npm http fetch GET 200 https://cdn.npmmirror.com/packages/es-set-tostringtag/2.1.0/es-set-tostringtag-2.1.0.tgz 1996ms (cache miss)
-2025-08-05 21:59:58 #10 4.074 npm http fetch GET 200 https://cdn.npmmirror.com/packages/es-define-property/1.0.1/es-define-property-1.0.1.tgz 1996ms (cache miss)
-2025-08-05 21:59:58 #10 4.074 npm http fetch GET 200 https://cdn.npmmirror.com/packages/ee-first/1.1.1/ee-first-1.1.1.tgz 1992ms (cache miss)
-2025-08-05 21:59:58 #10 4.095 npm http fetch GET 200 https://cdn.npmmirror.com/packages/minimist/1.2.8/minimist-1.2.8.tgz 2061ms (cache miss)
-2025-08-05 21:59:58 #10 4.098 npm http fetch GET 200 https://cdn.npmmirror.com/packages/encodeurl/2.0.0/encodeurl-2.0.0.tgz 2016ms (cache miss)
-2025-08-05 21:59:58 #10 4.100 npm http fetch GET 200 https://cdn.npmmirror.com/packages/domelementtype/2.3.0/domelementtype-2.3.0.tgz 2007ms (cache miss)
-2025-08-05 21:59:58 #10 4.111 npm http fetch POST 404 https://registry.npmmirror.com/-/npm/v1/security/audits/quick 1673ms
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error HttpErrorGeneral: 404 Not Found - POST https://registry.npmmirror.com/-/npm/v1/security/audits/quick - NOT_IMPLEMENTED /-/npm/v1/security/* not implemented yet
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error at /usr/local/lib/node_modules/npm/node_modules/npm-registry-fetch/lib/check-response.js:95:15
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error at async getReport (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/audit-report.js:336:21)
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error at async AuditReport.run (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/audit-report.js:106:19) {
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error headers: Object: null prototype {
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error server: 'Tengine' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error date: 'Tue, 05 Aug 2025 13:59:58 GMT' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error 'content-type': 'application/json' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error 'transfer-encoding': 'chunked' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error connection: 'keep-alive' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error 'strict-transport-security': 'max-age=5184000' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error via: 'kunlun5.cn7737,404666' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error 'timing-allow-origin': '*' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error eagleid: '7521a19917544023981447615e' ,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error 'x-fetch-attempts': '1'
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error },
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error statusCode: 404,
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error code: 'E404',
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error method: 'POST',
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error uri: 'https://registry.npmmirror.com/-/npm/v1/security/audits/quick',
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error body: {
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error error: 'NOT_IMPLEMENTED /-/npm/v1/security/* not implemented yet'
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error },
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error pkgid: undefined
-2025-08-05 21:59:58 #10 4.112 npm verbose audit error }
-2025-08-05 21:59:58 #10 4.134 npm http fetch GET 200 https://cdn.npmmirror.com/packages/duck/0.1.12/duck-0.1.12.tgz 2044ms (cache miss)
-2025-08-05 21:59:58 #10 4.135 npm http fetch GET 200 https://cdn.npmmirror.com/packages/dunder-proto/1.0.1/dunder-proto-1.0.1.tgz 2045ms (cache miss)
-2025-08-05 21:59:58 #10 4.162 npm http fetch GET 200 https://cdn.npmmirror.com/packages/es-object-atoms/1.1.1/es-object-atoms-1.1.1.tgz 2083ms (cache miss)
-2025-08-05 21:59:58 #10 4.185 npm http fetch GET 200 https://cdn.npmmirror.com/packages/dingbat-to-unicode/1.0.1/dingbat-to-unicode-1.0.1.tgz 2092ms (cache miss)
-2025-08-05 21:59:58 #10 4.186 npm http fetch GET 200 https://cdn.npmmirror.com/packages/debug/4.4.1/debug-4.4.1.tgz 2089ms (cache miss)
-2025-08-05 21:59:58 #10 4.201 npm http fetch GET 200 https://cdn.npmmirror.com/packages/detect-libc/2.0.4/detect-libc-2.0.4.tgz 2106ms (cache miss)
-2025-08-05 21:59:58 #10 4.201 npm http fetch GET 200 https://cdn.npmmirror.com/packages/delayed-stream/1.0.0/delayed-stream-1.0.0.tgz 2106ms (cache miss)
-2025-08-05 21:59:58 #10 4.202 npm http fetch GET 200 https://cdn.npmmirror.com/packages/domhandler/5.0.3/domhandler-5.0.3.tgz 2110ms (cache miss)
-2025-08-05 21:59:58 #10 4.216 npm http fetch GET 200 https://cdn.npmmirror.com/packages/depd/2.0.0/depd-2.0.0.tgz 2122ms (cache miss)
-2025-08-05 21:59:58 #10 4.217 npm http fetch GET 200 https://cdn.npmmirror.com/packages/decompress-response/6.0.0/decompress-response-6.0.0.tgz 2119ms (cache miss)
-2025-08-05 21:59:58 #10 4.217 npm http fetch GET 200 https://cdn.npmmirror.com/packages/cross-spawn/7.0.6/cross-spawn-7.0.6.tgz 2118ms (cache miss)
-2025-08-05 21:59:58 #10 4.231 npm http fetch GET 200 https://cdn.npmmirror.com/packages/deep-extend/0.6.0/deep-extend-0.6.0.tgz 2135ms (cache miss)
-2025-08-05 21:59:58 #10 4.231 npm http fetch GET 200 https://cdn.npmmirror.com/packages/css-what/6.2.2/css-what-6.2.2.tgz 2132ms (cache miss)
-2025-08-05 21:59:58 #10 4.232 npm http fetch GET 200 https://cdn.npmmirror.com/packages/crc-32/1.2.2/crc-32-1.2.2.tgz 2131ms (cache miss)
-2025-08-05 21:59:58 #10 4.232 npm http fetch GET 200 https://cdn.npmmirror.com/packages/cors/2.8.5/cors-2.8.5.tgz 2131ms (cache miss)
-2025-08-05 21:59:58 #10 4.245 npm http fetch GET 200 https://cdn.npmmirror.com/packages/cookie-signature/1.2.2/cookie-signature-1.2.2.tgz 2142ms (cache miss)
-2025-08-05 21:59:58 #10 4.246 npm http fetch GET 200 https://cdn.npmmirror.com/packages/combined-stream/1.0.8/combined-stream-1.0.8.tgz 2140ms (cache miss)
-2025-08-05 21:59:58 #10 4.246 npm http fetch GET 200 https://cdn.npmmirror.com/packages/core-util-is/1.0.3/core-util-is-1.0.3.tgz 2144ms (cache miss)
-2025-08-05 21:59:58 #10 4.254 npm http fetch GET 200 https://cdn.npmmirror.com/packages/node-addon-api/7.1.1/node-addon-api-7.1.1.tgz 2232ms (cache miss)
-2025-08-05 21:59:58 #10 4.256 npm http fetch GET 200 https://cdn.npmmirror.com/packages/eventsource/3.0.7/eventsource-3.0.7.tgz 2182ms (cache miss)
-2025-08-05 21:59:58 #10 4.256 npm http fetch GET 200 https://cdn.npmmirror.com/packages/dom-serializer/2.0.0/dom-serializer-2.0.0.tgz 2163ms (cache miss)
-2025-08-05 21:59:58 #10 4.257 npm http fetch GET 200 https://cdn.npmmirror.com/packages/content-type/1.0.5/content-type-1.0.5.tgz 2153ms (cache miss)
-2025-08-05 21:59:58 #10 4.266 npm http fetch GET 200 https://cdn.npmmirror.com/packages/content-disposition/1.0.0/content-disposition-1.0.0.tgz 2160ms (cache miss)
-2025-08-05 21:59:58 #10 4.267 npm http fetch GET 200 https://cdn.npmmirror.com/packages/cookie/0.7.2/cookie-0.7.2.tgz 2162ms (cache miss)
-2025-08-05 21:59:58 #10 4.267 npm http fetch GET 200 https://cdn.npmmirror.com/packages/color-convert/2.0.1/color-convert-2.0.1.tgz 2149ms (cache miss)
-2025-08-05 21:59:58 #10 4.267 npm http fetch GET 200 https://cdn.npmmirror.com/packages/chownr/1.1.4/chownr-1.1.4.tgz 2145ms (cache miss)
-2025-08-05 21:59:58 #10 4.276 npm http fetch GET 200 https://cdn.npmmirror.com/packages/express-rate-limit/7.5.1/express-rate-limit-7.5.1.tgz 2206ms (cache miss)
-2025-08-05 21:59:58 #10 4.277 npm http fetch GET 200 https://cdn.npmmirror.com/packages/color/4.2.3/color-4.2.3.tgz 2158ms (cache miss)
-2025-08-05 21:59:58 #10 4.277 npm http fetch GET 200 https://cdn.npmmirror.com/packages/color-string/1.9.1/color-string-1.9.1.tgz 2162ms (cache miss)
-2025-08-05 21:59:58 #10 4.283 npm http fetch GET 200 https://cdn.npmmirror.com/packages/object-inspect/1.13.4/object-inspect-1.13.4.tgz 2264ms (cache miss)
-2025-08-05 21:59:58 #10 4.286 npm http fetch GET 200 https://cdn.npmmirror.com/packages/bytes/3.1.2/bytes-3.1.2.tgz 2149ms (cache miss)
-2025-08-05 21:59:58 #10 4.293 npm http fetch GET 200 https://cdn.npmmirror.com/packages/express/5.1.0/express-5.1.0.tgz 2223ms (cache miss)
-2025-08-05 21:59:58 #10 4.294 npm http fetch GET 200 https://cdn.npmmirror.com/packages/color-name/1.1.4/color-name-1.1.4.tgz 2171ms (cache miss)
-2025-08-05 21:59:58 #10 4.296 npm http fetch GET 200 https://cdn.npmmirror.com/packages/buffer/5.7.1/buffer-5.7.1.tgz 2156ms (cache miss)
-2025-08-05 21:59:58 #10 4.312 npm http fetch GET 200 https://cdn.npmmirror.com/packages/boolbase/1.0.0/boolbase-1.0.0.tgz 2177ms (cache miss)
-2025-08-05 21:59:58 #10 4.313 npm http fetch GET 200 https://cdn.npmmirror.com/packages/bl/4.1.0/bl-4.1.0.tgz 2171ms (cache miss)
-2025-08-05 21:59:58 #10 4.314 npm http fetch GET 200 https://cdn.npmmirror.com/packages/base64-js/1.5.1/base64-js-1.5.1.tgz 2167ms (cache miss)
-2025-08-05 21:59:58 #10 4.319 npm http fetch GET 200 https://cdn.npmmirror.com/packages/semver/7.7.2/semver-7.7.2.tgz 2335ms (cache miss)
-2025-08-05 21:59:58 #10 4.330 npm http fetch GET 200 https://cdn.npmmirror.com/packages/call-bound/1.0.4/call-bound-1.0.4.tgz 2195ms (cache miss)
-2025-08-05 21:59:58 #10 4.348 npm http fetch GET 200 https://cdn.npmmirror.com/packages/accepts/2.0.0/accepts-2.0.0.tgz 2196ms (cache miss)
-2025-08-05 21:59:58 #10 4.348 npm http fetch GET 200 https://cdn.npmmirror.com/packages/adler-32/1.3.1/adler-32-1.3.1.tgz 2199ms (cache miss)
-2025-08-05 21:59:58 #10 4.356 npm http fetch GET 200 https://cdn.npmmirror.com/packages/safe-buffer/5.1.2/safe-buffer-5.1.2.tgz 2188ms (cache miss)
-2025-08-05 21:59:58 #10 4.357 npm http fetch GET 200 https://cdn.npmmirror.com/packages/statuses/2.0.1/statuses-2.0.1.tgz 2187ms (cache miss)
-2025-08-05 21:59:58 #10 4.363 npm http fetch GET 200 https://cdn.npmmirror.com/packages/body-parser/2.2.0/body-parser-2.2.0.tgz 2225ms (cache miss)
-2025-08-05 21:59:58 #10 4.364 npm http fetch GET 200 https://cdn.npmmirror.com/packages/debug/3.2.7/debug-3.2.7.tgz 2203ms (cache miss)
-2025-08-05 21:59:58 #10 4.368 npm http fetch GET 200 https://cdn.npmmirror.com/packages/encoding-sniffer/0.2.1/encoding-sniffer-0.2.1.tgz 2279ms (cache miss)
-2025-08-05 21:59:58 #10 4.370 npm http fetch GET 200 https://cdn.npmmirror.com/packages/string_decoder/1.1.1/string_decoder-1.1.1.tgz 2203ms (cache miss)
-2025-08-05 21:59:58 #10 4.375 npm http fetch GET 200 https://cdn.npmmirror.com/packages/call-bind-apply-helpers/1.0.2/call-bind-apply-helpers-1.0.2.tgz 2242ms (cache miss)
-2025-08-05 21:59:58 #10 4.377 npm http fetch GET 200 https://cdn.npmmirror.com/packages/mime-types/2.1.35/mime-types-2.1.35.tgz 2207ms (cache miss)
-2025-08-05 21:59:58 #10 4.394 npm http fetch GET 200 https://cdn.npmmirror.com/packages/asynckit/0.4.0/asynckit-0.4.0.tgz 2249ms (cache miss)
-2025-08-05 21:59:58 #10 4.403 npm http fetch GET 200 https://cdn.npmmirror.com/packages/mime-db/1.52.0/mime-db-1.52.0.tgz 2226ms (cache miss)
-2025-08-05 21:59:58 #10 4.421 npm http fetch GET 200 https://cdn.npmmirror.com/packages/sharp/0.33.5/sharp-0.33.5.tgz 2442ms (cache miss)
-2025-08-05 21:59:58 #10 4.437 npm http fetch GET 200 https://cdn.npmmirror.com/packages/%40xmldom/xmldom/0.8.10/xmldom-0.8.10.tgz 2285ms (cache miss)
-2025-08-05 21:59:58 #10 4.439 npm http fetch GET 200 https://cdn.npmmirror.com/packages/uri-js/4.4.1/uri-js-4.4.1.tgz 2486ms (cache miss)
-2025-08-05 21:59:58 #10 4.443 npm http fetch GET 200 https://cdn.npmmirror.com/packages/cheerio-select/2.1.0/cheerio-select-2.1.0.tgz 2317ms (cache miss)
-2025-08-05 21:59:58 #10 4.477 npm http fetch GET 200 https://cdn.npmmirror.com/packages/%40img/sharp-linuxmusl-x64/0.33.5/sharp-linuxmusl-x64-0.33.5.tgz 2323ms (cache miss)
-2025-08-05 21:59:58 #10 4.487 npm http fetch GET 200 https://cdn.npmmirror.com/packages/cfb/1.2.2/cfb-1.2.2.tgz 2355ms (cache miss)
-2025-08-05 21:59:58 #10 4.491 npm http fetch GET 200 https://cdn.npmmirror.com/packages/argparse/1.0.10/argparse-1.0.10.tgz 2343ms (cache miss)
-2025-08-05 21:59:58 #10 4.498 npm http fetch GET 200 https://cdn.npmmirror.com/packages/readable-stream/2.3.8/readable-stream-2.3.8.tgz 2326ms (cache miss)
-2025-08-05 21:59:58 #10 4.526 npm http fetch GET 200 https://cdn.npmmirror.com/packages/%40img/sharp-linux-x64/0.33.5/sharp-linux-x64-0.33.5.tgz 2369ms (cache miss)
-2025-08-05 21:59:58 #10 4.533 npm http fetch GET 200 https://cdn.npmmirror.com/packages/iconv-lite/0.6.3/iconv-lite-0.6.3.tgz 2481ms (cache miss)
-2025-08-05 21:59:58 #10 4.567 npm http fetch GET 200 https://cdn.npmmirror.com/packages/%40emnapi/runtime/1.4.5/runtime-1.4.5.tgz 2407ms (cache miss)
-2025-08-05 21:59:58 #10 4.600 npm http fetch GET 200 https://cdn.npmmirror.com/packages/idb-keyval/6.2.2/idb-keyval-6.2.2.tgz 2549ms (cache miss)
-2025-08-05 21:59:58 #10 4.623 npm http fetch GET 200 https://cdn.npmmirror.com/packages/pako/1.0.11/pako-1.0.11.tgz 2608ms (cache miss)
-2025-08-05 21:59:58 #10 4.625 npm http fetch GET 200 https://cdn.npmmirror.com/packages/domutils/3.2.2/domutils-3.2.2.tgz 2534ms (cache miss)
-2025-08-05 21:59:58 #10 4.672 npm http fetch GET 200 https://cdn.npmmirror.com/packages/bmp-js/0.1.0/bmp-js-0.1.0.tgz 2532ms (cache miss)
-2025-08-05 21:59:58 #10 4.691 npm http fetch GET 200 https://cdn.npmmirror.com/packages/jszip/3.10.1/jszip-3.10.1.tgz 2651ms (cache miss)
-2025-08-05 21:59:58 #10 4.708 npm http fetch GET 200 https://cdn.npmmirror.com/packages/entities/4.5.0/entities-4.5.0.tgz 2629ms (cache miss)
-2025-08-05 21:59:59 #10 4.716 npm http fetch GET 200 https://cdn.npmmirror.com/packages/htmlparser2/10.0.0/htmlparser2-10.0.0.tgz 2662ms (cache miss)
-2025-08-05 21:59:59 #10 4.717 npm http fetch GET 200 https://cdn.npmmirror.com/packages/canvas/3.1.2/canvas-3.1.2.tgz 2588ms (cache miss)
-2025-08-05 21:59:59 #10 4.767 npm http fetch GET 200 https://cdn.npmmirror.com/packages/zod-to-json-schema/3.24.6/zod-to-json-schema-3.24.6.tgz 2829ms (cache miss)
-2025-08-05 21:59:59 #10 4.769 npm http fetch GET 200 https://cdn.npmmirror.com/packages/bluebird/3.4.7/bluebird-3.4.7.tgz 2627ms (cache miss)
-2025-08-05 21:59:59 #10 4.800 npm http fetch GET 200 https://cdn.npmmirror.com/packages/parse5/7.3.0/parse5-7.3.0.tgz 2786ms (cache miss)
-2025-08-05 21:59:59 #10 4.856 npm http fetch GET 200 https://cdn.npmmirror.com/packages/css-select/5.2.2/css-select-5.2.2.tgz 2757ms (cache miss)
-2025-08-05 21:59:59 #10 4.861 npm http fetch GET 200 https://cdn.npmmirror.com/packages/entities/6.0.1/entities-6.0.1.tgz 2700ms (cache miss)
-2025-08-05 21:59:59 #10 4.899 npm http fetch GET 200 https://cdn.npmmirror.com/packages/entities/6.0.1/entities-6.0.1.tgz 2726ms (cache miss)
-2025-08-05 21:59:59 #10 4.937 npm http fetch GET 200 https://cdn.npmmirror.com/packages/tesseract.js/5.1.1/tesseract.js-5.1.1.tgz 2971ms (cache miss)
-2025-08-05 21:59:59 #10 4.974 npm http fetch GET 200 https://cdn.npmmirror.com/packages/ajv/6.12.6/ajv-6.12.6.tgz 2826ms (cache miss)
-2025-08-05 21:59:59 #10 5.064 npm http fetch GET 200 https://cdn.npmmirror.com/packages/zlibjs/0.3.1/zlibjs-0.3.1.tgz 3122ms (cache miss)
-2025-08-05 21:59:59 #10 5.113 npm http fetch GET 200 https://cdn.npmmirror.com/packages/axios/1.11.0/axios-1.11.0.tgz 2969ms (cache miss)
-2025-08-05 21:59:59 #10 5.133 npm http fetch GET 200 https://cdn.npmmirror.com/packages/mammoth/1.10.0/mammoth-1.10.0.tgz 3092ms (cache miss)
-2025-08-05 21:59:59 #10 5.187 npm http fetch GET 200 https://cdn.npmmirror.com/packages/undici/7.13.0/undici-7.13.0.tgz 3234ms (cache miss)
-2025-08-05 21:59:59 #10 5.265 npm http fetch GET 200 https://cdn.npmmirror.com/packages/cheerio/1.1.2/cheerio-1.1.2.tgz 3137ms (cache miss)
-2025-08-05 21:59:59 #10 5.395 npm http fetch GET 200 https://cdn.npmmirror.com/packages/xlsx/0.18.5/xlsx-0.18.5.tgz 3452ms (cache miss)
-2025-08-05 21:59:59 #10 5.404 npm http fetch GET 200 https://cdn.npmmirror.com/packages/underscore/1.13.7/underscore-1.13.7.tgz 3447ms (cache miss)
-2025-08-05 21:59:59 #10 5.462 npm http fetch GET 200 https://cdn.npmmirror.com/packages/codepage/1.15.0/codepage-1.15.0.tgz 3341ms (cache miss)
-2025-08-05 22:00:00 #10 5.700 npm http fetch GET 200 https://cdn.npmmirror.com/packages/zod/3.25.76/zod-3.25.76.tgz 3757ms (cache miss)
-2025-08-05 22:00:00 #10 5.763 npm http fetch GET 200 https://cdn.npmmirror.com/packages/%40modelcontextprotocol/sdk/1.17.1/sdk-1.17.1.tgz 3608ms (cache miss)
-2025-08-05 22:00:00 #10 5.821 npm http fetch GET 200 https://cdn.npmmirror.com/packages/%40img/sharp-libvips-linux-x64/1.0.4/sharp-libvips-linux-x64-1.0.4.tgz 3662ms (cache miss)
-2025-08-05 22:00:00 #10 5.832 npm http fetch GET 200 https://cdn.npmmirror.com/packages/%40img/sharp-libvips-linuxmusl-x64/1.0.4/sharp-libvips-linuxmusl-x64-1.0.4.tgz 3674ms (cache miss)
-2025-08-05 22:00:00 #10 6.103 npm http fetch GET 200 https://cdn.npmmirror.com/packages/tesseract.js-core/5.1.1/tesseract.js-core-5.1.1.tgz 4139ms (cache miss)
-2025-08-05 22:00:00 #10 6.138 npm http fetch GET 200 https://cdn.npmmirror.com/packages/openai/5.11.0/openai-5.11.0.tgz 4121ms (cache miss)
-2025-08-05 22:00:00 #10 6.346 npm http fetch GET 200 https://cdn.npmmirror.com/packages/pdf-parse/1.1.1/pdf-parse-1.1.1.tgz 4340ms (cache miss)
-2025-08-05 22:00:00 #10 6.361 npm info run canvas@3.1.2 install node_modules/canvas prebuild-install -r napi || node-gyp rebuild
-2025-08-05 22:00:00 #10 6.368 npm info run sharp@0.33.5 install node_modules/sharp node install/check
-2025-08-05 22:00:00 #10 6.460 npm info run sharp@0.33.5 install { code: 0, signal: null }
------------构建get-url-020-----------
-2025-08-05 21:59:08 create_build_image : creating
+2025-08-05 22:28:59 Started by user coding
+2025-08-05 22:28:59 Running in Durability level: MAX_SURVIVABILITY
+2025-08-05 22:29:02 Pipeline Start of Pipeline
+2025-08-05 22:29:03 Pipeline node
+2025-08-05 22:29:03 Running on Jenkins in /root/workspace
+2025-08-05 22:29:03 Pipeline {
+2025-08-05 22:29:03 Pipeline stage
+2025-08-05 22:29:03 Pipeline { (检出软件包)
+2025-08-05 22:29:03 Stage "检出软件包" skipped due to when conditional
+2025-08-05 22:29:03 Pipeline }
+2025-08-05 22:29:04 Pipeline // stage
+2025-08-05 22:29:04 Pipeline stage
+2025-08-05 22:29:04 Pipeline { (检出 ZIP 包)
+2025-08-05 22:29:04 Stage "检出 ZIP 包" skipped due to when conditional
+2025-08-05 22:29:04 Pipeline }
+2025-08-05 22:29:04 Pipeline // stage
+2025-08-05 22:29:04 Pipeline stage
+2025-08-05 22:29:04 Pipeline { (检出代码仓库)
+2025-08-05 22:29:04 Pipeline sh
+2025-08-05 22:29:04 + git clone ****** .
+2025-08-05 22:29:04 Cloning into '.'...
+2025-08-05 22:29:06 Pipeline sh
+2025-08-05 22:29:06 + git checkout main
+2025-08-05 22:29:06 Already on 'main'
+2025-08-05 22:29:06 Your branch is up to date with 'origin/main'.
+2025-08-05 22:29:06 Pipeline }
+2025-08-05 22:29:06 Pipeline // stage
+2025-08-05 22:29:06 Pipeline stage
+2025-08-05 22:29:06 Pipeline { (写入 dockerfile)
+2025-08-05 22:29:06 Stage "写入 dockerfile" skipped due to when conditional
+2025-08-05 22:29:06 Pipeline }
+2025-08-05 22:29:06 Pipeline // stage
+2025-08-05 22:29:06 Pipeline stage
+2025-08-05 22:29:06 Pipeline { (构建 Docker 镜像)
+2025-08-05 22:29:06 Pipeline sh
+2025-08-05 22:29:07 + docker login -u ****** -p ****** ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-024-20250805222856
+2025-08-05 22:29:07 WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+2025-08-05 22:29:07 WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+2025-08-05 22:29:07 Configure a credential helper to remove this warning. See
+2025-08-05 22:29:07 https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+2025-08-05 22:29:07
+2025-08-05 22:29:07 Login Succeeded
+2025-08-05 22:29:07 Pipeline sh
+2025-08-05 22:29:07 + docker build -f Dockerfile.nocanvas -t ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-024-20250805222856 ./
+2025-08-05 22:29:08 #0 building with "default" instance using docker driver
+2025-08-05 22:29:08
+2025-08-05 22:29:08 #1 internal load .dockerignore
+2025-08-05 22:29:08 #1 transferring context: 323B done
+2025-08-05 22:29:08 #1 DONE 0.1s
+2025-08-05 22:29:08
+2025-08-05 22:29:08 #2 internal load build definition from Dockerfile.nocanvas
+2025-08-05 22:29:08 #2 transferring dockerfile: 991B done
+2025-08-05 22:29:08 #2 DONE 0.1s
+2025-08-05 22:29:08
+2025-08-05 22:29:08 #3 internal load metadata for docker.io/library/node:20-alpine
+2025-08-05 22:29:09 #3 DONE 1.4s
+2025-08-05 22:29:09
+2025-08-05 22:29:09 #4 internal load build context
+2025-08-05 22:29:09 #4 transferring context: 153.33kB done
+2025-08-05 22:29:09 #4 DONE 0.0s
+2025-08-05 22:29:09
+2025-08-05 22:29:09 #5 1/8 FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
+2025-08-05 22:29:09 #5 resolve docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 0.0s done
+2025-08-05 22:29:09 #5 sha256:7cdef5a331927fafa250be6166052d8599bf5eb7b014342538c2cc79b70a081f 6.42kB / 6.42kB done
+2025-08-05 22:29:09 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0B / 3.80MB 0.2s
+2025-08-05 22:29:09 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 0B / 42.99MB 0.2s
+2025-08-05 22:29:09 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0B / 1.26MB 0.2s
+2025-08-05 22:29:09 #5 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 0B / 445B 0.2s
+2025-08-05 22:29:09 #5 sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 7.67kB / 7.67kB done
+2025-08-05 22:29:09 #5 sha256:ae6ee91a652d927de01d550c29f863a52f1da390c89df95f3ceba256d1e62604 1.72kB / 1.72kB done
+2025-08-05 22:29:10 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 1.05MB / 1.26MB 0.3s
+2025-08-05 22:29:10 #5 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 445B / 445B 0.2s done
+2025-08-05 22:29:10 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 3.80MB / 3.80MB 0.5s done
+2025-08-05 22:29:10 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 3.57MB / 42.99MB 0.5s
+2025-08-05 22:29:10 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 1.26MB / 1.26MB 0.3s done
+2025-08-05 22:29:10 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 11.53MB / 42.99MB 0.6s
+2025-08-05 22:29:10 #5 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0.1s
+2025-08-05 22:29:10 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 20.97MB / 42.99MB 0.7s
+2025-08-05 22:29:10 #5 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0.2s done
+2025-08-05 22:29:10 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 38.80MB / 42.99MB 0.9s
+2025-08-05 22:29:10 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 42.99MB / 42.99MB 1.0s done
+2025-08-05 22:29:10 #5 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e
+2025-08-05 22:29:12 #5 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 1.4s done
+2025-08-05 22:29:12 #5 extracting sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2
+2025-08-05 22:29:12 #5 extracting sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0.0s done
+2025-08-05 22:29:12 #5 extracting sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 done
+2025-08-05 22:29:12 #5 DONE 2.9s
+2025-08-05 22:29:12
+2025-08-05 22:29:12 #6 2/8 WORKDIR /app
+2025-08-05 22:29:13 #6 DONE 0.7s
+2025-08-05 22:29:13
+2025-08-05 22:29:13 #7 3/8 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+2025-08-05 22:29:13 #7 DONE 0.3s
+2025-08-05 22:29:13
+2025-08-05 22:29:13 #8 4/8 RUN apk add --no-cache python3 make g++ pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
+2025-08-05 22:29:13 #8 0.332 fetch https://mirrors.aliyun.com/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
+2025-08-05 22:29:13 #8 0.504 fetch https://mirrors.aliyun.com/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
+2025-08-05 22:29:14 #8 1.366 (1/138) Installing cairo-tools (1.18.4-r0)
+2025-08-05 22:29:14 #8 1.384 (2/138) Installing libexpat (2.7.1-r0)
+2025-08-05 22:29:14 #8 1.457 (3/138) Installing brotli-libs (1.1.0-r2)
+2025-08-05 22:29:15 #8 1.558 (4/138) Installing libbz2 (1.0.8-r6)
+2025-08-05 22:29:15 #8 1.602 (5/138) Installing libpng (1.6.47-r0)
+2025-08-05 22:29:15 #8 1.681 (6/138) Installing freetype (2.13.3-r0)
+2025-08-05 22:29:15 #8 1.800 (7/138) Installing fontconfig (2.15.0-r3)
+2025-08-05 22:29:15 #8 1.869 (8/138) Installing expat (2.7.1-r0)
+2025-08-05 22:29:15 #8 1.893 (9/138) Installing pkgconf (2.4.3-r0)
+2025-08-05 22:29:15 #8 1.918 (10/138) Installing expat-dev (2.7.1-r0)
+2025-08-05 22:29:15 #8 1.936 (11/138) Installing bzip2-dev (1.0.8-r6)
+2025-08-05 22:29:15 #8 1.954 (12/138) Installing brotli (1.1.0-r2)
+2025-08-05 22:29:15 #8 1.970 (13/138) Installing brotli-dev (1.1.0-r2)
+2025-08-05 22:29:15 #8 1.988 (14/138) Installing zlib-dev (1.3.1-r2)
+2025-08-05 22:29:15 #8 2.009 (15/138) Installing libpng-dev (1.6.47-r0)
+2025-08-05 22:29:15 #8 2.034 (16/138) Installing freetype-dev (2.13.3-r0)
+2025-08-05 22:29:15 #8 2.073 (17/138) Installing fontconfig-dev (2.15.0-r3)
+2025-08-05 22:29:15 #8 2.090 (18/138) Installing libxau (1.0.12-r0)
+2025-08-05 22:29:15 #8 2.108 (19/138) Installing xorgproto (2024.1-r0)
+2025-08-05 22:29:15 #8 2.153 (20/138) Installing libxau-dev (1.0.12-r0)
+2025-08-05 22:29:15 #8 2.170 (21/138) Installing libmd (1.1.0-r0)
+2025-08-05 22:29:15 #8 2.190 (22/138) Installing libbsd (0.12.2-r0)
+2025-08-05 22:29:15 #8 2.210 (23/138) Installing libxdmcp (1.1.5-r1)
+2025-08-05 22:29:15 #8 2.226 (24/138) Installing libxcb (1.17.0-r0)
+2025-08-05 22:29:15 #8 2.261 (25/138) Installing libx11 (1.8.11-r0)
+2025-08-05 22:29:15 #8 2.328 (26/138) Installing libxext (1.3.6-r2)
+2025-08-05 22:29:15 #8 2.346 (27/138) Installing libffi (3.4.8-r0)
+2025-08-05 22:29:15 #8 2.363 (28/138) Installing gdbm (1.24-r0)
+2025-08-05 22:29:15 #8 2.380 (29/138) Installing xz-libs (5.8.1-r0)
+2025-08-05 22:29:15 #8 2.401 (30/138) Installing mpdecimal (4.0.1-r0)
+2025-08-05 22:29:15 #8 2.422 (31/138) Installing ncurses-terminfo-base (6.5_p20250503-r0)
+2025-08-05 22:29:15 #8 2.443 (32/138) Installing libncursesw (6.5_p20250503-r0)
+2025-08-05 22:29:15 #8 2.465 (33/138) Installing libpanelw (6.5_p20250503-r0)
+2025-08-05 22:29:16 #8 2.482 (34/138) Installing readline (8.2.13-r1)
+2025-08-05 22:29:16 #8 2.504 (35/138) Installing sqlite-libs (3.49.2-r1)
+2025-08-05 22:29:16 #8 2.550 (36/138) Installing python3 (3.12.11-r0)
+2025-08-05 22:29:16 #8 2.898 (37/138) Installing python3-pycache-pyc0 (3.12.11-r0)
+2025-08-05 22:29:16 #8 3.064 (38/138) Installing pyc (3.12.11-r0)
+2025-08-05 22:29:16 #8 3.064 (39/138) Installing xcb-proto-pyc (1.17.0-r0)
+2025-08-05 22:29:16 #8 3.085 (40/138) Installing python3-pyc (3.12.11-r0)
+2025-08-05 22:29:16 #8 3.085 (41/138) Installing xcb-proto (1.17.0-r0)
+2025-08-05 22:29:16 #8 3.110 (42/138) Installing libxdmcp-dev (1.1.5-r1)
+2025-08-05 22:29:16 #8 3.129 (43/138) Installing libxcb-dev (1.17.0-r0)
+2025-08-05 22:29:16 #8 3.160 (44/138) Installing xtrans (1.5.2-r0)
+2025-08-05 22:29:16 #8 3.180 (45/138) Installing libx11-dev (1.8.11-r0)
+2025-08-05 22:29:16 #8 3.204 (46/138) Installing libxext-dev (1.3.6-r2)
+2025-08-05 22:29:16 #8 3.223 (47/138) Installing libxrender (0.9.12-r0)
+2025-08-05 22:29:16 #8 3.241 (48/138) Installing libxrender-dev (0.9.12-r0)
+2025-08-05 22:29:16 #8 3.266 (49/138) Installing pixman (0.46.4-r0)
+2025-08-05 22:29:16 #8 3.289 (50/138) Installing pixman-dev (0.46.4-r0)
+2025-08-05 22:29:16 #8 3.307 (51/138) Installing util-macros (1.20.1-r0)
+2025-08-05 22:29:16 #8 3.325 (52/138) Installing xcb-util (0.4.1-r3)
+2025-08-05 22:29:16 #8 3.341 (53/138) Installing xcb-util-dev (0.4.1-r3)
+2025-08-05 22:29:16 #8 3.360 (54/138) Installing cairo (1.18.4-r0)
+2025-08-05 22:29:16 #8 3.390 (55/138) Installing libintl (0.24.1-r0)
+2025-08-05 22:29:17 #8 3.407 (56/138) Installing libeconf (0.6.3-r0)
+2025-08-05 22:29:17 #8 3.425 (57/138) Installing libblkid (2.41-r9)
+2025-08-05 22:29:17 #8 3.444 (58/138) Installing libmount (2.41-r9)
+2025-08-05 22:29:17 #8 3.463 (59/138) Installing pcre2 (10.43-r1)
+2025-08-05 22:29:17 #8 3.488 (60/138) Installing glib (2.84.3-r0)
+2025-08-05 22:29:17 #8 3.592 (61/138) Installing cairo-gobject (1.18.4-r0)
+2025-08-05 22:29:17 #8 3.609 (62/138) Installing libxml2 (2.13.8-r0)
+2025-08-05 22:29:17 #8 3.637 (63/138) Installing libxml2-utils (2.13.8-r0)
+2025-08-05 22:29:17 #8 3.655 (64/138) Installing docbook-xml (4.5-r10)
+2025-08-05 22:29:17 #8 3.692 Executing docbook-xml-4.5-r10.post-install
+2025-08-05 22:29:17 #8 3.702 (65/138) Installing libxslt (1.1.43-r3)
+2025-08-05 22:29:17 #8 3.723 (66/138) Installing docbook-xsl-ns (1.79.2-r11)
+2025-08-05 22:29:17 #8 3.900 Executing docbook-xsl-ns-1.79.2-r11.post-install
+2025-08-05 22:29:17 #8 3.929 (67/138) Installing docbook-xsl-nons (1.79.2-r11)
+2025-08-05 22:29:17 #8 4.109 Executing docbook-xsl-nons-1.79.2-r11.post-install
+2025-08-05 22:29:17 #8 4.139 (68/138) Installing docbook-xsl (1.79.2-r11)
+2025-08-05 22:29:17 #8 4.155 (69/138) Installing xz (5.8.1-r0)
+2025-08-05 22:29:17 #8 4.174 (70/138) Installing gettext-asprintf (0.24.1-r0)
+2025-08-05 22:29:17 #8 4.191 (71/138) Installing libunistring (1.3-r0)
+2025-08-05 22:29:17 #8 4.230 (72/138) Installing gettext-libs (0.24.1-r0)
+2025-08-05 22:29:17 #8 4.262 (73/138) Installing gettext-envsubst (0.24.1-r0)
+2025-08-05 22:29:17 #8 4.280 (74/138) Installing libgomp (14.2.0-r6)
+2025-08-05 22:29:17 #8 4.300 (75/138) Installing gettext (0.24.1-r0)
+2025-08-05 22:29:17 #8 4.349 (76/138) Installing gettext-dev (0.24.1-r0)
+2025-08-05 22:29:17 #8 4.389 (77/138) Installing py3-parsing (3.2.3-r0)
+2025-08-05 22:29:17 #8 4.410 (78/138) Installing py3-parsing-pyc (3.2.3-r0)
+2025-08-05 22:29:18 #8 4.433 (79/138) Installing py3-packaging (25.0-r0)
+2025-08-05 22:29:18 #8 4.453 (80/138) Installing py3-packaging-pyc (25.0-r0)
+2025-08-05 22:29:18 #8 4.473 (81/138) Installing linux-headers (6.14.2-r0)
+2025-08-05 22:29:18 #8 4.604 (82/138) Installing libffi-dev (3.4.8-r0)
+2025-08-05 22:29:18 #8 4.627 (83/138) Installing bsd-compat-headers (0.7.2-r6)
+2025-08-05 22:29:18 #8 4.645 (84/138) Installing libformw (6.5_p20250503-r0)
+2025-08-05 22:29:18 #8 4.662 (85/138) Installing libmenuw (6.5_p20250503-r0)
+2025-08-05 22:29:18 #8 4.680 (86/138) Installing libncurses++ (6.5_p20250503-r0)
+2025-08-05 22:29:18 #8 4.697 (87/138) Installing ncurses-dev (6.5_p20250503-r0)
+2025-08-05 22:29:18 #8 4.718 (88/138) Installing libedit (20250104.3.1-r1)
+2025-08-05 22:29:18 #8 4.736 (89/138) Installing libedit-dev (20250104.3.1-r1)
+2025-08-05 22:29:18 #8 4.753 (90/138) Installing libpcre2-16 (10.43-r1)
+2025-08-05 22:29:18 #8 4.777 (91/138) Installing libpcre2-32 (10.43-r1)
+2025-08-05 22:29:18 #8 4.802 (92/138) Installing pcre2-dev (10.43-r1)
+2025-08-05 22:29:18 #8 4.821 (93/138) Installing libuuid (2.41-r9)
+2025-08-05 22:29:18 #8 4.845 (94/138) Installing libfdisk (2.41-r9)
+2025-08-05 22:29:18 #8 4.865 (95/138) Installing liblastlog2 (2.41-r9)
+2025-08-05 22:29:18 #8 4.886 (96/138) Installing libsmartcols (2.41-r9)
+2025-08-05 22:29:18 #8 4.905 (97/138) Installing sqlite (3.49.2-r1)
+2025-08-05 22:29:18 #8 4.952 (98/138) Installing sqlite-dev (3.49.2-r1)
+2025-08-05 22:29:18 #8 4.975 (99/138) Installing util-linux-dev (2.41-r9)
+2025-08-05 22:29:18 #8 4.994 (100/138) Installing glib-dev (2.84.3-r0)
+2025-08-05 22:29:18 #8 5.108 (101/138) Installing cairo-dev (1.18.4-r0)
+2025-08-05 22:29:18 #8 5.129 (102/138) Installing libstdc++-dev (14.2.0-r6)
+2025-08-05 22:29:18 #8 5.332 (103/138) Installing jansson (2.14.1-r0)
+2025-08-05 22:29:18 #8 5.350 (104/138) Installing zstd-libs (1.5.7-r0)
+2025-08-05 22:29:18 #8 5.380 (105/138) Installing binutils (2.44-r2)
+2025-08-05 22:29:19 #8 5.534 (106/138) Installing libatomic (14.2.0-r6)
+2025-08-05 22:29:19 #8 5.556 (107/138) Installing gmp (6.3.0-r3)
+2025-08-05 22:29:19 #8 5.578 (108/138) Installing isl26 (0.26-r1)
+2025-08-05 22:29:19 #8 5.620 (109/138) Installing mpfr4 (4.2.1_p1-r0)
+2025-08-05 22:29:19 #8 5.650 (110/138) Installing mpc1 (1.3.1-r1)
+2025-08-05 22:29:19 #8 5.667 (111/138) Installing gcc (14.2.0-r6)
+2025-08-05 22:29:21 #8 7.439 (112/138) Installing musl-dev (1.2.5-r10)
+2025-08-05 22:29:21 #8 7.573 (113/138) Installing g++ (14.2.0-r6)
+2025-08-05 22:29:21 #8 8.137 (114/138) Installing giflib (5.2.2-r1)
+2025-08-05 22:29:21 #8 8.154 (115/138) Installing giflib-dev (5.2.2-r1)
+2025-08-05 22:29:21 #8 8.171 (116/138) Installing libjpeg-turbo (3.1.0-r0)
+2025-08-05 22:29:21 #8 8.213 (117/138) Installing libturbojpeg (3.1.0-r0)
+2025-08-05 22:29:21 #8 8.237 (118/138) Installing libjpeg-turbo-dev (3.1.0-r0)
+2025-08-05 22:29:21 #8 8.257 (119/138) Installing make (4.4.1-r3)
+2025-08-05 22:29:21 #8 8.284 (120/138) Installing libxft (2.3.8-r3)
+2025-08-05 22:29:21 #8 8.301 (121/138) Installing graphite2 (1.3.14-r6)
+2025-08-05 22:29:21 #8 8.319 (122/138) Installing harfbuzz (11.2.1-r0)
+2025-08-05 22:29:21 #8 8.359 (123/138) Installing fribidi (1.0.16-r1)
+2025-08-05 22:29:21 #8 8.377 (124/138) Installing pango (1.56.3-r0)
+2025-08-05 22:29:21 #8 8.402 (125/138) Installing pango-tools (1.56.3-r0)
+2025-08-05 22:29:21 #8 8.423 (126/138) Installing fribidi-dev (1.0.16-r1)
+2025-08-05 22:29:21 #8 8.441 (127/138) Installing harfbuzz-cairo (11.2.1-r0)
+2025-08-05 22:29:21 #8 8.461 (128/138) Installing harfbuzz-gobject (11.2.1-r0)
+2025-08-05 22:29:21 #8 8.480 (129/138) Installing icu-data-en (76.1-r1)
+2025-08-05 22:29:21 #8 8.526 Executing icu-data-en-76.1-r1.post-install
+2025-08-05 22:29:21 #8 8.529 *
+2025-08-05 22:29:21 #8 8.529 * If you need ICU with non-English locales and legacy charset support, install
+2025-08-05 22:29:21 #8 8.529 * package icu-data-full.
+2025-08-05 22:29:21 #8 8.529 *
+2025-08-05 22:29:21 #8 8.529 (130/138) Installing icu-libs (76.1-r1)
+2025-08-05 22:29:21 #8 8.605 (131/138) Installing harfbuzz-icu (11.2.1-r0)
+2025-08-05 22:29:22 #8 8.625 (132/138) Installing harfbuzz-subset (11.2.1-r0)
+2025-08-05 22:29:22 #8 8.661 (133/138) Installing graphite2-dev (1.3.14-r6)
+2025-08-05 22:29:22 #8 8.682 (134/138) Installing icu (76.1-r1)
+2025-08-05 22:29:22 #8 8.709 (135/138) Installing icu-dev (76.1-r1)
+2025-08-05 22:29:22 #8 8.779 (136/138) Installing harfbuzz-dev (11.2.1-r0)
+2025-08-05 22:29:22 #8 8.808 (137/138) Installing libxft-dev (2.3.8-r3)
+2025-08-05 22:29:22 #8 8.828 (138/138) Installing pango-dev (1.56.3-r0)
+2025-08-05 22:29:22 #8 8.859 Executing busybox-1.37.0-r18.trigger
+2025-08-05 22:29:22 #8 8.864 Executing glib-2.84.3-r0.trigger
+2025-08-05 22:29:22 #8 8.868 No schema files found: doing nothing.
+2025-08-05 22:29:22 #8 8.874 OK: 376 MiB in 156 packages
+2025-08-05 22:29:24 #8 DONE 10.8s
+2025-08-05 22:29:24
+2025-08-05 22:29:24 #9 5/8 COPY package.nocanvas.json ./package.json
+2025-08-05 22:29:24 #9 DONE 0.1s
+2025-08-05 22:29:24
+2025-08-05 22:29:24 #10 6/8 COPY package-lock.json ./
+2025-08-05 22:29:24 #10 DONE 0.1s
+2025-08-05 22:29:24
+2025-08-05 22:29:24 #11 7/8 RUN npm config set registry https://registry.npmmirror.com && npm config set fetch-timeout 300000 && npm config set fetch-retry-mintimeout 5000 && npm config set fetch-retry-maxtimeout 30000 && npm config set audit false && npm ci --omit=dev --no-audit --no-fund
+2025-08-05 22:29:32 #11 7.508
+2025-08-05 22:29:32 #11 7.508 added 185 packages in 6s
+2025-08-05 22:29:32 #11 DONE 8.4s
+2025-08-05 22:29:32
+2025-08-05 22:29:32 #12 8/8 COPY . .
+2025-08-05 22:29:32 #12 DONE 0.1s
+2025-08-05 22:29:32
+2025-08-05 22:29:32 #13 exporting to image
+2025-08-05 22:29:32 #13 exporting layers
+2025-08-05 22:29:36 #13 exporting layers 2.9s done
+2025-08-05 22:29:36 #13 writing image sha256:6bf2bceaf702b847d7b38e168a975edfa55a66058dbf8a0e37c75f09159817c5 done
+2025-08-05 22:29:36 #13 naming to ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-024-20250805222856 done
+2025-08-05 22:29:36 #13 DONE 2.9s
+2025-08-05 22:29:36 Pipeline sh
+2025-08-05 22:29:36 + docker image ls --format {{.Repository}}:{{.Tag}} {{.Size}}
+2025-08-05 22:29:36 + grep ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-024-20250805222856
+2025-08-05 22:29:36 + awk {print $NF}
+2025-08-05 22:29:36 + echo 镜像的大小是：726MB
+2025-08-05 22:29:36 镜像的大小是：726MB
+2025-08-05 22:29:36 Pipeline echo
+2025-08-05 22:29:36 优化镜像大小具体可参考： https://docs.cloudbase.net/run/develop/image-optimization
+2025-08-05 22:29:36 Pipeline }
+2025-08-05 22:29:36 Pipeline // stage
+2025-08-05 22:29:36 Pipeline stage
+2025-08-05 22:29:36 Pipeline { (推送 Docker 镜像到 TCR)
+2025-08-05 22:29:36 Pipeline sh
+2025-08-05 22:29:36 + docker push ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-024-20250805222856
+2025-08-05 22:29:36 The push refers to repository ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url
+2025-08-05 22:29:36 3b4d55836daa: Preparing
+2025-08-05 22:29:36 4518bb6f14e7: Preparing
+2025-08-05 22:29:36 b01974d71c68: Preparing
+2025-08-05 22:29:36 f60f815b073e: Preparing
+2025-08-05 22:29:36 401f1871f32d: Preparing
+2025-08-05 22:29:36 449eeecd2ab3: Preparing
+2025-08-05 22:29:36 b4f893914478: Preparing
+2025-08-05 22:29:36 eadc3b779d42: Preparing
+2025-08-05 22:29:36 2e12e022f9bc: Preparing
+2025-08-05 22:29:36 54e9a650f7b7: Preparing
+2025-08-05 22:29:36 418dccb7d85a: Preparing
+2025-08-05 22:29:36 418dccb7d85a: Waiting
+2025-08-05 22:29:37 54e9a650f7b7: Layer already exists
+2025-08-05 22:29:37 eadc3b779d42: Layer already exists
+2025-08-05 22:29:37 2e12e022f9bc: Layer already exists
+2025-08-05 22:29:37 418dccb7d85a: Layer already exists
+2025-08-05 22:29:38 f60f815b073e: Pushed
+2025-08-05 22:29:38 449eeecd2ab3: Pushed
+2025-08-05 22:29:38 b01974d71c68: Pushed
+2025-08-05 22:29:38 b4f893914478: Pushed
+2025-08-05 22:29:38 3b4d55836daa: Pushed
+2025-08-05 22:30:34 4518bb6f14e7: Pushed
+2025-08-05 22:30:36 401f1871f32d: Pushed
+2025-08-05 22:30:38 get-url-024-20250805222856: digest: sha256:7c72eca53ff8aa6e008680733552954f0641256b3b950d40904b55fd221ddab8 size: 2623
+2025-08-05 22:30:38 Pipeline }
+2025-08-05 22:30:38 Pipeline // stage
+2025-08-05 22:30:38 Pipeline }
+2025-08-05 22:30:38 Pipeline // node
+2025-08-05 22:30:38 Pipeline End of Pipeline
+2025-08-05 22:30:38 Finished: SUCCESS
+-----------构建get-url-024-----------
+2025-08-05 22:28:58 create_build_image : creating
+2025-08-05 22:30:42 check_build_image : succ
+-----------服务get-url部署get-url-024-----------
+2025-08-05 22:30:43 create_eks_virtual_service : creating
+2025-08-05 22:30:43 check_eks_virtual_service : process, 部署版本失败：Liveness probe failed: dial tcp 10.9.12.112:80: connect: connection refused, service:Readiness probe failed: dial tcp 10.9.12.112:80: connect: connection refused,Liveness probe failed: dial tcp 10.9.12.112:80: connect: connection refused,
+-----------启动日志-----------
+⚠️ Canvas模块不可用，某些图片处理功能可能受限
+正在启动MCP HTML服务器...
+使用开发环境配置文件
+✅ 配置文件加载成功
+✅ 服务器实例创建成功
+配置端口: 3000
+✅ 服务器启动完成
+MCP SSE Server started on port 3000
+Server endpoint: http://localhost:3000
+MCP Protocol endpoint: http://localhost:3000/mcp
+Available tools: read_link
+Supports MCP initialize/initialized handshake

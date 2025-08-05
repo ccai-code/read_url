@@ -778,7 +778,7 @@ try {
 
   const args = process.argv.slice(2);
   const portIndex = args.indexOf('--port');
-  const port = portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000;
+  const port = process.env.PORT || (portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000);
 
   console.log(`🔧 配置端口: ${port}`);
 
