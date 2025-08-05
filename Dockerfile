@@ -38,4 +38,4 @@ COPY . .
 EXPOSE 80
 
 # 启动应用
-CMD ["node", "index.js"]
+CMD ["node", "index.js", "--port", "80"]
