@@ -155,7 +155,32 @@ curl -X POST http://your-server-ip:80/mcp \
 
 ## 常见问题解决
 
-### 1. "Unknown method: initialize" 错误
+### 1. Docker构建超时问题 ⚠️
+
+**问题描述**: Docker构建在npm安装阶段超时失败
+
+**解决方案**:
+1. **使用优化的Dockerfile**:
+   ```bash
+   cp Dockerfile.optimized Dockerfile
+   ```
+
+2. **增加构建超时时间**:
+   - 在云平台设置构建超时为30分钟
+   - 分配至少2GB内存给构建过程
+
+3. **使用轻量版依赖**:
+   ```bash
+   cp package.lightweight.json package.json
+   ```
+
+4. **本地预构建镜像**:
+   ```bash
+   docker build -t your-registry/mcp-html:latest .
+   docker push your-registry/mcp-html:latest
+   ```
+
+### 2. "Unknown method: initialize" 错误
 
 **原因**: 旧版本代码不支持根路径的initialize方法
 
@@ -163,7 +188,7 @@ curl -X POST http://your-server-ip:80/mcp \
 - 使用最新版本代码
 - 确保数字工作人连接到 `/mcp` 端点
 
-### 2. API调用失败
+### 3. API调用失败
 
 **检查步骤**:
 ```bash

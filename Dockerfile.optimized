@@ -1,10 +1,11 @@
-# 使用官方Node.js运行时作为基础镜像
-FROM node:20-alpine
+# 多阶段构建优化版本
+# 第一阶段：构建阶段
+FROM node:20-alpine AS builder
 
 # 配置国内镜像源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
-# 安装构建依赖和系统库
+# 安装构建依赖
 RUN apk add --no-cache \
     python3 \
     make \
@@ -22,22 +23,43 @@ RUN apk add --no-cache \
 # 设置工作目录
 WORKDIR /app
 
-# 复制package.json和package-lock.json
+# 复制package文件
 COPY package*.json ./
 
-# 配置npm使用国内镜像源并安装依赖
+# 配置npm并安装依赖
 RUN npm config set registry https://registry.npmmirror.com && \
     npm config set fetch-timeout 600000 && \
     npm config set fetch-retry-mintimeout 20000 && \
     npm config set fetch-retry-maxtimeout 120000 && \
+    npm config set maxsockets 1 && \
     npm ci --omit=dev --verbose
+
+# 第二阶段：运行阶段
+FROM node:20-alpine AS runtime
+
+# 配置国内镜像源
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+# 只安装运行时依赖
+RUN apk add --no-cache \
+    cairo \
+    jpeg \
+    pango \
+    giflib \
+    pixman \
+    libjpeg-turbo \
+    freetype
+
+# 设置工作目录
+WORKDIR /app
+
+# 从构建阶段复制node_modules
+COPY --from=builder /app/node_modules ./node_modules
 
 # 复制应用代码
 COPY . .
 
-# 以root权限运行，移除用户切换
-
-# 暴露端口（如果需要HTTP模式）
+# 暴露端口
 EXPOSE 80
 
 # 启动应用
