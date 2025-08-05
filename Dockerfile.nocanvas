@@ -17,7 +17,8 @@ RUN apk add --no-cache \
     cairo-dev \
     pango-dev \
     libjpeg-turbo-dev \
-    giflib-dev
+    giflib-dev \
+    wget
 
 # 复制package文件
 COPY package.nocanvas.json ./package.json
