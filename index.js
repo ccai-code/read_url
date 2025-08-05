@@ -485,6 +485,21 @@ class MCPHtmlServer {
   }
 
   async startHttpServer(port = 3000) {
+    // 检查端口是否已被占用
+    const isPortInUse = (port) => {
+      return new Promise((resolve) => {
+        const server = createServer();
+        server.listen(port, () => {
+          server.close(() => resolve(false));
+        }).on('error', () => resolve(true));
+      });
+    };
+
+    if (await isPortInUse(port)) {
+      console.log(`⚠️ 端口 ${port} 已被占用，服务器可能已在运行`);
+      return null;
+    }
+
     const httpServer = createServer(async (req, res) => {
       // 设置CORS头
       res.setHeader('Access-Control-Allow-Origin', '*');
@@ -822,30 +837,38 @@ class MCPHtmlServer {
 export { MCPHtmlServer };
 
 // 启动服务器
-console.log('🚀 正在启动MCP HTML服务器...');
+// 只在直接运行此文件时启动服务器
+if (import.meta.url === `file://${process.argv[1]}`) {
+  console.log('🚀 正在启动MCP HTML服务器...');
 
-try {
-  const server = new MCPHtmlServer();
-  console.log('✅ 服务器实例创建成功');
+  try {
+    const server = new MCPHtmlServer();
+    console.log('✅ 服务器实例创建成功');
 
-  const args = process.argv.slice(2);
-  const portIndex = args.indexOf('--port');
-  const port = process.env.PORT || (portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000);
+    const args = process.argv.slice(2);
+    const portIndex = args.indexOf('--port');
+    const port = process.env.PORT || (portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000);
 
-  console.log(`🔧 配置端口: ${port}`);
+    console.log(`🔧 配置端口: ${port}`);
 
-  server.startHttpServer(port).then(() => {
-    console.log('✅ 服务器启动完成');
-  }).catch((error) => {
-    console.error('❌ 服务器启动失败:', error);
+    server.startHttpServer(port).then((httpServer) => {
+      if (httpServer) {
+        console.log('✅ 服务器启动完成');
+      } else {
+        console.log('ℹ️ 服务器已在运行，跳过启动');
+        process.exit(0);
+      }
+    }).catch((error) => {
+      console.error('❌ 服务器启动失败:', error);
+      process.exit(1);
+    });
+
+    process.on('SIGINT', () => {
+      console.log('\n正在关闭服务器...');
+      process.exit(0);
+    });
+  } catch (error) {
+    console.error('❌ 创建服务器实例失败:', error);
     process.exit(1);
-  });
-
-  process.on('SIGINT', () => {
-    console.log('\n正在关闭服务器...');
-    process.exit(0);
-  });
-} catch (error) {
-  console.error('❌ 创建服务器实例失败:', error);
-  process.exit(1);
+  }
 }
