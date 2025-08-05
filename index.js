@@ -850,7 +850,7 @@ class MCPHtmlServer {
 
     // 启动HTTP服务器
     return new Promise((resolve, reject) => {
-      httpServer.listen(port, () => {
+      httpServer.listen(port, '0.0.0.0', () => {
         // 设置全局状态
         serverInstance = httpServer;
         isServerStarting = false;
