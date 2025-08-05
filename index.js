@@ -539,6 +539,11 @@ class MCPHtmlServer {
           let request = null;
           try {
             request = JSON.parse(body);
+            
+            // 记录请求日志（仅在开发环境）
+            if (process.env.NODE_ENV === 'development') {
+              console.log('MCP Request:', JSON.stringify(request, null, 2));
+            }
             let response;
 
             // 处理/mcp端点的MCP协议初始化
@@ -689,26 +694,42 @@ class MCPHtmlServer {
                 console.log('✅ MCP Initialized notification received');
               } else if (request.method === 'tools/list') {
                 response = {
-                  tools: [
-                    {
-                      name: 'read_link',
-                      description: '读取网页内容或图片OCR识别',
-                      inputSchema: {
-                        type: 'object',
-                        properties: {
-                          url: {
-                            type: 'string',
-                            description: '要读取的网页URL或图片URL'
-                          }
-                        },
-                        required: ['url']
+                  jsonrpc: '2.0',
+                  id: request.id,
+                  result: {
+                    tools: [
+                      {
+                        name: 'read_link',
+                        description: '读取网页内容或图片OCR识别',
+                        inputSchema: {
+                          type: 'object',
+                          properties: {
+                            url: {
+                              type: 'string',
+                              description: '要读取的网页URL或图片URL'
+                            }
+                          },
+                          required: ['url']
+                        }
                       }
-                    }
-                  ]
+                    ]
+                  }
                 };
               } else if (request.method === 'tools/call') {
                 if (request.params.name === 'read_link') {
-                  response = await this.handleReadLink(request.params.arguments.url);
+                  const result = await this.handleReadLink(request.params.arguments.url);
+                  response = {
+                    jsonrpc: '2.0',
+                    id: request.id,
+                    result: {
+                      content: [
+                        {
+                          type: 'text',
+                          text: JSON.stringify(result, null, 2)
+                        }
+                      ]
+                    }
+                  };
                 } else {
                   throw new Error(`Unknown tool: ${request.params.name}`);
                 }
@@ -717,32 +738,63 @@ class MCPHtmlServer {
               }
             }
 
-            res.writeHead(200);
+            // 验证响应格式
+            if (!response || typeof response !== 'object') {
+              throw new Error('Invalid response format');
+            }
+            
+            // 确保所有响应都有jsonrpc字段
+            if (!response.jsonrpc) {
+              response.jsonrpc = '2.0';
+            }
+            
+            // 记录响应日志（仅在开发环境）
+            if (process.env.NODE_ENV === 'development') {
+              console.log('MCP Response:', JSON.stringify(response, null, 2));
+            }
+            
+            res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(response));
           } catch (error) {
             console.error('Request processing error:', error);
-            res.writeHead(400);
-            res.end(JSON.stringify({
+            
+            // 确保错误响应格式正确
+            const errorResponse = {
               jsonrpc: '2.0',
               id: request?.id || null,
               error: {
                 code: -32603,
-                message: error.message,
+                message: error.message || 'Internal error',
                 data: {
-                  type: 'request_error'
+                  type: 'request_error',
+                  stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
                 }
               }
-            }));
+            };
+            
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(errorResponse));
           }
         });
 
         req.on('error', (error) => {
           console.error('Request error:', error);
-          res.writeHead(400);
-          res.end(JSON.stringify({
-            error: 'Request error',
-            type: 'connection_error'
-          }));
+          
+          const errorResponse = {
+            jsonrpc: '2.0',
+            id: null,
+            error: {
+              code: -32700,
+              message: 'Parse error',
+              data: {
+                type: 'connection_error',
+                originalError: error.message
+              }
+            }
+          };
+          
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(errorResponse));
         });
 
         return;
