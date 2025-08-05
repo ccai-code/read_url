@@ -9,6 +9,16 @@ import { URL } from 'url';
 import fs from 'fs';
 import { AIServices } from './ai-services.js';
 
+// 检查canvas是否可用
+let canvasAvailable = false;
+try {
+  await import('canvas');
+  canvasAvailable = true;
+  console.log('✅ Canvas模块已加载');
+} catch (error) {
+  console.log('⚠️ Canvas模块不可用，某些图片处理功能可能受限');
+}
+
 class MCPHtmlServer {
   constructor() {
     // 加载配置

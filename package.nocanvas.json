@@ -1,0 +1,35 @@
+{
+  "name": "mcp-html-reader",
+  "version": "1.0.0",
+  "description": "MCP服务器，用于读取和处理HTML内容、图片OCR和文档解析",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.1",
+    "axios": "^1.11.0",
+    "cheerio": "^1.1.2",
+    "mammoth": "^1.10.0",
+    "openai": "^5.11.0",
+    "pdf-parse": "^1.1.1",
+    "sharp": "^0.33.5",
+    "tesseract.js": "^5.1.1",
+    "undici": "^7.13.0",
+    "xlsx": "^0.18.5",
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.24.6"
+  },
+  "keywords": [
+    "mcp",
+    "html",
+    "ocr",
+    "pdf",
+    "document",
+    "ai"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

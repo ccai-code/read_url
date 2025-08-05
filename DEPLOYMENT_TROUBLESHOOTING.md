@@ -13,7 +13,16 @@
 
 ## 解决方案
 
-### 方案1: 使用优化的Dockerfile（推荐）
+### 方案1: 使用无Canvas版本（推荐）
+
+针对canvas依赖构建超时问题，我们提供了无canvas版本：
+
+```bash
+# 使用无canvas版本构建（最快）
+docker build -f Dockerfile.nocanvas -t mcp-html-reader .
+```
+
+### 方案2: 使用优化的Dockerfile
 
 使用多阶段构建的优化版本：
 
