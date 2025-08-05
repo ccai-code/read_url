@@ -10,7 +10,7 @@
         "model": "glm-4"
     },
     "fallback": {
-        "useOCR": false,
+        "useOCR": true,
         "maxFileSize": 10485760
     }
 }

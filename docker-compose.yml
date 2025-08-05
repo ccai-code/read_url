@@ -6,7 +6,7 @@ services:
     container_name: mcp-html-server
     restart: unless-stopped
     privileged: true
-    user: "0:0"  # 以root用户运行
+    user: "0:0" # 以root用户运行
     ports:
       - "80:80"
     environment:

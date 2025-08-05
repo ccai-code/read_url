@@ -17,6 +17,37 @@
 npm install
 ```
 
+## 配置说明
+
+### API密钥配置
+
+1. **开发环境**: 复制 `config.json` 并填入你的API密钥
+2. **生产环境**: 使用 `config.production.json` (已包含有效密钥)
+
+```json
+{
+    "qwen": {
+        "apiKey": "your-qwen-api-key-here",
+        "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "model": "qwen-vl-plus"
+    },
+    "glm4": {
+        "apiKey": "your-glm4-api-key-here",
+        "baseUrl": "https://open.bigmodel.cn/api/paas/v4",
+        "model": "glm-4"
+    },
+    "fallback": {
+        "useOCR": true,
+        "maxFileSize": 10485760
+    }
+}
+```
+
+### 获取API密钥
+
+- **通义千问**: 访问 [阿里云DashScope](https://dashscope.aliyuncs.com/) 获取API密钥
+- **GLM-4**: 访问 [智谱AI开放平台](https://open.bigmodel.cn/) 获取API密钥
+
 ## 使用方法
 
 ### 1. Stdio 模式（默认）
@@ -31,6 +62,14 @@ npm start
 node index.js --http --port 3000
 ```
 
+### 3. 云服务器部署
+
+```bash
+# 确保使用生产环境配置
+cp config.production.json config.json
+node index.js --http --port 80
+```
+
 ## 工具说明
 
 ### read_link
@@ -43,6 +82,73 @@ node index.js --http --port 3000
 **支持的链接类型：**
 - 网页链接：爬取网页内容，提取标题和主要文本
 - 图片链接：使用 OCR 识别图片中的文字
+
+## 故障排除
+
+### MCP协议连接问题
+
+如果在云服务器部署后，数字工作人无法处理网址、Word文档和Excel文档，可能是以下原因：
+
+#### 1. MCP协议初始化失败
+
+**问题现象**: 日志显示 `Unknown method: initialize` 错误
+
+**解决方案**: 
+- 确保使用最新版本的代码（已修复initialize方法处理）
+- 数字工作人应连接到正确的MCP端点：`http://your-server:80/mcp`
+
+#### 2. API密钥配置问题
+
+**问题现象**: 文档处理失败，返回认证错误
+
+**解决方案**:
+```bash
+# 检查配置文件是否正确
+cat config.json
+# 或使用生产环境配置
+cp config.production.json config.json
+```
+
+#### 3. 网络连接问题
+
+**问题现象**: 无法访问外部API或下载文件
+
+**解决方案**:
+- 检查服务器网络连接
+- 确保防火墙允许出站HTTPS连接
+- 检查API服务商的服务状态
+
+#### 4. 端口访问问题
+
+**问题现象**: 数字工作人无法连接到MCP服务器
+
+**解决方案**:
+```bash
+# 检查端口是否正在监听
+netstat -tlnp | grep :80
+# 检查防火墙设置
+sudo ufw status
+```
+
+### 配置验证
+
+部署完成后，可以通过以下方式验证服务是否正常：
+
+```bash
+# 测试服务器响应
+curl -X POST http://localhost:80/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+      "protocolVersion": "2024-11-05",
+      "capabilities": {},
+      "clientInfo": {"name": "test-client", "version": "1.0.0"}
+    }
+  }'
+```
 
 **示例请求（HTTP 模式）：**
 

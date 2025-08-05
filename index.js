@@ -35,17 +35,28 @@ class MCPHtmlServer {
 
   loadConfig() {
     try {
+      // 优先加载生产环境配置
+      const productionConfigPath = './config.production.json';
       const configPath = './config.json';
-      if (fs.existsSync(configPath)) {
-        this.config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      
+      let selectedConfigPath = configPath;
+      if (fs.existsSync(productionConfigPath)) {
+        selectedConfigPath = productionConfigPath;
+        console.log('🔧 使用生产环境配置文件');
+      } else if (fs.existsSync(configPath)) {
+        console.log('🔧 使用开发环境配置文件');
       } else {
-        console.warn('配置文件不存在，使用默认配置');
+        console.warn('⚠️ 配置文件不存在，使用默认配置');
         this.config = {
           fallback: { useOCR: true, maxFileSize: 10485760 }
         };
+        return;
       }
+      
+      this.config = JSON.parse(fs.readFileSync(selectedConfigPath, 'utf8'));
+      console.log('✅ 配置文件加载成功');
     } catch (error) {
-      console.error('加载配置文件失败:', error.message);
+      console.error('❌ 加载配置文件失败:', error.message);
       this.config = {
         fallback: { useOCR: true, maxFileSize: 10485760 }
       };
@@ -639,7 +650,34 @@ class MCPHtmlServer {
               }
             } else {
               // 处理非/mcp端点的传统MCP协议请求
-              if (request.method === 'tools/list') {
+              if (request.method === 'initialize') {
+                // 处理初始化请求
+                response = {
+                  jsonrpc: '2.0',
+                  id: request.id,
+                  result: {
+                    protocolVersion: '2024-11-05',
+                    capabilities: {
+                      tools: {},
+                      resources: {},
+                      logging: {}
+                    },
+                    serverInfo: {
+                      name: 'mcp-html-server',
+                      version: '1.0.0'
+                    }
+                  }
+                };
+                console.log('🤝 MCP Initialize request received');
+              } else if (request.method === 'notifications/initialized') {
+                // 处理初始化完成通知
+                response = {
+                  jsonrpc: '2.0',
+                  id: request.id || null,
+                  result: {}
+                };
+                console.log('✅ MCP Initialized notification received');
+              } else if (request.method === 'tools/list') {
                 response = {
                   tools: [
                     {
