@@ -8,25 +8,42 @@ import { createServer } from 'http';
 import { URL } from 'url';
 import fs from 'fs';
 import { AIServices } from './ai-services.js';
+import logger from './logger.js';
 
 // 检查canvas是否可用
 let canvasAvailable = false;
-try {
-  await import('canvas');
-  canvasAvailable = true;
-  console.log('✅ Canvas模块已加载');
-} catch (error) {
-  console.log('⚠️ Canvas模块不可用，某些图片处理功能可能受限');
+
+// 异步检查Canvas模块
+async function initializeCanvas() {
+  console.log('🔧 开始初始化Canvas模块...');
+  try {
+    console.log('🔧 正在导入Canvas模块...');
+    await import('canvas');
+    canvasAvailable = true;
+    console.log('✅ Canvas模块已加载');
+  } catch (error) {
+    console.log('⚠️ Canvas模块不可用，某些图片处理功能可能受限:', error.message);
+  }
+  console.log('✅ Canvas初始化完成');
 }
 
 class MCPHtmlServer {
   constructor() {
+    // 初始化日志
+    console.log('🔧 开始初始化服务器...');
+    logger.info('SERVER', 'MCP服务器初始化开始');
+    
     // 加载配置
+    console.log('🔧 开始加载配置...');
     this.loadConfig();
+    console.log('✅ 配置加载完成');
 
     // 初始化AI服务
+    console.log('🔧 开始初始化AI服务...');
     this.aiServices = new AIServices(this.config);
+    console.log('✅ AI服务初始化完成');
 
+    console.log('🔧 开始创建MCP服务器实例...');
     this.server = new Server(
       {
         name: 'mcp-html-server-enhanced',
@@ -38,16 +55,26 @@ class MCPHtmlServer {
         },
       }
     );
+    console.log('✅ MCP服务器实例创建完成');
 
+    console.log('🔧 开始设置工具处理器...');
     this.setupToolHandlers();
+    console.log('✅ 工具处理器设置完成');
+    
+    console.log('🔧 开始设置请求处理器...');
     this.setupRequestHandlers();
+    console.log('✅ 请求处理器设置完成');
+    
+    logger.info('SERVER', 'MCP服务器初始化完成');
   }
 
   loadConfig() {
+    console.log('🔧 开始加载配置文件...');
     try {
       // 优先加载生产环境配置
       const productionConfigPath = './config.production.json';
       const configPath = './config.json';
+      console.log('🔧 检查配置文件路径...');
 
       let selectedConfigPath = configPath;
       if (fs.existsSync(productionConfigPath)) {
@@ -58,24 +85,38 @@ class MCPHtmlServer {
       } else {
         console.warn('⚠️ 配置文件不存在，使用默认配置');
         this.config = {
+          qwen: {
+            apiKey: '',
+            baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+            model: 'qwen-vl-plus'
+          },
           fallback: { useOCR: true, maxFileSize: 10485760 }
         };
         return;
       }
 
+      console.log('🔧 读取配置文件:', selectedConfigPath);
       this.config = JSON.parse(fs.readFileSync(selectedConfigPath, 'utf8'));
-      console.log('✅ 配置文件加载成功');
+      console.log('✅ 配置文件加载成功', { configKeys: Object.keys(this.config) });
     } catch (error) {
       console.error('❌ 加载配置文件失败:', error.message);
       this.config = {
+        qwen: {
+          apiKey: '',
+          baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+          model: 'qwen-vl-plus'
+        },
         fallback: { useOCR: true, maxFileSize: 10485760 }
       };
     }
   }
 
   setupToolHandlers() {
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
-      return {
+    console.log('🔧 设置ListTools处理器...');
+    this.server.setRequestHandler(ListToolsRequestSchema, async (request) => {
+      logger.mcpRequest('list_tools', {}, request.id);
+      
+      const response = {
         tools: [
           {
             name: 'read_link',
@@ -97,48 +138,83 @@ class MCPHtmlServer {
           }
         ]
       };
+      
+      logger.mcpResponse(request.id, response);
+      return response;
     });
 
+    console.log('🔧 设置CallTool处理器...');
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { name, arguments: args } = request.params;
-
-      if (name === 'read_link') {
-        return await this.handleReadLink(args.url, args.prompt);
+      logger.mcpRequest(name, args, request.id);
+      
+      try {
+        let result;
+        
+        if (name === 'read_link') {
+          result = await this.handleReadLink(args.url, args.prompt);
+        } else {
+          throw new Error(`Unknown tool: ${name}`);
+        }
+        
+        logger.mcpResponse(request.id, result);
+        return result;
+      } catch (error) {
+        logger.mcpError(error, { request: request.params });
+        throw error;
       }
-
-      throw new Error(`Unknown tool: ${name}`);
     });
   }
 
   async handleReadLink(url, customPrompt) {
+    const startTime = Date.now();
+    logger.info('LINK_PROCESS', `开始处理链接: ${url}`, { url, customPrompt });
+    
     try {
       const parsedUrl = new URL(url);
-      console.log(`🔍 开始处理链接: ${url}`);
+      logger.debug('LINK_PROCESS', `URL解析成功`, { hostname: parsedUrl.hostname, pathname: parsedUrl.pathname });
 
       // 检测Bing图片搜索链接
       if (parsedUrl.hostname.includes('bing.com') && parsedUrl.pathname.includes('/images/search')) {
         const mediaUrl = parsedUrl.searchParams.get('mediaurl');
         if (mediaUrl) {
           const decodedImageUrl = decodeURIComponent(mediaUrl);
-          console.log(`🔍 检测到Bing图片搜索，提取实际图片链接: ${decodedImageUrl}`);
+          logger.info('LINK_PROCESS', `检测到Bing图片搜索，提取实际图片链接`, { originalUrl: url, extractedUrl: decodedImageUrl });
           return await this.processImage(decodedImageUrl, customPrompt);
         }
       }
 
       // 获取文件信息
+      logger.debug('LINK_PROCESS', '开始下载文件');
       const { contentType, buffer } = await this.downloadFile(url);
+      logger.info('LINK_PROCESS', '文件下载完成', { contentType, bufferSize: buffer.length });
 
       // 检测文件类型
       const fileType = this.detectFileType(url, contentType);
+      logger.debug('LINK_PROCESS', '文件类型检测完成', { fileType, contentType });
 
+      let result;
       if (this.isImageType(contentType, url)) {
-        return await this.processImageWithAI(buffer, customPrompt);
+        logger.info('LINK_PROCESS', '开始处理图片文件');
+        result = await this.processImageWithAI(buffer, customPrompt);
       } else if (fileType && ['pdf', 'doc', 'docx', 'xlsx', 'xls', 'mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
-        return await this.processDocumentWithAI(buffer, fileType, customPrompt);
+        logger.info('LINK_PROCESS', `开始处理文档文件: ${fileType}`);
+        result = await this.processDocumentWithAI(buffer, fileType, customPrompt);
       } else {
-        return await this.processWebpage(url);
+        logger.info('LINK_PROCESS', '开始处理网页内容');
+        result = await this.processWebpage(url);
       }
+      
+      const duration = Date.now() - startTime;
+      logger.performance('LINK_PROCESS', duration, { url, fileType, success: true });
+      logger.info('LINK_PROCESS', `链接处理完成: ${url}`, { duration: `${duration}ms` });
+      
+      return result;
     } catch (error) {
+      const duration = Date.now() - startTime;
+      logger.error('LINK_PROCESS', `处理链接失败: ${url}`, error);
+      logger.performance('LINK_PROCESS', duration, { url, success: false, error: error.message });
+      
       return {
         content: [
           {
@@ -473,18 +549,24 @@ class MCPHtmlServer {
   }
 
   setupRequestHandlers() {
+    console.log('🔧 设置错误处理器...');
     // 设置错误处理
     this.server.onerror = (error) => {
-      console.error('[MCP Error]', error);
+      logger.serverError(error, 'MCP服务器错误');
     };
 
     process.on('SIGINT', async () => {
+      logger.info('SERVER', '收到SIGINT信号，正在关闭服务器');
       await this.server.close();
+      logger.info('SERVER', 'MCP服务器已关闭');
       process.exit(0);
     });
   }
 
   async startHttpServer(port = 3000) {
+    console.log(`🔧 准备启动HTTP服务器，端口: ${port}`);
+    logger.info('SERVER', `开始启动HTTP服务器，端口: ${port}`);
+    
     // 检查端口是否已被占用
     const isPortInUse = (port) => {
       return new Promise((resolve) => {
@@ -496,11 +578,17 @@ class MCPHtmlServer {
     };
 
     if (await isPortInUse(port)) {
-      console.log(`⚠️ 端口 ${port} 已被占用，服务器可能已在运行`);
+      logger.warn('SERVER', `端口 ${port} 已被占用，服务器可能已在运行`);
       return null;
     }
 
     const httpServer = createServer(async (req, res) => {
+      const requestStart = Date.now();
+      const clientId = req.headers['x-client-id'] || `${req.connection.remoteAddress}-${Date.now()}`;
+      
+      // 记录HTTP请求
+      logger.httpRequest(req);
+      
       // 设置CORS头
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
@@ -510,30 +598,40 @@ class MCPHtmlServer {
       if (req.method === 'OPTIONS') {
         res.writeHead(200);
         res.end();
+        const responseTime = Date.now() - requestStart;
+        logger.httpResponse(res, 200, responseTime);
         return;
       }
 
       // 处理GET请求 - SSE连接
       if (req.method === 'GET') {
+        logger.sseConnection(clientId);
+        
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
         res.writeHead(200);
 
         // 发送初始化事件
+        const initData = {"type":"initialized", "clientId": clientId};
         res.write('event: initialized\n');
-        res.write('data: {"type":"initialized"}\n\n');
+        res.write(`data: ${JSON.stringify(initData)}\n\n`);
+        logger.sseMessage(clientId, initData);
 
         // 保持连接活跃
         const keepAlive = setInterval(() => {
+          const pingData = {"type":"ping", "timestamp": Date.now()};
           res.write('event: ping\n');
-          res.write('data: {"type":"ping"}\n\n');
+          res.write(`data: ${JSON.stringify(pingData)}\n\n`);
         }, 30000);
 
         req.on('close', () => {
           clearInterval(keepAlive);
+          logger.sseDisconnection(clientId, 'client_disconnect');
         });
 
+        const responseTime = Date.now() - requestStart;
+        logger.httpResponse(res, 200, responseTime);
         return;
       }
 
@@ -541,6 +639,7 @@ class MCPHtmlServer {
       if (req.method === 'POST') {
         // 检查是否是/mcp端点
         const url = new URL(req.url, `http://localhost:${port}`);
+        logger.debug('HTTP_REQUEST', `POST请求到端点: ${url.pathname}`);
 
         res.setHeader('Content-Type', 'application/json');
 
@@ -554,16 +653,14 @@ class MCPHtmlServer {
           let request = null;
           try {
             request = JSON.parse(body);
+            logger.robotMessage('incoming', request);
 
-            // 记录请求日志（仅在开发环境）
-            if (process.env.NODE_ENV === 'development') {
-              console.log('MCP Request:', JSON.stringify(request, null, 2));
-            }
             let response;
 
             // 处理/mcp端点的MCP协议初始化
             if (url.pathname === '/mcp') {
               if (request.method === 'initialize') {
+                logger.info('MCP_PROTOCOL', 'MCP初始化请求', { clientCapabilities: request.params?.capabilities });
                 // 处理初始化请求
                 response = {
                   jsonrpc: '2.0',
@@ -581,23 +678,25 @@ class MCPHtmlServer {
                     }
                   }
                 };
-                console.log('🤝 MCP Initialize request received');
+                logger.info('MCP_PROTOCOL', 'MCP初始化响应已发送');
               } else if (request.method === 'notifications/initialized') {
+                logger.info('MCP_PROTOCOL', 'MCP初始化完成通知');
                 // 处理初始化完成通知
                 response = {
                   jsonrpc: '2.0',
                   id: request.id || null,
                   result: {}
                 };
-                console.log('✅ MCP Initialized notification received');
+                logger.info('MCP_PROTOCOL', 'MCP握手完成，连接已建立');
               } else if (request.method === 'ping') {
+                logger.debug('MCP_PROTOCOL', 'Ping请求');
                 // 处理ping请求
                 response = {
                   jsonrpc: '2.0',
                   id: request.id,
                   result: {}
                 };
-                console.log('🏓 Ping request received');
+                logger.debug('MCP_PROTOCOL', 'Pong响应已发送');
               } else if (request.method === 'resources/list') {
                 // 处理资源列表请求
                 response = {
@@ -635,6 +734,7 @@ class MCPHtmlServer {
                   throw new Error(`Unknown resource URI: ${uri}`);
                 }
               } else if (request.method === 'tools/list') {
+                logger.info('MCP_PROTOCOL', 'tools/list请求');
                 response = {
                   jsonrpc: '2.0',
                   id: request.id,
@@ -657,7 +757,9 @@ class MCPHtmlServer {
                     ]
                   }
                 };
+                logger.info('MCP_PROTOCOL', 'tools/list响应已发送');
               } else if (request.method === 'tools/call') {
+                logger.info('MCP_PROTOCOL', `tools/call请求: ${request.params.name}`, { arguments: request.params.arguments });
                 if (request.params.name === 'read_link') {
                   const result = await this.handleReadLink(request.params.arguments.url);
                   response = {
@@ -672,10 +774,13 @@ class MCPHtmlServer {
                       ]
                     }
                   };
+                  logger.info('MCP_PROTOCOL', `tools/call响应已发送: ${request.params.name}`);
                 } else {
+                  logger.error('MCP_PROTOCOL', `未知工具: ${request.params.name}`);
                   throw new Error(`Unknown tool: ${request.params.name}`);
                 }
               } else {
+                logger.error('MCP_PROTOCOL', `未知方法: ${request.method}`);
                 throw new Error(`Unknown method: ${request.method}`);
               }
             } else {
@@ -755,6 +860,7 @@ class MCPHtmlServer {
 
             // 验证响应格式
             if (!response || typeof response !== 'object') {
+              logger.error('MCP_PROTOCOL', '响应格式无效');
               throw new Error('Invalid response format');
             }
 
@@ -763,15 +869,18 @@ class MCPHtmlServer {
               response.jsonrpc = '2.0';
             }
 
-            // 记录响应日志（仅在开发环境）
-            if (process.env.NODE_ENV === 'development') {
-              console.log('MCP Response:', JSON.stringify(response, null, 2));
-            }
+            logger.debug('MCP_PROTOCOL', 'MCP响应已生成', { responseId: response.id, method: request.method });
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(response));
+            logger.debug('HTTP', 'MCP响应已发送', { statusCode: 200 });
           } catch (error) {
-            console.error('Request processing error:', error);
+            logger.error('MCP_PROTOCOL', 'MCP请求处理错误', { 
+              error: error.message, 
+              stack: error.stack,
+              requestId: request?.id,
+              method: request?.method 
+            });
 
             // 确保错误响应格式正确
             const errorResponse = {
@@ -789,11 +898,12 @@ class MCPHtmlServer {
 
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(errorResponse));
+            logger.debug('HTTP', 'MCP错误响应已发送', { statusCode: 500, errorCode: -32603 });
           }
         });
 
         req.on('error', (error) => {
-          console.error('Request error:', error);
+          logger.error('HTTP', 'HTTP请求错误', { error: error.message, stack: error.stack });
 
           const errorResponse = {
             jsonrpc: '2.0',
@@ -809,6 +919,7 @@ class MCPHtmlServer {
           };
 
           res.writeHead(400, { 'Content-Type': 'application/json' });
+          logger.debug('HTTP', 'HTTP错误响应已发送', { statusCode: 400, errorCode: -32700 });
           res.end(JSON.stringify(errorResponse));
         });
 
@@ -822,11 +933,11 @@ class MCPHtmlServer {
 
     // 启动HTTP服务器
     httpServer.listen(port, () => {
-      console.log(`🚀 MCP SSE Server started on port ${port}`);
-      console.log(`📡 Server endpoint: http://localhost:${port}`);
-      console.log(`🤝 MCP Protocol endpoint: http://localhost:${port}/mcp`);
-      console.log(`🔧 Available tools: read_link`);
-      console.log(`💡 Supports MCP initialize/initialized handshake`);
+      logger.info('SERVER', `MCP SSE Server started on port ${port}`);
+      logger.info('SERVER', `Server endpoint: http://localhost:${port}`);
+      logger.info('SERVER', `MCP Protocol endpoint: http://localhost:${port}/mcp`);
+      logger.info('SERVER', 'Available tools: read_link');
+      logger.info('SERVER', 'Supports MCP initialize/initialized handshake');
     });
 
     return httpServer;
@@ -837,38 +948,55 @@ class MCPHtmlServer {
 export { MCPHtmlServer };
 
 // 启动服务器
-// 只在直接运行此文件时启动服务器
-if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('🚀 正在启动MCP HTML服务器...');
-
+// 主启动函数
+async function main() {
+  console.log('🚀 开始启动MCP HTML服务器...');
+  logger.info('SERVER', '正在启动MCP HTML服务器...');
+  
   try {
+    // 先初始化Canvas模块
+    console.log('🔧 准备初始化Canvas模块...');
+    await initializeCanvas();
+    console.log('✅ Canvas模块初始化完成，开始创建服务器实例...');
+    
     const server = new MCPHtmlServer();
-    console.log('✅ 服务器实例创建成功');
+    logger.info('SERVER', '服务器实例创建成功');
 
     const args = process.argv.slice(2);
     const portIndex = args.indexOf('--port');
     const port = process.env.PORT || (portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000);
 
-    console.log(`🔧 配置端口: ${port}`);
+    logger.info('SERVER', `配置端口: ${port}`);
 
     server.startHttpServer(port).then((httpServer) => {
       if (httpServer) {
-        console.log('✅ 服务器启动完成');
+        logger.info('SERVER', '服务器启动完成');
       } else {
-        console.log('ℹ️ 服务器已在运行，跳过启动');
+        logger.info('SERVER', '服务器已在运行，跳过启动');
         process.exit(0);
       }
     }).catch((error) => {
-      console.error('❌ 服务器启动失败:', error);
+      logger.error('SERVER', '服务器启动失败', { error: error.message, stack: error.stack });
       process.exit(1);
     });
 
     process.on('SIGINT', () => {
-      console.log('\n正在关闭服务器...');
+      logger.info('SERVER', '正在关闭服务器...');
       process.exit(0);
     });
   } catch (error) {
-    console.error('❌ 创建服务器实例失败:', error);
+    logger.error('SERVER', '创建服务器实例失败', { error: error.message, stack: error.stack });
     process.exit(1);
   }
+}
+
+// 只在直接运行此文件时启动服务器
+// 修复Windows路径分隔符问题
+const currentFileUrl = import.meta.url;
+const scriptPath = `file:///${process.argv[1].replace(/\\/g, '/')}`;
+if (currentFileUrl === scriptPath) {
+  main().catch(error => {
+    console.error('❌ 启动失败:', error);
+    process.exit(1);
+  });
 }
