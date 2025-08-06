@@ -35,8 +35,8 @@ RUN npm config set registry https://registry.npmmirror.com && \
     npm config set progress false && \
     npm config set maxsockets 5
 
-# 快速安装依赖 - 使用预构建二进制文件
-RUN npm ci --omit=dev --no-audit --no-fund --prefer-offline --no-optional
+# 安装依赖 - 确保sharp平台依赖正确安装
+RUN npm ci --omit=dev --no-audit --no-fund --prefer-offline
 
 # 生产阶段 - 最小化镜像
 FROM node:20-alpine AS production
@@ -44,10 +44,10 @@ FROM node:20-alpine AS production
 # 配置国内镜像源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
-# 只安装运行时依赖
+# 只安装运行时依赖（包含sharp所需的vips库）
 RUN apk add --no-cache \
     cairo pango jpeg giflib pixman \
-    libjpeg-turbo freetype
+    libjpeg-turbo freetype vips-dev
 
 # 设置工作目录
 WORKDIR /app
@@ -65,6 +65,8 @@ RUN mkdir -p /app/logs && chmod 755 /app/logs
 ENV NODE_ENV=production
 ENV PORT=80
 ENV NODE_OPTIONS="--max-old-space-size=2048"
+ENV SHARP_IGNORE_GLOBAL_LIBVIPS=1
+ENV SHARP_FORCE_GLOBAL_LIBVIPS=false
 
 # 验证关键文件
 RUN node --check index.js
