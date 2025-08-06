@@ -6,10 +6,11 @@ import { fileURLToPath } from 'url';
 const { appendFileSync, existsSync, mkdirSync, readdirSync, statSync, unlinkSync } = fs;
 
 class Logger {
-    constructor(logDir = './logs') {
-        this.logDir = logDir;
+    constructor(logDir = null) {
+        // 在Docker环境中使用绝对路径，本地开发使用相对路径
+        this.logDir = logDir || (process.env.NODE_ENV === 'production' ? '/app/logs' : './logs');
         this.ensureLogDir();
-        this.logFile = path.join(logDir, `mcp-${new Date().toISOString().split('T')[0]}.log`);
+        this.logFile = path.join(this.logDir, `mcp-${new Date().toISOString().split('T')[0]}.log`);
     }
 
     ensureLogDir() {

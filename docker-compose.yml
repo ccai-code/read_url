@@ -12,8 +12,8 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      # 如果需要持久化数据，可以添加卷映射
-      - ./logs:/app/logs
+      # 日志持久化 - 确保宿主机logs目录存在
+      - logs_data:/app/logs
     networks:
       - mcp-network
     healthcheck:
@@ -29,4 +29,6 @@ networks:
 
 volumes:
   logs:
+    driver: local
+  logs_data:
     driver: local
