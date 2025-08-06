@@ -1,15 +1,16 @@
 # MCP HTML Server
 
-一个基于 Model Context Protocol (MCP) 的 Node.js 服务器，支持网页内容爬取和图片 OCR 识别。
+一个基于 Model Context Protocol (MCP) 的智能文档处理工具，为AI助手提供强大的内容读取能力。
 
-## 功能特性
+## 核心功能
 
-- 🌐 **网页爬取**：自动提取网页标题和主要内容
-- 🖼️ **图片 OCR**：使用 Tesseract.js 识别图片中的文字（支持中英文）
-- 🔧 **MCP 兼容**：严格按照 @modelcontextprotocol/sdk 规范实现
-- 🚀 **多种传输方式**：支持 stdio 和 HTTP 传输
-- 📝 **智能内容提取**：自动识别并提取网页主要内容区域
-- 🛡️ **错误处理**：完善的错误处理和重试机制
+- 🌐 **网页内容读取**：智能提取网页标题和主要内容
+- 🖼️ **图片内容识别**：支持JPG、PNG、GIF等格式的图片文字识别
+- 📄 **文档处理**：支持PDF、Word(DOC/DOCX)文档内容提取
+- 📊 **表格处理**：支持Excel(XLS/XLSX)表格数据读取
+- 🎥 **视频文件**：支持MP4、AVI、MOV、MKV等视频文件分析
+- 🤖 **AI智能分析**：集成通义千问、GLM-4等AI模型进行内容分析
+- 🔧 **MCP标准**：完全兼容Model Context Protocol规范
 
 ## 安装依赖
 
@@ -48,26 +49,46 @@ npm install
 - **通义千问**: 访问 [阿里云DashScope](https://dashscope.aliyuncs.com/) 获取API密钥
 - **GLM-4**: 访问 [智谱AI开放平台](https://open.bigmodel.cn/) 获取API密钥
 
-## 使用方法
+## 快速开始
 
-### 1. Stdio 模式（默认）
-
+### 1. 本地运行
 ```bash
-npm start
+# 安装依赖
+npm install
+
+# 启动服务（MCP模式）
+node index.js
+
+# 或启动HTTP服务（测试模式）
+node index.js --port 3000
 ```
 
-### 2. HTTP 服务器模式
-
+### 2. Docker部署（推荐）
 ```bash
-node index.js --http --port 3000
+# 使用Docker Compose
+docker-compose up -d --build
+
+# 或直接使用Docker
+docker build -t mcp-html-server .
+docker run -p 3000:3000 mcp-html-server
 ```
 
-### 3. 云服务器部署
-
+### 3. 使用示例
 ```bash
-# 确保使用生产环境配置
-cp config.production.json config.json
-node index.js --http --port 80
+# 测试网页读取
+curl -X POST http://localhost:3000/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "read_link",
+      "arguments": {
+        "url": "https://example.com"
+      }
+    }
+  }'
 ```
 
 ## 工具说明

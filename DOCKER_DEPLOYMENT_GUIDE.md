@@ -28,34 +28,22 @@
 
 ## 部署选项
 
-### 选项1: 使用标准Dockerfile（推荐）
+### 使用Docker构建和运行
 ```bash
 # 构建镜像
 docker build -t mcp-html-server .
 
-# 使用docker-compose启动
-docker-compose up -d
+# 运行容器
+docker run -p 3000:3000 mcp-html-server
 ```
 
-### 选项2: 使用优化的Dockerfile.fixed
+### 使用Docker Compose（推荐）
 ```bash
-# 构建镜像
-docker build -f Dockerfile.fixed -t mcp-html-server .
+# 构建并启动服务
+docker-compose up --build
 
-# 手动运行容器
-docker run -d \
-  --name mcp-html-server \
-  -p 80:80 \
-  -e NODE_ENV=production \
-  -v mcp_logs:/app/logs \
-  mcp-html-server
-```
-
-### 选项3: 无Canvas版本（轻量化）
-如果遇到Canvas相关的构建问题：
-```bash
-# 使用无Canvas版本
-docker build -f Dockerfile.nocanvas -t mcp-html-server-lite .
+# 后台运行
+docker-compose up -d --build
 ```
 
 ## 验证部署

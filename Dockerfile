@@ -39,10 +39,22 @@ COPY . .
 # 创建logs目录并设置权限
 RUN mkdir -p /app/logs && chmod 755 /app/logs
 
-# 以root权限运行，移除用户切换
+# 设置环境变量
+ENV NODE_ENV=production
+ENV PORT=80
 
-# 暴露端口（如果需要HTTP模式）
+# 验证关键文件存在
+RUN ls -la /app/ && \
+    ls -la /app/logger.js && \
+    ls -la /app/ai-services.js && \
+    node --check index.js
+
+# 暴露端口
 EXPOSE 80
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
 
 # 启动应用
 CMD ["node", "index.js", "--port", "80"]
