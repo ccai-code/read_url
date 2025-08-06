@@ -153,7 +153,7 @@ class MCPHtmlServer {
 
         if (name === 'read_link') {
           result = await this.handleReadLink(args.url, args.prompt);
-          
+
           // 简化响应格式以提高兼容性
           if (result && result.content && Array.isArray(result.content) && result.content[0]) {
             const simplifiedResult = {
@@ -239,7 +239,8 @@ class MCPHtmlServer {
             type: 'text',
             text: `❌ 处理链接失败: ${error.message}`
           }
-        ]
+        ],
+        isError: true
       };
     }
   }
@@ -273,7 +274,8 @@ class MCPHtmlServer {
               type: 'text',
               text: `🤖 通义千问图片分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
             }
-          ]
+          ],
+          isError: false
         };
       }
     }
@@ -298,13 +300,14 @@ class MCPHtmlServer {
           const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
           if (result.success) {
             return {
-              content: [
-                {
-                  type: 'text',
-                  text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
-                }
-              ]
-            };
+          content: [
+            {
+              type: 'text',
+              text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+            }
+          ],
+          isError: false
+        };
           }
         } catch (error) {
           console.error('❌ 通义千问处理失败:', error.message);
@@ -319,13 +322,14 @@ class MCPHtmlServer {
         const result = await this.aiServices.processDocumentWithGLM4(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
-            content: [
-              {
-                type: 'text',
-                text: `🤖 GLM-4文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
-              }
-            ]
-          };
+          content: [
+            {
+              type: 'text',
+              text: `🤖 GLM-4文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
+            }
+          ],
+          isError: false
+        };
         }
       } catch (error) {
         console.error('❌ GLM-4处理失败:', error.message);
@@ -339,13 +343,14 @@ class MCPHtmlServer {
         const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
-            content: [
-              {
-                type: 'text',
-                text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
-              }
-            ]
-          };
+          content: [
+            {
+              type: 'text',
+              text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+            }
+          ],
+          isError: false
+        };
         }
       } catch (error) {
         console.error('❌ 通义千问处理失败:', error.message);
@@ -362,7 +367,8 @@ class MCPHtmlServer {
               type: 'text',
               text: `🚀 火山引擎文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
             }
-          ]
+          ],
+          isError: false
         };
       }
     }
@@ -479,7 +485,8 @@ class MCPHtmlServer {
             type: 'text',
             text: `网页标题：${title}\n\n网页内容：\n${content}`
           }
-        ]
+        ],
+        isError: false
       };
     } catch (error) {
       throw new Error(`网页爬取失败：${error.message}`);
@@ -777,14 +784,7 @@ class MCPHtmlServer {
                   response = {
                     jsonrpc: '2.0',
                     id: request.id,
-                    result: {
-                      content: [
-                        {
-                          type: 'text',
-                          text: JSON.stringify(result, null, 2)
-                        }
-                      ]
-                    }
+                    result: result
                   };
                   logger.info('MCP_PROTOCOL', `tools/call响应已发送: ${request.params.name}`);
                 } else {
@@ -853,14 +853,7 @@ class MCPHtmlServer {
                   response = {
                     jsonrpc: '2.0',
                     id: request.id,
-                    result: {
-                      content: [
-                        {
-                          type: 'text',
-                          text: JSON.stringify(result, null, 2)
-                        }
-                      ]
-                    }
+                    result: result
                   };
                 } else {
                   throw new Error(`Unknown tool: ${request.params.name}`);
@@ -1009,9 +1002,9 @@ const currentFileUrl = import.meta.url;
 const scriptPath = `file:///${process.argv[1].replace(/\\/g, '/')}`;
 
 // 检查是否为主模块（支持Docker环境）
-const isMainModule = currentFileUrl === scriptPath || 
-                   process.argv[1].endsWith('index.js') || 
-                   process.argv[1].endsWith('/app/index.js');
+const isMainModule = currentFileUrl === scriptPath ||
+  process.argv[1].endsWith('index.js') ||
+  process.argv[1].endsWith('/app/index.js');
 
 if (isMainModule) {
   main().catch(error => {
