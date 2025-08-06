@@ -300,14 +300,14 @@ class MCPHtmlServer {
           const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
           if (result.success) {
             return {
-          content: [
-            {
-              type: 'text',
-              text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
-            }
-          ],
-          isError: false
-        };
+              content: [
+                {
+                  type: 'text',
+                  text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+                }
+              ],
+              isError: false
+            };
           }
         } catch (error) {
           console.error('❌ 通义千问处理失败:', error.message);
@@ -322,14 +322,14 @@ class MCPHtmlServer {
         const result = await this.aiServices.processDocumentWithGLM4(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
-          content: [
-            {
-              type: 'text',
-              text: `🤖 GLM-4文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
-            }
-          ],
-          isError: false
-        };
+            content: [
+              {
+                type: 'text',
+                text: `🤖 GLM-4文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
+              }
+            ],
+            isError: false
+          };
         }
       } catch (error) {
         console.error('❌ GLM-4处理失败:', error.message);
@@ -343,14 +343,14 @@ class MCPHtmlServer {
         const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
-          content: [
-            {
-              type: 'text',
-              text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
-            }
-          ],
-          isError: false
-        };
+            content: [
+              {
+                type: 'text',
+                text: `🤖 通义千问文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+              }
+            ],
+            isError: false
+          };
         }
       } catch (error) {
         console.error('❌ 通义千问处理失败:', error.message);
