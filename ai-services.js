@@ -43,11 +43,7 @@ export class AIServices {
       let documentText = '';
 
       if (fileType === 'pdf') {
-        // 延迟加载pdf-parse的lib文件，避免调试模式
-        const pdfParseLib = await import('./node_modules/pdf-parse/lib/pdf-parse.js');
-        const pdfParse = pdfParseLib.default;
-        const pdfData = await pdfParse(documentBuffer);
-        documentText = pdfData.text;
+        throw new Error('PDF处理功能已禁用以简化部署。请使用其他格式的文档。');
       } else if (fileType === 'docx') {
         const result = await mammoth.extractRawText({ buffer: documentBuffer });
         documentText = result.value;
@@ -206,11 +202,7 @@ export class AIServices {
       let extractedData = null;
 
       if (fileType === 'pdf') {
-        // PDF处理
-        const pdfParseLib = await import('./node_modules/pdf-parse/lib/pdf-parse.js');
-        const pdfParse = pdfParseLib.default;
-        const pdfData = await pdfParse(documentBuffer);
-        documentText = pdfData.text;
+        throw new Error('PDF处理功能已禁用以简化部署。请使用其他格式的文档。');
         extractedData = { pages: pdfData.numpages, textLength: documentText.length };
       } else if (fileType === 'docx' || fileType === 'doc') {
         // Word文档处理
@@ -342,17 +334,7 @@ export class AIServices {
         // 直接读取文本文件内容
         documentText = documentBuffer.toString('utf-8');
       } else if (fileType === 'pdf') {
-        // 使用pdf-parse解析PDF
-        console.log('📄 正在解析PDF文档...');
-        try {
-          const pdfParse = (await import('pdf-parse')).default;
-          const pdfData = await pdfParse(documentBuffer);
-          documentText = pdfData.text;
-          console.log(`✅ PDF解析成功，提取了 ${documentText.length} 个字符`);
-        } catch (pdfError) {
-          console.error('PDF解析失败:', pdfError.message);
-          documentText = `PDF解析失败: ${pdfError.message}。文件大小: ${(documentBuffer.length / 1024).toFixed(2)} KB`;
-        }
+        throw new Error('PDF处理功能已禁用以简化部署。请使用其他格式的文档。');
       } else if (fileType === 'docx') {
         // 使用mammoth解析Word文档
         console.log('📄 正在解析Word文档...');

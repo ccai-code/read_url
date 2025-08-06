@@ -2,30 +2,16 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import Tesseract from 'tesseract.js';
-import sharp from 'sharp';
+// 移除了复杂的原生依赖：tesseract.js, sharp, canvas, pdf-parse
+// 这些功能暂时禁用以确保快速部署
 import { createServer } from 'http';
 import { URL } from 'url';
 import fs from 'fs';
 import { AIServices } from './ai-services.js';
 import logger from './logger.js';
 
-// 检查canvas是否可用
+// Canvas功能已禁用以简化部署
 let canvasAvailable = false;
-
-// 异步检查Canvas模块
-async function initializeCanvas() {
-  console.log('🔧 开始初始化Canvas模块...');
-  try {
-    console.log('🔧 正在导入Canvas模块...');
-    await import('canvas');
-    canvasAvailable = true;
-    console.log('✅ Canvas模块已加载');
-  } catch (error) {
-    console.log('⚠️ Canvas模块不可用，某些图片处理功能可能受限:', error.message);
-  }
-  console.log('✅ Canvas初始化完成');
-}
 
 class MCPHtmlServer {
   constructor() {
@@ -373,52 +359,20 @@ class MCPHtmlServer {
       }
     }
 
-    // 降级到本地PDF处理
-    if (fileType === 'pdf') {
-      console.log('⚠️ AI服务不可用，使用本地PDF解析...');
-      return await this.processPDFLocally(documentBuffer, customPrompt);
-    }
-
     throw new Error(`${fileType.toUpperCase()}文档处理服务不可用`);
   }
 
   async processPDFLocally(pdfBuffer, customPrompt) {
-    try {
-      console.log('📄 正在使用本地pdf-parse解析PDF...');
-
-      // 直接使用pdf-parse的lib文件，绕过有问题的index.js
-      const pdfParseLib = await import('./node_modules/pdf-parse/lib/pdf-parse.js');
-      const pdfParse = pdfParseLib.default;
-
-      const pdfData = await pdfParse(pdfBuffer);
-      const extractedText = pdfData.text;
-
-      console.log(`✅ PDF解析成功，提取了 ${extractedText.length} 个字符`);
-
-      // 清理和格式化文本
-      const cleanedText = extractedText
-        .replace(/\s+/g, ' ')
-        .replace(/\n\s*\n/g, '\n')
-        .trim();
-
-      // 限制输出长度
-      const maxLength = 8000;
-      const finalText = cleanedText.length > maxLength
-        ? cleanedText.substring(0, maxLength) + '...\n\n(内容已截断，仅显示前' + maxLength + '个字符)'
-        : cleanedText;
-
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `📄 PDF文档内容提取结果:\n\n${finalText}\n\n📊 文档信息:\n- 页数: ${pdfData.numpages}\n- 文本长度: ${extractedText.length} 字符\n- 文件大小: ${(pdfBuffer.length / 1024).toFixed(2)} KB`
-          }
-        ]
-      };
-    } catch (error) {
-      console.error('❌ PDF解析失败:', error.message);
-      throw new Error(`PDF解析失败: ${error.message}`);
-    }
+    console.log('📄 PDF解析功能已禁用（简化部署）');
+    
+    return {
+      content: [
+        {
+          type: 'text',
+          text: '抱歉，PDF解析功能暂时不可用。请提供其他格式的文档或网页链接。'
+        }
+      ]
+    };
   }
 
   async processWebpage(url) {
@@ -512,55 +466,16 @@ class MCPHtmlServer {
   }
 
   async processImageBuffer(buffer, contentType) {
-    try {
-      // 使用sharp处理图片（如果需要）
-      let imageBuffer = Buffer.from(buffer);
-
-      try {
-        // 尝试优化图片以提高OCR准确性
-        imageBuffer = await sharp(imageBuffer)
-          .resize({ width: 2000, height: 2000, fit: 'inside', withoutEnlargement: true })
-          .grayscale()
-          .normalize()
-          .toBuffer();
-      } catch (sharpError) {
-        console.warn('图片处理失败，使用原始图片:', sharpError.message);
-        imageBuffer = Buffer.from(buffer);
-      }
-
-      // 使用Tesseract进行OCR识别
-      const { data: { text } } = await Tesseract.recognize(
-        imageBuffer,
-        'chi_sim+eng', // 支持中文简体和英文
+    console.log('🖼️ OCR功能已禁用（简化部署）');
+    
+    return {
+      content: [
         {
-          logger: m => console.log(m) // 可选：显示进度
+          type: 'text',
+          text: '抱歉，图片OCR识别功能暂时不可用。请提供文本内容或网页链接。'
         }
-      );
-
-      const cleanedText = text.trim();
-
-      if (!cleanedText) {
-        return {
-          content: [
-            {
-              type: 'text',
-              text: '图片OCR识别完成，但未检测到文字内容。'
-            }
-          ]
-        };
-      }
-
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `图片OCR识别结果：\n\n${cleanedText}`
-          }
-        ]
-      };
-    } catch (error) {
-      throw new Error(`图片OCR处理失败：${error.message}`);
-    }
+      ]
+    };
   }
 
   detectFileType(url, contentType) {
@@ -960,10 +875,8 @@ async function main() {
   logger.info('SERVER', '正在启动MCP HTML服务器...');
 
   try {
-    // 先初始化Canvas模块
-    console.log('🔧 准备初始化Canvas模块...');
-    await initializeCanvas();
-    console.log('✅ Canvas模块初始化完成，开始创建服务器实例...');
+    // Canvas功能已禁用以简化部署
+    console.log('🔧 跳过Canvas初始化，开始创建服务器实例...');
 
     const server = new MCPHtmlServer();
     logger.info('SERVER', '服务器实例创建成功');

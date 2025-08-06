@@ -5,12 +5,15 @@
 ## 核心功能
 
 - 🌐 **网页内容读取**：智能提取网页标题和主要内容
-- 🖼️ **图片内容识别**：支持JPG、PNG、GIF等格式的图片文字识别
-- 📄 **文档处理**：支持PDF、Word(DOC/DOCX)文档内容提取
+- 📄 **文档处理**：支持Word(DOC/DOCX)文档内容提取
 - 📊 **表格处理**：支持Excel(XLS/XLSX)表格数据读取
-- 🎥 **视频文件**：支持MP4、AVI、MOV、MKV等视频文件分析
 - 🤖 **AI智能分析**：集成通义千问、GLM-4等AI模型进行内容分析
 - 🔧 **MCP标准**：完全兼容Model Context Protocol规范
+
+### 暂时禁用的功能（简化部署）
+- ❌ **图片内容识别**：已禁用OCR功能
+- ❌ **PDF文档处理**：已禁用PDF处理
+- ❌ **视频文件分析**：已禁用视频处理
 
 ## 安装依赖
 
@@ -217,8 +220,16 @@ node health-check.js
 - **@modelcontextprotocol/sdk**: MCP 协议实现
 - **axios**: HTTP 请求处理
 - **cheerio**: HTML 解析和内容提取
-- **tesseract.js**: OCR 文字识别
-- **sharp**: 图片处理和优化
+- **mammoth**: Word文档处理
+- **xlsx**: Excel表格处理
+- **openai**: AI服务集成
+- **form-data**: 表单数据处理
+
+### 已移除的依赖（简化部署）
+- ❌ **tesseract.js**: OCR 文字识别
+- ❌ **sharp**: 图片处理和优化
+- ❌ **canvas**: 图形绘制和处理
+- ❌ **pdf-parse**: PDF文档解析
 
 ## 注意事项
 

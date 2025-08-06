@@ -1,29 +1,31 @@
-# 使用单阶段构建，简化构建过程
+# 使用更轻量级的基础镜像
 FROM node:20-alpine
 
 # 设置工作目录
 WORKDIR /app
 
-# 更新Alpine包管理器源为阿里云镜像
+# 更新Alpine包管理器源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
-# 安装系统依赖（合并安装减少层数）
-RUN apk add --no-cache python3 py3-pip make g++ gcc libc-dev cairo-dev jpeg-dev pango-dev musl-dev giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev pkgconfig vips-dev libpng-dev
+# 只安装Node.js运行时需要的最基本依赖
+RUN apk add --no-cache python3 make g++
 
-# 设置环境变量
+# 设置环境变量（优化npm安装）
 ENV NODE_ENV=production
 ENV PORT=80
-ENV npm_config_build_from_source=true
-ENV PYTHON=/usr/bin/python3
+ENV npm_config_registry=https://registry.npmmirror.com
+ENV npm_config_cache=/tmp/.npm
+ENV npm_config_prefer_offline=true
+ENV npm_config_no_audit=true
+ENV npm_config_no_fund=true
+ENV npm_config_maxsockets=1
+ENV npm_config_network_timeout=600000
 
 # 复制package文件
 COPY package*.json ./
 
-# 配置npm（简化配置）
-RUN npm config set registry https://registry.npmmirror.com && npm config set fetch-timeout 300000 && npm config set fetch-retries 3 && npm config set audit false && npm config set fund false
-
-# 安装依赖（使用更简单的命令）
-RUN npm install --production --no-audit --no-fund
+# 一步完成npm配置和安装（减少层数和时间）
+RUN npm install --production --prefer-offline --no-optional --ignore-scripts
 
 # 复制应用代码
 COPY . .
