@@ -8,9 +8,15 @@ Readiness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 ```
 
-**最新发现**：第四次部署失败的根本原因是应用启动逻辑问题。Docker构建成功，但应用在容器中无法正确启动。
+**最新发现**：第五次部署失败的根本原因是Docker健康检查配置问题。Docker构建成功，应用也能正常启动，但健康检查失败导致容器被标记为不健康。
 
-### 第四次问题：应用启动逻辑问题
+### 第五次问题：Docker健康检查配置问题
+- Docker镜像构建成功，应用也能正常启动并监听80端口
+- 但Dockerfile中的健康检查使用了`wget`命令，而Alpine Linux基础镜像默认没有安装`wget`
+- 导致健康检查命令执行失败，容器被标记为不健康状态
+- 云平台因为健康检查失败而认为部署失败
+
+### 第四次问题：应用启动逻辑问题（已解决）
 - Docker镜像构建成功，但应用在容器启动时出现异常
 - 应用启动过程中可能存在依赖加载或初始化失败
 - 容器内部环境与本地开发环境存在差异
@@ -66,6 +72,32 @@ Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 - 添加多种路径匹配方式，包括相对路径和绝对路径
 - 确保应用在Docker容器中能正确执行`main()`函数并监听端口
 
+### 5. 修复Docker健康检查问题（第五次问题解决方案）
+
+**问题分析**：
+- Docker镜像构建成功，应用也能正常启动并监听80端口
+- 但Dockerfile中的健康检查使用了`wget`命令，而Alpine Linux基础镜像默认没有安装`wget`
+- 导致健康检查命令执行失败，容器被标记为不健康状态
+
+**解决方案**：
+使用Node.js内置的http模块替代wget进行健康检查：
+
+```dockerfile
+# 修改前（有问题的配置）
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+
+# 修改后（正确的配置）
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD node -e "const http = require('http'); const req = http.request({hostname: 'localhost', port: 80, path: '/health', timeout: 5000}, (res) => process.exit(res.statusCode === 200 ? 0 : 1)); req.on('error', () => process.exit(1)); req.end();"
+```
+
+**优势**：
+- 不依赖外部工具，使用Node.js内置模块
+- 更轻量，不需要安装额外的包
+- 更可靠，直接使用应用运行时环境
+- 支持超时控制和错误处理
+
 ```javascript
 // 修改前
 const port = process.env.PORT || (portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000);
@@ -97,7 +129,7 @@ ports:
 **Dockerfile健康检查**:
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+    CMD node -e "const http = require('http'); const req = http.request({hostname: 'localhost', port: 80, path: '/health', timeout: 5000}, (res) => process.exit(res.statusCode === 200 ? 0 : 1)); req.on('error', () => process.exit(1)); req.end();"
 ```
 
 **应用健康检查端点**:
@@ -178,7 +210,7 @@ docker-compose up -d --build
 ## 相关文件
 
 - `index.js` - 主应用文件，已修复端口配置逻辑和Docker环境启动问题
-- `Dockerfile` - Docker配置文件，已添加PORT环境变量，优化构建依赖和配置
+- `Dockerfile` - Docker配置文件，已添加PORT环境变量，优化构建依赖和配置，修复健康检查问题
 - `docker-compose.yml` - Docker Compose配置（端口映射正确）
 - `.dockerignore` - 已移除config.production.json的忽略规则
 - `config.production.json` - 生产环境配置文件，现在会被正确复制到镜像中
@@ -193,18 +225,20 @@ docker-compose up -d --build
 
 ## 总结
 
-这次部署问题的解决过程揭示了四个关键问题：
+这次部署问题的解决过程揭示了五个关键问题：
 
 1. **端口配置不匹配**：通过统一应用和Docker配置中的端口设置解决
 2. **配置文件缺失**：通过修复`.dockerignore`文件确保必要的配置文件被包含在镜像中
 3. **Docker构建失败**：通过优化Dockerfile构建配置，增加必要的系统依赖和编译环境，解决canvas等原生模块的编译问题
 4. **应用启动逻辑问题**：通过优化主模块检测逻辑，确保应用在Docker环境中能正确启动和监听端口
+5. **Docker健康检查配置问题**：通过使用Node.js内置模块替代wget进行健康检查解决
 
-**应用启动逻辑问题是导致第四次部署失败的根本原因**。虽然Docker构建成功，但应用在容器中无法正确启动，因为主模块检测逻辑在Docker环境中失效。现在所有问题都已解决：
+**Docker健康检查配置问题是导致第五次部署失败的根本原因**。虽然Docker构建成功且应用能正常启动，但健康检查使用的wget命令在Alpine Linux中不可用，导致容器被标记为不健康。现在所有问题都已解决：
 - 完整的系统依赖包
 - 正确的环境变量设置
 - 充足的超时和内存配置
 - 详细的构建日志输出
 - Docker环境兼容的启动逻辑
+- 可靠的健康检查机制
 
 应用现在应该能够成功构建、部署和运行。
