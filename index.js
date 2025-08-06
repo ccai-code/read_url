@@ -563,7 +563,7 @@ class MCPHtmlServer {
     });
   }
 
-  async startHttpServer(port = 3000) {
+  async startHttpServer(port = 80) {
     console.log(`🔧 准备启动HTTP服务器，端口: ${port}`);
     logger.info('SERVER', `开始启动HTTP服务器，端口: ${port}`);
 
@@ -959,7 +959,7 @@ async function main() {
 
     const args = process.argv.slice(2);
     const portIndex = args.indexOf('--port');
-    const port = process.env.PORT || (portIndex !== -1 ? parseInt(args[portIndex + 1]) : 3000);
+    const port = process.env.PORT || (portIndex !== -1 ? parseInt(args[portIndex + 1]) : 80);
 
     logger.info('SERVER', `配置端口: ${port}`);
 
