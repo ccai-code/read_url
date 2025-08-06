@@ -153,6 +153,18 @@ class MCPHtmlServer {
 
         if (name === 'read_link') {
           result = await this.handleReadLink(args.url, args.prompt);
+          
+          // 简化响应格式以提高兼容性
+          if (result && result.content && Array.isArray(result.content) && result.content[0]) {
+            const simplifiedResult = {
+              content: [{
+                type: 'text',
+                text: result.content[0].text
+              }]
+            };
+            logger.mcpResponse(request.id, simplifiedResult);
+            return simplifiedResult;
+          }
         } else {
           throw new Error(`Unknown tool: ${name}`);
         }
@@ -161,7 +173,13 @@ class MCPHtmlServer {
         return result;
       } catch (error) {
         logger.mcpError(error, { request: request.params });
-        throw error;
+        const errorResult = {
+          content: [{
+            type: 'text',
+            text: `❌ 处理失败: ${error.message}`
+          }]
+        };
+        return errorResult;
       }
     });
   }
