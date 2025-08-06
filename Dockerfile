@@ -7,8 +7,11 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 # 安装构建依赖和系统库
 RUN apk add --no-cache \
     python3 \
+    py3-pip \
     make \
     g++ \
+    gcc \
+    libc-dev \
     cairo-dev \
     jpeg-dev \
     pango-dev \
@@ -17,21 +20,31 @@ RUN apk add --no-cache \
     pixman-dev \
     pangomm-dev \
     libjpeg-turbo-dev \
-    freetype-dev
+    freetype-dev \
+    pkgconfig \
+    cairo-tools \
+    pango-tools
 
 # 设置工作目录
 WORKDIR /app
+
+# 设置环境变量以帮助原生模块编译
+ENV PYTHON=/usr/bin/python3
+ENV CANVAS_PREBUILT=false
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
 # 设置npm配置和安装依赖
 RUN npm config set registry https://registry.npmmirror.com && \
-    npm config set fetch-timeout 300000 && \
-    npm config set fetch-retry-mintimeout 5000 && \
-    npm config set fetch-retry-maxtimeout 30000 && \
+    npm config set fetch-timeout 600000 && \
+    npm config set fetch-retry-mintimeout 10000 && \
+    npm config set fetch-retry-maxtimeout 60000 && \
     npm config set audit false && \
-    npm ci --omit=dev --no-audit --no-fund
+    npm config set fund false && \
+    npm config set progress false && \
+    npm ci --omit=dev --no-audit --no-fund --verbose
 
 # 复制应用代码
 COPY . .
