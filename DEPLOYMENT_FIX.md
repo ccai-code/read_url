@@ -8,19 +8,27 @@ Readiness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 ```
 
-**最新发现**：第二次部署失败的根本原因是配置文件缺失问题。
+**最新发现**：第三次部署失败的根本原因是Docker构建过程中断问题。
 
 ## 问题根因
 
 ### 第一次问题：端口不匹配
-- Docker容器配置期望服务监听80端口
-- 应用程序默认监听3000端口
-- 导致健康检查无法连接到正确端口
+- `index.js`中默认端口设置为3000
+- `Dockerfile`中暴露80端口并通过`--port 80`参数启动
+- 但代码中端口优先级：环境变量 > 命令行参数 > 默认值
+- 由于没有设置`PORT`环境变量，应用仍使用默认的3000端口
 
-### 第二次问题：配置文件缺失（关键问题）
-- `.dockerignore`文件中错误地包含了`config.production.json`
-- 导致生产环境配置文件没有被复制到Docker镜像中
-- 应用启动时无法找到配置文件，启动失败
+### 第二次问题：配置文件缺失
+- `.dockerignore`文件错误地包含了`config.production.json`
+- 导致该配置文件未被复制到Docker镜像中
+- 应用启动时无法加载AI服务的API密钥等关键配置
+- 引起应用启动失败，健康检查无法通过
+
+### 第三次问题：Docker构建失败
+- canvas包需要编译原生模块，对系统依赖要求较高
+- Alpine Linux缺少某些必要的构建工具和库
+- npm安装超时设置不足，无法完成复杂的编译过程
+- 缺少Python环境变量和编译优化配置
 
 ## 解决方案
 
@@ -31,6 +39,13 @@ Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 ### 2. 修复配置文件缺失问题（关键修复）
 - 从`.dockerignore`文件中移除`config.production.json`
 - 确保生产环境配置文件被正确复制到Docker镜像中
+
+### 3. 修复Docker构建问题（第三次问题解决方案）
+- 增加必要的系统依赖包：`py3-pip`, `gcc`, `libc-dev`, `pkgconfig`等
+- 添加canvas相关的构建工具：`cairo-tools`, `pango-tools`
+- 设置环境变量：`PYTHON=/usr/bin/python3`, `CANVAS_PREBUILT=false`
+- 增加npm超时设置：fetch-timeout提升到600秒
+- 设置Node.js内存限制：`NODE_OPTIONS="--max-old-space-size=4096"`
 
 ```javascript
 // 修改前
@@ -143,11 +158,11 @@ docker-compose up -d --build
 
 ## 相关文件
 
-- `index.js` - 主应用文件（已修复端口配置）
-- `Dockerfile` - Docker构建文件（端口80配置正确）
+- `index.js` - 主应用文件，已修复端口配置逻辑
+- `Dockerfile` - Docker配置文件，已添加PORT环境变量，优化构建依赖和配置
 - `docker-compose.yml` - Docker Compose配置（端口映射正确）
-- `.dockerignore` - Docker构建忽略文件配置（**已修复**）
-- `config.production.json` - 生产环境配置（**现已正确包含**）
+- `.dockerignore` - 已移除config.production.json的忽略规则
+- `config.production.json` - 生产环境配置文件，现在会被正确复制到镜像中
 
 ## 修复状态
 
@@ -159,9 +174,16 @@ docker-compose up -d --build
 
 ## 总结
 
-这次部署问题的解决过程揭示了两个关键问题：
+这次部署问题的解决过程揭示了三个关键问题：
 
 1. **端口配置不匹配**：通过统一应用和Docker配置中的端口设置解决
 2. **配置文件缺失**：通过修复`.dockerignore`文件确保必要的配置文件被包含在镜像中
+3. **Docker构建失败**：通过优化Dockerfile构建配置，增加必要的系统依赖和编译环境，解决canvas等原生模块的编译问题
 
-第二个问题是导致最新部署失败的根本原因。现在所有问题都已解决，应用应该能够成功部署并正常运行。
+**Docker构建失败是导致第三次部署失败的根本原因**。现在所有配置都已正确优化，包括：
+- 完整的系统依赖包
+- 正确的环境变量设置
+- 充足的超时和内存配置
+- 详细的构建日志输出
+
+应用现在应该能够成功构建、部署和运行。
