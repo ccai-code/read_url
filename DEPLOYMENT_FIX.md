@@ -1,3 +1,7 @@
+# 部署问题解决方案文档
+
+本文档记录了在部署过程中遇到的问题及其解决方案。目前已解决 **九个** 部署问题。
+
 # 部署问题修复说明
 
 ## 问题描述
@@ -326,9 +330,21 @@ docker-compose up -d --build
   - 设置正确的环境变量：`SHARP_IGNORE_GLOBAL_LIBVIPS=1`和`SHARP_FORCE_GLOBAL_LIBVIPS=false`
   - 确保sharp模块能在Alpine Linux环境下正常运行
 
-**Sharp模块平台兼容性问题是导致第八次部署失败的根本原因**。通过完善的依赖配置和环境变量设置，现在所有问题都已解决：
-- 完整的系统依赖包（包含vips-dev）
-- 正确的环境变量设置（包含sharp相关配置）
+### 第九次部署问题解决方案
+
+**Canvas模块构建失败问题**：
+- 问题：构建过程中canvas模块在node-gyp构建时出现缓存目录问题"Error: ENOTEMPTY: directory not empty, rmdir '/root/.cache/node-gyp/20.19.4/include/node/openssl/archs/VC-WIN32/asm_avx2'"
+- 根本原因：node-gyp缓存目录存在冲突，无法正确清理，canvas模块缺少完整的构建依赖
+- 解决方案：
+  - 在npm安装前强制清理所有缓存：`npm cache clean --force && rm -rf /root/.cache/node-gyp && rm -rf /root/.npm`
+  - 在构建阶段添加canvas所需的完整依赖：`vips-dev libpng-dev`
+  - 配置正确的npm环境变量：`npm_config_cache=/tmp/.npm`、`npm_config_build_from_source=true`、`CANVAS_PREBUILT=false`
+  - 确保canvas模块能在Alpine Linux环境下正确构建和运行
+
+**Canvas模块构建失败是导致第九次部署失败的根本原因**。通过完善的缓存清理、依赖配置和环境变量设置，现在所有问题都已解决：
+- 完整的系统依赖包（包含vips-dev、libpng-dev等）
+- 正确的环境变量设置（包含canvas和sharp相关配置）
+- 强制缓存清理和源码构建机制
 - 优化的构建流程和时间控制
 - 详细的构建日志输出
 - Docker环境兼容的启动逻辑
