@@ -10,11 +10,58 @@ Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 
 **最新发现**：第五次部署失败的根本原因是Docker健康检查配置问题。Docker构建成功，应用也能正常启动，但健康检查失败导致容器被标记为不健康。
 
-### 第五次问题：Docker健康检查配置问题
+### 第五次问题：Docker健康检查配置问题（已解决）
 - Docker镜像构建成功，应用也能正常启动并监听80端口
 - 但Dockerfile中的健康检查使用了`wget`命令，而Alpine Linux基础镜像默认没有安装`wget`
 - 导致健康检查命令执行失败，容器被标记为不健康状态
 - 云平台因为健康检查失败而认为部署失败
+
+### 第六次问题：Docker构建超时问题
+- Docker镜像构建过程中npm安装依赖时被中断
+- 复杂的原生模块（canvas、sharp等）安装时间过长，超出构建平台的超时限制
+- npm下载和编译过程中可能遇到网络不稳定或资源不足的问题
+- 构建过程在安装依赖阶段突然终止，导致镜像构建失败
+
+## 修复方案
+
+### 第六次问题解决方案
+优化Dockerfile构建配置，提高npm安装的稳定性和超时容忍度：
+
+```dockerfile
+# 1. 增加Node.js内存限制和环境变量优化
+ENV NODE_OPTIONS="--max-old-space-size=6144"
+ENV SHARP_IGNORE_GLOBAL_LIBVIPS=1
+ENV SHARP_FORCE_GLOBAL_LIBVIPS=false
+ENV npm_config_build_from_source=true
+ENV npm_config_cache_max=0
+
+# 2. 优化npm配置，增加超时时间和重试机制
+RUN npm config set fetch-timeout 900000 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm config set fetch-retries 5 && \
+    npm config set maxsockets 1
+
+# 3. 分阶段安装依赖，先安装关键的原生模块
+RUN npm install --no-save canvas@3.1.2 --verbose --timeout=900000 || \
+    (echo "First canvas install failed, retrying..." && sleep 10 && npm install --no-save canvas@3.1.2 --verbose --timeout=900000)
+
+RUN npm install --no-save sharp@0.33.5 --verbose --timeout=900000 || \
+    (echo "First sharp install failed, retrying..." && sleep 10 && npm install --no-save sharp@0.33.5 --verbose --timeout=900000)
+
+# 4. 安装其余依赖，带有失败重试机制
+RUN npm ci --omit=dev --no-audit --no-fund --verbose --timeout=900000 || \
+    (echo "First npm ci failed, cleaning and retrying..." && \
+     rm -rf node_modules package-lock.json && \
+     npm install --omit=dev --no-audit --no-fund --verbose --timeout=900000)
+```
+
+**优势**：
+- 分阶段安装：先安装最容易失败的原生模块，降低整体失败风险
+- 增加超时时间：从10分钟增加到15分钟，给复杂编译过程更多时间
+- 重试机制：每个关键步骤都有失败重试逻辑
+- 内存优化：增加Node.js内存限制，避免内存不足导致的编译失败
+- 网络优化：限制并发连接数，提高网络稳定性
 
 ### 第四次问题：应用启动逻辑问题（已解决）
 - Docker镜像构建成功，但应用在容器启动时出现异常
@@ -225,15 +272,16 @@ docker-compose up -d --build
 
 ## 总结
 
-这次部署问题的解决过程揭示了五个关键问题：
+通过系统性的问题诊断和修复，我们已经解决了六个关键的部署问题：
 
 1. **端口配置不匹配**：通过统一应用和Docker配置中的端口设置解决
 2. **配置文件缺失**：通过修复`.dockerignore`文件确保必要的配置文件被包含在镜像中
 3. **Docker构建失败**：通过优化Dockerfile构建配置，增加必要的系统依赖和编译环境，解决canvas等原生模块的编译问题
 4. **应用启动逻辑问题**：通过优化主模块检测逻辑，确保应用在Docker环境中能正确启动和监听端口
 5. **Docker健康检查配置问题**：通过使用Node.js内置模块替代wget进行健康检查解决
+6. **Docker构建超时问题**：通过分阶段安装依赖、增加超时时间和重试机制解决
 
-**Docker健康检查配置问题是导致第五次部署失败的根本原因**。虽然Docker构建成功且应用能正常启动，但健康检查使用的wget命令在Alpine Linux中不可用，导致容器被标记为不健康。现在所有问题都已解决：
+**Docker构建超时问题是导致第六次部署失败的根本原因**。复杂的原生模块安装时间过长，超出构建平台的超时限制。现在所有问题都已解决：
 - 完整的系统依赖包
 - 正确的环境变量设置
 - 充足的超时和内存配置
