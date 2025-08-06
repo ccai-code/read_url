@@ -4,12 +4,13 @@ FROM node:20-alpine AS builder
 # 配置国内镜像源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
-# 安装构建依赖
+# 安装构建依赖（包含canvas所需的完整依赖）
 RUN apk add --no-cache \
     python3 py3-pip make g++ gcc libc-dev \
     cairo-dev jpeg-dev pango-dev musl-dev \
     giflib-dev pixman-dev pangomm-dev \
-    libjpeg-turbo-dev freetype-dev pkgconfig
+    libjpeg-turbo-dev freetype-dev pkgconfig \
+    vips-dev libpng-dev
 
 # 设置工作目录
 WORKDIR /app
@@ -17,8 +18,9 @@ WORKDIR /app
 # 设置环境变量
 ENV PYTHON=/usr/bin/python3
 ENV NODE_OPTIONS="--max-old-space-size=4096"
-ENV npm_config_build_from_source=false
-ENV CANVAS_PREBUILT=true
+ENV npm_config_build_from_source=true
+ENV npm_config_cache=/tmp/.npm
+ENV CANVAS_PREBUILT=false
 ENV SHARP_IGNORE_GLOBAL_LIBVIPS=1
 
 # 复制package文件
@@ -35,7 +37,12 @@ RUN npm config set registry https://registry.npmmirror.com && \
     npm config set progress false && \
     npm config set maxsockets 5
 
-# 安装依赖 - 确保sharp平台依赖正确安装
+# 清理npm和node-gyp缓存，避免构建冲突
+RUN npm cache clean --force && \
+    rm -rf /root/.cache/node-gyp && \
+    rm -rf /root/.npm
+
+# 安装依赖 - 确保sharp和canvas平台依赖正确安装
 RUN npm ci --omit=dev --no-audit --no-fund --prefer-offline
 
 # 生产阶段 - 最小化镜像
