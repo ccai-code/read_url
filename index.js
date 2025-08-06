@@ -986,10 +986,16 @@ async function main() {
 }
 
 // 只在直接运行此文件时启动服务器
-// 修复Windows路径分隔符问题
+// 修复Windows路径分隔符问题和Docker环境兼容性
 const currentFileUrl = import.meta.url;
 const scriptPath = `file:///${process.argv[1].replace(/\\/g, '/')}`;
-if (currentFileUrl === scriptPath) {
+
+// 检查是否为主模块（支持Docker环境）
+const isMainModule = currentFileUrl === scriptPath || 
+                   process.argv[1].endsWith('index.js') || 
+                   process.argv[1].endsWith('/app/index.js');
+
+if (isMainModule) {
   main().catch(error => {
     console.error('❌ 启动失败:', error);
     process.exit(1);
