@@ -8,7 +8,13 @@ Readiness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 ```
 
-**最新发现**：第三次部署失败的根本原因是Docker构建过程中断问题。
+**最新发现**：第四次部署失败的根本原因是应用启动逻辑问题。Docker构建成功，但应用在容器中无法正确启动。
+
+### 第四次问题：应用启动逻辑问题
+- Docker镜像构建成功，但应用在容器启动时出现异常
+- 应用启动过程中可能存在依赖加载或初始化失败
+- 容器内部环境与本地开发环境存在差异
+- 应用无法正确绑定到指定端口或处理请求
 
 ## 问题根因
 
@@ -30,6 +36,13 @@ Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 - npm安装超时设置不足，无法完成复杂的编译过程
 - 缺少Python环境变量和编译优化配置
 
+### 第四次问题：应用启动逻辑问题（详细分析）
+- 主模块检测逻辑在Docker环境中失效
+- `import.meta.url`与`process.argv[1]`路径比较在容器中不匹配
+- 导致应用认为不是主模块，跳过了`main()`函数的执行
+- 容器启动后应用进程存在但没有监听任何端口
+- Docker环境中文件路径格式与本地开发环境存在差异
+
 ## 解决方案
 
 ### 1. 修改应用默认端口（已完成）
@@ -46,6 +59,12 @@ Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused
 - 设置环境变量：`PYTHON=/usr/bin/python3`, `CANVAS_PREBUILT=false`
 - 增加npm超时设置：fetch-timeout提升到600秒
 - 设置Node.js内存限制：`NODE_OPTIONS="--max-old-space-size=4096"`
+
+### 4. 修复应用启动逻辑问题（第四次问题解决方案）
+- 优化主模块检测逻辑，支持Docker环境中的路径格式
+- 增强路径匹配兼容性，确保在容器中能正确识别主模块
+- 添加多种路径匹配方式，包括相对路径和绝对路径
+- 确保应用在Docker容器中能正确执行`main()`函数并监听端口
 
 ```javascript
 // 修改前
@@ -158,7 +177,7 @@ docker-compose up -d --build
 
 ## 相关文件
 
-- `index.js` - 主应用文件，已修复端口配置逻辑
+- `index.js` - 主应用文件，已修复端口配置逻辑和Docker环境启动问题
 - `Dockerfile` - Docker配置文件，已添加PORT环境变量，优化构建依赖和配置
 - `docker-compose.yml` - Docker Compose配置（端口映射正确）
 - `.dockerignore` - 已移除config.production.json的忽略规则
@@ -174,16 +193,18 @@ docker-compose up -d --build
 
 ## 总结
 
-这次部署问题的解决过程揭示了三个关键问题：
+这次部署问题的解决过程揭示了四个关键问题：
 
 1. **端口配置不匹配**：通过统一应用和Docker配置中的端口设置解决
 2. **配置文件缺失**：通过修复`.dockerignore`文件确保必要的配置文件被包含在镜像中
 3. **Docker构建失败**：通过优化Dockerfile构建配置，增加必要的系统依赖和编译环境，解决canvas等原生模块的编译问题
+4. **应用启动逻辑问题**：通过优化主模块检测逻辑，确保应用在Docker环境中能正确启动和监听端口
 
-**Docker构建失败是导致第三次部署失败的根本原因**。现在所有配置都已正确优化，包括：
+**应用启动逻辑问题是导致第四次部署失败的根本原因**。虽然Docker构建成功，但应用在容器中无法正确启动，因为主模块检测逻辑在Docker环境中失效。现在所有问题都已解决：
 - 完整的系统依赖包
 - 正确的环境变量设置
 - 充足的超时和内存配置
 - 详细的构建日志输出
+- Docker环境兼容的启动逻辑
 
 应用现在应该能够成功构建、部署和运行。
