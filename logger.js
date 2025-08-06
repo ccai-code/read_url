@@ -35,7 +35,7 @@ class Logger {
         };
 
         const logLine = `[${timestamp}] [${level}] [${category}] ${message}${data ? '\n' + JSON.stringify(data, null, 2) : ''}\n`;
-        
+
         // 写入文件
         try {
             appendFileSync(this.logFile, logLine);
@@ -43,7 +43,7 @@ class Logger {
             console.error('写入日志文件失败:', error);
             console.error('日志文件路径:', this.logFile);
         }
-        
+
         // 同时输出到控制台
         console.log(logLine.trim());
     }
@@ -205,7 +205,7 @@ class Logger {
         try {
             const logContent = fs.readFileSync(this.logFile, 'utf8');
             const lines = logContent.split('\n').filter(line => line.trim());
-            
+
             const stats = {
                 totalLines: lines.length,
                 errors: lines.filter(line => line.includes('[ERROR]')).length,
@@ -215,7 +215,7 @@ class Logger {
                 httpRequests: lines.filter(line => line.includes('[HTTP_REQUEST]')).length,
                 robotMessages: lines.filter(line => line.includes('[ROBOT]')).length
             };
-            
+
             return stats;
         } catch (error) {
             return { error: error.message };
@@ -228,12 +228,12 @@ class Logger {
             const files = readdirSync(this.logDir);
             const cutoffDate = new Date();
             cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
-            
+
             files.forEach(file => {
                 if (file.startsWith('mcp-') && file.endsWith('.log')) {
                     const filePath = path.join(this.logDir, file);
                     const stats = statSync(filePath);
-                    
+
                     if (stats.mtime < cutoffDate) {
                         unlinkSync(filePath);
                         this.info('CLEANUP', `删除旧日志文件: ${file}`);

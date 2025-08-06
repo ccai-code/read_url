@@ -1,334 +1,373 @@
-部署详情 / get-url / 038
-038
+部署详情 / get-url / 040
+040
 部署失败
 基本信息
 服务名	
 get-url
 开始时间	
-2025-08-06 01:22:57
+2025-08-06 13:39:39
 状态	
 部署失败
 处理建议	点击查看常见服务部署失败问题，自行快速排查
 日志
-2025-08-06 01:23:10 Started by user coding
-2025-08-06 01:23:10 Running in Durability level: MAX_SURVIVABILITY
-2025-08-06 01:23:12 Pipeline Start of Pipeline
-2025-08-06 01:23:13 Pipeline node
-2025-08-06 01:23:13 Running on Jenkins in /root/workspace
-2025-08-06 01:23:13 Pipeline {
-2025-08-06 01:23:13 Pipeline stage
-2025-08-06 01:23:13 Pipeline { (检出软件包)
-2025-08-06 01:23:13 Stage "检出软件包" skipped due to when conditional
-2025-08-06 01:23:13 Pipeline }
-2025-08-06 01:23:13 Pipeline // stage
-2025-08-06 01:23:13 Pipeline stage
-2025-08-06 01:23:13 Pipeline { (检出 ZIP 包)
-2025-08-06 01:23:13 Stage "检出 ZIP 包" skipped due to when conditional
-2025-08-06 01:23:13 Pipeline }
-2025-08-06 01:23:13 Pipeline // stage
-2025-08-06 01:23:13 Pipeline stage
-2025-08-06 01:23:13 Pipeline { (检出代码仓库)
-2025-08-06 01:23:14 Pipeline sh
-2025-08-06 01:23:14 + git clone ****** .
-2025-08-06 01:23:14 Cloning into '.'...
-2025-08-06 01:23:15 Pipeline sh
-2025-08-06 01:23:15 + git checkout main
-2025-08-06 01:23:15 Already on 'main'
-2025-08-06 01:23:15 Your branch is up to date with 'origin/main'.
-2025-08-06 01:23:15 Pipeline }
-2025-08-06 01:23:16 Pipeline // stage
-2025-08-06 01:23:16 Pipeline stage
-2025-08-06 01:23:16 Pipeline { (写入 dockerfile)
-2025-08-06 01:23:16 Stage "写入 dockerfile" skipped due to when conditional
-2025-08-06 01:23:16 Pipeline }
-2025-08-06 01:23:16 Pipeline // stage
-2025-08-06 01:23:16 Pipeline stage
-2025-08-06 01:23:16 Pipeline { (构建 Docker 镜像)
-2025-08-06 01:23:16 Pipeline sh
-2025-08-06 01:23:16 + docker login -u ****** -p ****** ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-038-20250806012307
-2025-08-06 01:23:16 WARNING! Using --password via the CLI is insecure. Use --password-stdin.
-2025-08-06 01:23:16 WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
-2025-08-06 01:23:16 Configure a credential helper to remove this warning. See
-2025-08-06 01:23:16 https://docs.docker.com/engine/reference/commandline/login/#credentials-store
-2025-08-06 01:23:16
-2025-08-06 01:23:16 Login Succeeded
-2025-08-06 01:23:16 Pipeline sh
-2025-08-06 01:23:16 + docker build -f ././Dockerfile -t ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-038-20250806012307 .
-2025-08-06 01:23:17 #0 building with "default" instance using docker driver
-2025-08-06 01:23:17
-2025-08-06 01:23:17 #1 internal load .dockerignore
-2025-08-06 01:23:17 #1 transferring context: 323B done
-2025-08-06 01:23:17 #1 DONE 0.1s
-2025-08-06 01:23:17
-2025-08-06 01:23:17 #2 internal load build definition from Dockerfile
-2025-08-06 01:23:17 #2 transferring dockerfile: 1.07kB done
-2025-08-06 01:23:17 #2 DONE 0.2s
-2025-08-06 01:23:17
-2025-08-06 01:23:17 #3 internal load metadata for docker.io/library/node:20-alpine
-2025-08-06 01:23:19 #3 DONE 1.2s
-2025-08-06 01:23:19
-2025-08-06 01:23:19 #4 internal load build context
-2025-08-06 01:23:19 #4 transferring context: 170.31kB done
-2025-08-06 01:23:19 #4 DONE 0.1s
-2025-08-06 01:23:19
-2025-08-06 01:23:19 #5 1/7 FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
-2025-08-06 01:23:19 #5 resolve docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 0.1s done
-2025-08-06 01:23:19 #5 sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 7.67kB / 7.67kB done
-2025-08-06 01:23:19 #5 sha256:ae6ee91a652d927de01d550c29f863a52f1da390c89df95f3ceba256d1e62604 1.72kB / 1.72kB done
-2025-08-06 01:23:19 #5 sha256:7cdef5a331927fafa250be6166052d8599bf5eb7b014342538c2cc79b70a081f 6.42kB / 6.42kB done
-2025-08-06 01:23:19 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0B / 3.80MB 0.1s
-2025-08-06 01:23:19 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 0B / 42.99MB 0.1s
-2025-08-06 01:23:19 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0B / 1.26MB 0.1s
-2025-08-06 01:23:19 #5 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 0B / 445B 0.2s
-2025-08-06 01:23:19 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 3.80MB / 3.80MB 0.4s
-2025-08-06 01:23:19 #5 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 445B / 445B 0.3s done
-2025-08-06 01:23:19 #5 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8
-2025-08-06 01:23:19 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 3.80MB / 3.80MB 0.4s done
-2025-08-06 01:23:19 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 1.26MB / 1.26MB 0.5s done
-2025-08-06 01:23:19 #5 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0.1s done
-2025-08-06 01:23:19 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 22.02MB / 42.99MB 0.7s
-2025-08-06 01:23:19 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 31.46MB / 42.99MB 0.8s
-2025-08-06 01:23:19 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 41.94MB / 42.99MB 0.9s
-2025-08-06 01:23:19 #5 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e
-2025-08-06 01:23:20 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 42.99MB / 42.99MB 0.9s done
-2025-08-06 01:23:21 #5 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 1.1s done
-2025-08-06 01:23:21 #5 extracting sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0.0s done
-2025-08-06 01:23:21 #5 extracting sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 done
-2025-08-06 01:23:21 #5 DONE 2.7s
-2025-08-06 01:23:21
-2025-08-06 01:23:21 #6 2/7 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
-2025-08-06 01:23:22 #6 DONE 0.4s
-2025-08-06 01:23:22
-2025-08-06 01:23:22 #7 3/7 RUN apk add --no-cache python3 make g++ cairo-dev jpeg-dev pango-dev musl-dev giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev
-2025-08-06 01:23:22 #7 0.364 fetch https://mirrors.aliyun.com/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
-2025-08-06 01:23:22 #7 0.460 fetch https://mirrors.aliyun.com/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
-2025-08-06 01:23:22 #7 0.716 (1/147) Installing cairo-tools (1.18.4-r0)
-2025-08-06 01:23:22 #7 0.726 (2/147) Installing libexpat (2.7.1-r0)
-2025-08-06 01:23:22 #7 0.735 (3/147) Installing brotli-libs (1.1.0-r2)
-2025-08-06 01:23:22 #7 0.748 (4/147) Installing libbz2 (1.0.8-r6)
-2025-08-06 01:23:22 #7 0.757 (5/147) Installing libpng (1.6.47-r0)
-2025-08-06 01:23:22 #7 0.767 (6/147) Installing freetype (2.13.3-r0)
-2025-08-06 01:23:23 #7 0.780 (7/147) Installing fontconfig (2.15.0-r3)
-2025-08-06 01:23:23 #7 0.793 (8/147) Installing expat (2.7.1-r0)
-2025-08-06 01:23:23 #7 0.801 (9/147) Installing pkgconf (2.4.3-r0)
-2025-08-06 01:23:23 #7 0.813 (10/147) Installing expat-dev (2.7.1-r0)
-2025-08-06 01:23:23 #7 0.822 (11/147) Installing bzip2-dev (1.0.8-r6)
-2025-08-06 01:23:23 #7 0.830 (12/147) Installing brotli (1.1.0-r2)
-2025-08-06 01:23:23 #7 0.837 (13/147) Installing brotli-dev (1.1.0-r2)
-2025-08-06 01:23:23 #7 0.845 (14/147) Installing zlib-dev (1.3.1-r2)
-2025-08-06 01:23:23 #7 0.854 (15/147) Installing libpng-dev (1.6.47-r0)
-2025-08-06 01:23:23 #7 0.862 (16/147) Installing freetype-dev (2.13.3-r0)
-2025-08-06 01:23:23 #7 0.876 (17/147) Installing fontconfig-dev (2.15.0-r3)
-2025-08-06 01:23:23 #7 0.888 (18/147) Installing libxau (1.0.12-r0)
-2025-08-06 01:23:23 #7 0.895 (19/147) Installing xorgproto (2024.1-r0)
-2025-08-06 01:23:23 #7 0.916 (20/147) Installing libxau-dev (1.0.12-r0)
-2025-08-06 01:23:23 #7 0.923 (21/147) Installing libmd (1.1.0-r0)
-2025-08-06 01:23:23 #7 0.932 (22/147) Installing libbsd (0.12.2-r0)
-2025-08-06 01:23:23 #7 0.939 (23/147) Installing libxdmcp (1.1.5-r1)
-2025-08-06 01:23:23 #7 0.947 (24/147) Installing libxcb (1.17.0-r0)
-2025-08-06 01:23:23 #7 0.960 (25/147) Installing libx11 (1.8.11-r0)
-2025-08-06 01:23:23 #7 0.991 (26/147) Installing libxext (1.3.6-r2)
-2025-08-06 01:23:23 #7 1.007 (27/147) Installing libffi (3.4.8-r0)
-2025-08-06 01:23:23 #7 1.014 (28/147) Installing gdbm (1.24-r0)
-2025-08-06 01:23:23 #7 1.023 (29/147) Installing xz-libs (5.8.1-r0)
-2025-08-06 01:23:23 #7 1.033 (30/147) Installing mpdecimal (4.0.1-r0)
-2025-08-06 01:23:23 #7 1.042 (31/147) Installing ncurses-terminfo-base (6.5_p20250503-r0)
-2025-08-06 01:23:23 #7 1.110 (32/147) Installing libncursesw (6.5_p20250503-r0)
-2025-08-06 01:23:23 #7 1.202 (33/147) Installing libpanelw (6.5_p20250503-r0)
-2025-08-06 01:23:23 #7 1.209 (34/147) Installing readline (8.2.13-r1)
-2025-08-06 01:23:23 #7 1.284 (35/147) Installing sqlite-libs (3.49.2-r1)
-2025-08-06 01:23:23 #7 1.307 (36/147) Installing python3 (3.12.11-r0)
-2025-08-06 01:23:23 #7 1.459 (37/147) Installing python3-pycache-pyc0 (3.12.11-r0)
-2025-08-06 01:23:23 #7 1.548 (38/147) Installing pyc (3.12.11-r0)
-2025-08-06 01:23:23 #7 1.548 (39/147) Installing xcb-proto-pyc (1.17.0-r0)
-2025-08-06 01:23:23 #7 1.558 (40/147) Installing python3-pyc (3.12.11-r0)
-2025-08-06 01:23:23 #7 1.558 (41/147) Installing xcb-proto (1.17.0-r0)
-2025-08-06 01:23:23 #7 1.570 (42/147) Installing libxdmcp-dev (1.1.5-r1)
-2025-08-06 01:23:23 #7 1.578 (43/147) Installing libxcb-dev (1.17.0-r0)
-2025-08-06 01:23:23 #7 1.594 (44/147) Installing xtrans (1.5.2-r0)
-2025-08-06 01:23:23 #7 1.603 (45/147) Installing libx11-dev (1.8.11-r0)
-2025-08-06 01:23:23 #7 1.612 (46/147) Installing libxext-dev (1.3.6-r2)
-2025-08-06 01:23:23 #7 1.621 (47/147) Installing libxrender (0.9.12-r0)
-2025-08-06 01:23:23 #7 1.629 (48/147) Installing libxrender-dev (0.9.12-r0)
-2025-08-06 01:23:23 #7 1.643 (49/147) Installing pixman (0.46.4-r0)
-2025-08-06 01:23:23 #7 1.655 (50/147) Installing pixman-dev (0.46.4-r0)
-2025-08-06 01:23:23 #7 1.663 (51/147) Installing util-macros (1.20.1-r0)
-2025-08-06 01:23:23 #7 1.671 (52/147) Installing xcb-util (0.4.1-r3)
-2025-08-06 01:23:23 #7 1.679 (53/147) Installing xcb-util-dev (0.4.1-r3)
-2025-08-06 01:23:23 #7 1.687 (54/147) Installing cairo (1.18.4-r0)
-2025-08-06 01:23:23 #7 1.708 (55/147) Installing libintl (0.24.1-r0)
-2025-08-06 01:23:23 #7 1.717 (56/147) Installing libeconf (0.6.3-r0)
-2025-08-06 01:23:23 #7 1.725 (57/147) Installing libblkid (2.41-r9)
-2025-08-06 01:23:23 #7 1.735 (58/147) Installing libmount (2.41-r9)
-2025-08-06 01:23:23 #7 1.746 (59/147) Installing pcre2 (10.43-r1)
-2025-08-06 01:23:23 #7 1.760 (60/147) Installing glib (2.84.3-r0)
-2025-08-06 01:23:23 #7 1.797 (61/147) Installing cairo-gobject (1.18.4-r0)
-2025-08-06 01:23:23 #7 1.805 (62/147) Installing libxml2 (2.13.8-r0)
-2025-08-06 01:23:23 #7 1.819 (63/147) Installing libxml2-utils (2.13.8-r0)
-2025-08-06 01:23:23 #7 1.828 (64/147) Installing docbook-xml (4.5-r10)
-2025-08-06 01:23:23 #7 1.848 Executing docbook-xml-4.5-r10.post-install
-2025-08-06 01:23:23 #7 1.859 (65/147) Installing libxslt (1.1.43-r3)
-2025-08-06 01:23:23 #7 1.870 (66/147) Installing docbook-xsl-ns (1.79.2-r11)
-2025-08-06 01:23:24 #7 1.975 Executing docbook-xsl-ns-1.79.2-r11.post-install
-2025-08-06 01:23:24 #7 2.021 (67/147) Installing docbook-xsl-nons (1.79.2-r11)
-2025-08-06 01:23:24 #7 2.118 Executing docbook-xsl-nons-1.79.2-r11.post-install
-2025-08-06 01:23:24 #7 2.173 (68/147) Installing docbook-xsl (1.79.2-r11)
-2025-08-06 01:23:24 #7 2.181 (69/147) Installing xz (5.8.1-r0)
-2025-08-06 01:23:24 #7 2.191 (70/147) Installing gettext-asprintf (0.24.1-r0)
-2025-08-06 01:23:24 #7 2.199 (71/147) Installing libunistring (1.3-r0)
-2025-08-06 01:23:24 #7 2.218 (72/147) Installing gettext-libs (0.24.1-r0)
-2025-08-06 01:23:24 #7 2.231 (73/147) Installing gettext-envsubst (0.24.1-r0)
-2025-08-06 01:23:24 #7 2.239 (74/147) Installing libgomp (14.2.0-r6)
-2025-08-06 01:23:24 #7 2.251 (75/147) Installing gettext (0.24.1-r0)
-2025-08-06 01:23:24 #7 2.286 (76/147) Installing gettext-dev (0.24.1-r0)
-2025-08-06 01:23:24 #7 2.307 (77/147) Installing py3-parsing (3.2.3-r0)
-2025-08-06 01:23:24 #7 2.321 (78/147) Installing py3-parsing-pyc (3.2.3-r0)
-2025-08-06 01:23:24 #7 2.333 (79/147) Installing py3-packaging (25.0-r0)
-2025-08-06 01:23:24 #7 2.342 (80/147) Installing py3-packaging-pyc (25.0-r0)
-2025-08-06 01:23:24 #7 2.352 (81/147) Installing linux-headers (6.14.2-r0)
-2025-08-06 01:23:24 #7 2.436 (82/147) Installing libffi-dev (3.4.8-r0)
-2025-08-06 01:23:24 #7 2.444 (83/147) Installing bsd-compat-headers (0.7.2-r6)
-2025-08-06 01:23:24 #7 2.452 (84/147) Installing libformw (6.5_p20250503-r0)
-2025-08-06 01:23:24 #7 2.460 (85/147) Installing libmenuw (6.5_p20250503-r0)
-2025-08-06 01:23:24 #7 2.468 (86/147) Installing libncurses++ (6.5_p20250503-r0)
-2025-08-06 01:23:24 #7 2.476 (87/147) Installing ncurses-dev (6.5_p20250503-r0)
-2025-08-06 01:23:24 #7 2.486 (88/147) Installing libedit (20250104.3.1-r1)
-2025-08-06 01:23:24 #7 2.496 (89/147) Installing libedit-dev (20250104.3.1-r1)
-2025-08-06 01:23:24 #7 2.503 (90/147) Installing libpcre2-16 (10.43-r1)
-2025-08-06 01:23:24 #7 2.515 (91/147) Installing libpcre2-32 (10.43-r1)
-2025-08-06 01:23:24 #7 2.526 (92/147) Installing pcre2-dev (10.43-r1)
-2025-08-06 01:23:24 #7 2.534 (93/147) Installing libuuid (2.41-r9)
-2025-08-06 01:23:24 #7 2.542 (94/147) Installing libfdisk (2.41-r9)
-2025-08-06 01:23:24 #7 2.552 (95/147) Installing liblastlog2 (2.41-r9)
-2025-08-06 01:23:24 #7 2.560 (96/147) Installing libsmartcols (2.41-r9)
-2025-08-06 01:23:24 #7 2.568 (97/147) Installing sqlite (3.49.2-r1)
-2025-08-06 01:23:24 #7 2.589 (98/147) Installing sqlite-dev (3.49.2-r1)
-2025-08-06 01:23:24 #7 2.600 (99/147) Installing util-linux-dev (2.41-r9)
-2025-08-06 01:23:24 #7 2.609 (100/147) Installing glib-dev (2.84.3-r0)
-2025-08-06 01:23:24 #7 2.688 (101/147) Installing cairo-dev (1.18.4-r0)
-2025-08-06 01:23:24 #7 2.698 (102/147) Installing libstdc++-dev (14.2.0-r6)
-2025-08-06 01:23:24 #7 2.817 (103/147) Installing jansson (2.14.1-r0)
-2025-08-06 01:23:25 #7 2.827 (104/147) Installing zstd-libs (1.5.7-r0)
-2025-08-06 01:23:25 #7 2.842 (105/147) Installing binutils (2.44-r2)
-2025-08-06 01:23:25 #7 2.917 (106/147) Installing libatomic (14.2.0-r6)
-2025-08-06 01:23:25 #7 2.926 (107/147) Installing gmp (6.3.0-r3)
-2025-08-06 01:23:25 #7 2.938 (108/147) Installing isl26 (0.26-r1)
-2025-08-06 01:23:25 #7 2.960 (109/147) Installing mpfr4 (4.2.1_p1-r0)
-2025-08-06 01:23:25 #7 2.974 (110/147) Installing mpc1 (1.3.1-r1)
-2025-08-06 01:23:25 #7 2.983 (111/147) Installing gcc (14.2.0-r6)
-2025-08-06 01:23:26 #7 4.327 (112/147) Installing musl-dev (1.2.5-r10)
-2025-08-06 01:23:26 #7 4.532 (113/147) Installing g++ (14.2.0-r6)
-2025-08-06 01:23:27 #7 5.168 (114/147) Installing giflib (5.2.2-r1)
-2025-08-06 01:23:27 #7 5.181 (115/147) Installing giflib-dev (5.2.2-r1)
-2025-08-06 01:23:27 #7 5.190 (116/147) Installing libjpeg-turbo (3.1.0-r0)
-2025-08-06 01:23:27 #7 5.202 (117/147) Installing libturbojpeg (3.1.0-r0)
-2025-08-06 01:23:27 #7 5.217 (118/147) Installing libjpeg-turbo-dev (3.1.0-r0)
-2025-08-06 01:23:27 #7 5.227 (119/147) Installing jpeg-dev (9f-r0)
-2025-08-06 01:23:27 #7 5.227 (120/147) Installing make (4.4.1-r3)
-2025-08-06 01:23:27 #7 5.238 (121/147) Installing libxft (2.3.8-r3)
-2025-08-06 01:23:27 #7 5.247 (122/147) Installing graphite2 (1.3.14-r6)
-2025-08-06 01:23:27 #7 5.258 (123/147) Installing harfbuzz (11.2.1-r0)
-2025-08-06 01:23:27 #7 5.276 (124/147) Installing fribidi (1.0.16-r1)
-2025-08-06 01:23:27 #7 5.292 (125/147) Installing pango (1.56.3-r0)
-2025-08-06 01:23:27 #7 5.306 (126/147) Installing pango-tools (1.56.3-r0)
-2025-08-06 01:23:27 #7 5.315 (127/147) Installing fribidi-dev (1.0.16-r1)
-2025-08-06 01:23:27 #7 5.325 (128/147) Installing harfbuzz-cairo (11.2.1-r0)
-2025-08-06 01:23:27 #7 5.333 (129/147) Installing harfbuzz-gobject (11.2.1-r0)
-2025-08-06 01:23:27 #7 5.342 (130/147) Installing icu-data-en (76.1-r1)
-2025-08-06 01:23:27 #7 5.367 Executing icu-data-en-76.1-r1.post-install
-2025-08-06 01:23:27 #7 5.369 *
-2025-08-06 01:23:27 #7 5.369 * If you need ICU with non-English locales and legacy charset support, install
-2025-08-06 01:23:27 #7 5.369 * package icu-data-full.
-2025-08-06 01:23:27 #7 5.369 *
-2025-08-06 01:23:27 #7 5.369 (131/147) Installing icu-libs (76.1-r1)
-2025-08-06 01:23:27 #7 5.408 (132/147) Installing harfbuzz-icu (11.2.1-r0)
-2025-08-06 01:23:27 #7 5.417 (133/147) Installing harfbuzz-subset (11.2.1-r0)
-2025-08-06 01:23:27 #7 5.436 (134/147) Installing graphite2-dev (1.3.14-r6)
-2025-08-06 01:23:27 #7 5.446 (135/147) Installing icu (76.1-r1)
-2025-08-06 01:23:27 #7 5.462 (136/147) Installing icu-dev (76.1-r1)
-2025-08-06 01:23:27 #7 5.499 (137/147) Installing harfbuzz-dev (11.2.1-r0)
-2025-08-06 01:23:27 #7 5.515 (138/147) Installing libxft-dev (2.3.8-r3)
-2025-08-06 01:23:27 #7 5.524 (139/147) Installing pango-dev (1.56.3-r0)
-2025-08-06 01:23:27 #7 5.544 (140/147) Installing libsigc++3 (3.6.0-r0)
-2025-08-06 01:23:27 #7 5.553 (141/147) Installing cairomm (1.18.0-r0)
-2025-08-06 01:23:27 #7 5.562 (142/147) Installing glibmm (2.84.0-r0)
-2025-08-06 01:23:27 #7 5.582 (143/147) Installing pangomm (2.54.0-r0)
-2025-08-06 01:23:27 #7 5.592 (144/147) Installing libsigc++3-dev (3.6.0-r0)
-2025-08-06 01:23:27 #7 5.603 (145/147) Installing cairomm-dev (1.18.0-r0)
-2025-08-06 01:23:27 #7 5.613 (146/147) Installing glibmm-dev (2.84.0-r0)
-2025-08-06 01:23:27 #7 5.651 (147/147) Installing pangomm-dev (2.54.0-r0)
-2025-08-06 01:23:27 #7 5.666 Executing busybox-1.37.0-r18.trigger
-2025-08-06 01:23:27 #7 5.670 Executing glib-2.84.3-r0.trigger
-2025-08-06 01:23:27 #7 5.672 No schema files found: doing nothing.
-2025-08-06 01:23:27 #7 5.677 OK: 383 MiB in 165 packages
-2025-08-06 01:23:29 #7 DONE 7.5s
-2025-08-06 01:23:29
-2025-08-06 01:23:29 #8 4/7 WORKDIR /app
-2025-08-06 01:23:29 #8 DONE 0.1s
-2025-08-06 01:23:29
-2025-08-06 01:23:29 #9 5/7 COPY package*.json ./
-2025-08-06 01:23:29 #9 DONE 0.1s
-2025-08-06 01:23:29
-2025-08-06 01:23:29 #10 6/7 RUN npm config set registry https://registry.npmmirror.com && npm config set fetch-timeout 300000 && npm config set fetch-retry-mintimeout 5000 && npm config set fetch-retry-maxtimeout 30000 && npm config set audit false && npm ci --omit=dev --no-audit --no-fund
-2025-08-06 01:24:25 #10 50.91
-2025-08-06 01:24:25 #10 50.91 added 214 packages in 50s
-2025-08-06 01:24:25 #10 DONE 50.9s
-2025-08-06 01:24:25
-2025-08-06 01:24:25 #11 7/7 COPY . .
-2025-08-06 01:24:25 #11 DONE 0.1s
-2025-08-06 01:24:25
-2025-08-06 01:24:25 #12 exporting to image
-2025-08-06 01:24:25 #12 exporting layers
-2025-08-06 01:24:25 #12 exporting layers 2.3s done
-2025-08-06 01:24:25 #12 writing image sha256:13732c7d2d24fdcc71751155f7e75493adf53c67d8b2389eeba4b1ce219d56ad done
-2025-08-06 01:24:25 #12 naming to ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-038-20250806012307 0.0s done
-2025-08-06 01:24:25 #12 DONE 2.3s
-2025-08-06 01:24:25 Pipeline sh
-2025-08-06 01:24:26 + docker image ls --format {{.Repository}}:{{.Tag}} {{.Size}}
-2025-08-06 01:24:26 + grep ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-038-20250806012307
-2025-08-06 01:24:26 + awk {print $NF}
-2025-08-06 01:24:26 + echo 镜像的大小是：791MB
-2025-08-06 01:24:26 镜像的大小是：791MB
-2025-08-06 01:24:26 Pipeline echo
-2025-08-06 01:24:26 优化镜像大小具体可参考： https://docs.cloudbase.net/run/develop/image-optimization
-2025-08-06 01:24:26 Pipeline }
-2025-08-06 01:24:26 Pipeline // stage
-2025-08-06 01:24:26 Pipeline stage
-2025-08-06 01:24:26 Pipeline { (推送 Docker 镜像到 TCR)
-2025-08-06 01:24:26 Pipeline sh
-2025-08-06 01:24:26 + docker push ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-038-20250806012307
-2025-08-06 01:24:26 The push refers to repository ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url
-2025-08-06 01:24:26 b9742734abbb: Preparing
-2025-08-06 01:24:26 f0855a56e414: Preparing
-2025-08-06 01:24:26 c47676a9d133: Preparing
-2025-08-06 01:24:26 babb040e8422: Preparing
-2025-08-06 01:24:26 c936d4b5ddb0: Preparing
-2025-08-06 01:24:26 a3f0cc29785a: Preparing
-2025-08-06 01:24:26 eadc3b779d42: Preparing
-2025-08-06 01:24:26 2e12e022f9bc: Preparing
-2025-08-06 01:24:26 54e9a650f7b7: Preparing
-2025-08-06 01:24:26 418dccb7d85a: Preparing
-2025-08-06 01:24:26 54e9a650f7b7: Layer already exists
-2025-08-06 01:24:26 eadc3b779d42: Layer already exists
-2025-08-06 01:24:26 418dccb7d85a: Layer already exists
-2025-08-06 01:24:26 2e12e022f9bc: Layer already exists
-2025-08-06 01:24:27 b9742734abbb: Pushed
-2025-08-06 01:24:27 babb040e8422: Pushed
-2025-08-06 01:24:27 a3f0cc29785a: Pushed
-2025-08-06 01:24:28 c47676a9d133: Pushed
-2025-08-06 01:25:35 f0855a56e414: Pushed
-2025-08-06 01:25:35 c936d4b5ddb0: Pushed
-2025-08-06 01:25:35 get-url-038-20250806012307: digest: sha256:199ad1a11b3e8d0b8dd2e1812a460d0deabbfb4875c0272ed9fe10434a2fd62e size: 2416
-2025-08-06 01:25:35 Pipeline }
-2025-08-06 01:25:35 Pipeline // stage
-2025-08-06 01:25:35 Pipeline }
-2025-08-06 01:25:35 Pipeline // node
-2025-08-06 01:25:35 Pipeline End of Pipeline
-2025-08-06 01:25:35 Finished: SUCCESS
------------构建get-url-038-----------
-2025-08-06 01:23:08 create_build_image : creating
-2025-08-06 01:25:39 check_build_image : succ
------------服务get-url部署get-url-038-----------
-2025-08-06 01:25:41 create_eks_virtual_service : creating
-2025-08-06 01:25:41 check_eks_virtual_service : process, 部署版本失败：Liveness probe failed: dial tcp 10.9.12.117:80: connect: connection refused
+2025-08-06 13:39:49 Started by user coding
+2025-08-06 13:39:49 Running in Durability level: MAX_SURVIVABILITY
+2025-08-06 13:39:52 Pipeline Start of Pipeline
+2025-08-06 13:39:52 Pipeline node
+2025-08-06 13:39:52 Running on Jenkins in /root/workspace
+2025-08-06 13:39:52 Pipeline {
+2025-08-06 13:39:52 Pipeline stage
+2025-08-06 13:39:52 Pipeline { (检出软件包)
+2025-08-06 13:39:53 Stage "检出软件包" skipped due to when conditional
+2025-08-06 13:39:53 Pipeline }
+2025-08-06 13:39:53 Pipeline // stage
+2025-08-06 13:39:53 Pipeline stage
+2025-08-06 13:39:53 Pipeline { (检出 ZIP 包)
+2025-08-06 13:39:53 Stage "检出 ZIP 包" skipped due to when conditional
+2025-08-06 13:39:53 Pipeline }
+2025-08-06 13:39:53 Pipeline // stage
+2025-08-06 13:39:53 Pipeline stage
+2025-08-06 13:39:53 Pipeline { (检出代码仓库)
+2025-08-06 13:39:53 Pipeline sh
+2025-08-06 13:39:53 + git clone ****** .
+2025-08-06 13:39:53 Cloning into '.'...
+2025-08-06 13:39:55 Pipeline sh
+2025-08-06 13:39:55 + git checkout main
+2025-08-06 13:39:55 Already on 'main'
+2025-08-06 13:39:55 Your branch is up to date with 'origin/main'.
+2025-08-06 13:39:55 Pipeline }
+2025-08-06 13:39:55 Pipeline // stage
+2025-08-06 13:39:55 Pipeline stage
+2025-08-06 13:39:55 Pipeline { (写入 dockerfile)
+2025-08-06 13:39:55 Stage "写入 dockerfile" skipped due to when conditional
+2025-08-06 13:39:55 Pipeline }
+2025-08-06 13:39:55 Pipeline // stage
+2025-08-06 13:39:55 Pipeline stage
+2025-08-06 13:39:55 Pipeline { (构建 Docker 镜像)
+2025-08-06 13:39:55 Pipeline sh
+2025-08-06 13:39:55 + docker login -u ****** -p ****** ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-040-20250806133946
+2025-08-06 13:39:55 WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+2025-08-06 13:39:55 WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+2025-08-06 13:39:55 Configure a credential helper to remove this warning. See
+2025-08-06 13:39:55 https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+2025-08-06 13:39:55
+2025-08-06 13:39:55 Login Succeeded
+2025-08-06 13:39:55 Pipeline sh
+2025-08-06 13:39:56 + docker build -f Dockerfile.fixed -t ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-040-20250806133946 .
+2025-08-06 13:39:56 #0 building with "default" instance using docker driver
+2025-08-06 13:39:56
+2025-08-06 13:39:56 #1 internal load build definition from Dockerfile.fixed
+2025-08-06 13:39:56 #1 transferring dockerfile: 1.44kB done
+2025-08-06 13:39:56 #1 DONE 0.0s
+2025-08-06 13:39:56
+2025-08-06 13:39:56 #2 internal load .dockerignore
+2025-08-06 13:39:56 #2 transferring context: 323B done
+2025-08-06 13:39:56 #2 DONE 0.0s
+2025-08-06 13:39:56
+2025-08-06 13:39:56 #3 internal load metadata for docker.io/library/node:20-alpine
+2025-08-06 13:39:58 #3 DONE 1.1s
+2025-08-06 13:39:58
+2025-08-06 13:39:58 #4 1/9 FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
+2025-08-06 13:39:58 #4 resolve docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 0.0s done
+2025-08-06 13:39:58 #4 ...
+2025-08-06 13:39:58
+2025-08-06 13:39:58 #5 internal load build context
+2025-08-06 13:39:58 #5 transferring context: 172.02kB 0.0s done
+2025-08-06 13:39:58 #5 DONE 0.0s
+2025-08-06 13:39:58
+2025-08-06 13:39:58 #4 1/9 FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
+2025-08-06 13:39:58 #4 sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 7.67kB / 7.67kB done
+2025-08-06 13:39:58 #4 sha256:ae6ee91a652d927de01d550c29f863a52f1da390c89df95f3ceba256d1e62604 1.72kB / 1.72kB done
+2025-08-06 13:39:58 #4 sha256:7cdef5a331927fafa250be6166052d8599bf5eb7b014342538c2cc79b70a081f 6.42kB / 6.42kB done
+2025-08-06 13:39:58 #4 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0B / 3.80MB 0.1s
+2025-08-06 13:39:58 #4 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 0B / 42.99MB 0.1s
+2025-08-06 13:39:58 #4 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0B / 1.26MB 0.1s
+2025-08-06 13:39:58 #4 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 0B / 445B 0.1s
+2025-08-06 13:39:58 #4 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 445B / 445B 0.2s done
+2025-08-06 13:39:58 #4 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 1.05MB / 3.80MB 0.4s
+2025-08-06 13:39:58 #4 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 5.24MB / 42.99MB 0.4s
+2025-08-06 13:39:58 #4 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 3.80MB / 3.80MB 0.5s done
+2025-08-06 13:39:58 #4 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 14.33MB / 42.99MB 0.5s
+2025-08-06 13:39:58 #4 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8
+2025-08-06 13:39:58 #4 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 22.44MB / 42.99MB 0.6s
+2025-08-06 13:39:58 #4 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 30.41MB / 42.99MB 0.7s
+2025-08-06 13:39:58 #4 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0.1s done
+2025-08-06 13:39:58 #4 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 42.99MB / 42.99MB 0.9s done
+2025-08-06 13:39:58 #4 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 1.05MB / 1.26MB 0.8s
+2025-08-06 13:39:58 #4 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 1.26MB / 1.26MB 0.9s done
+2025-08-06 13:39:58 #4 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 0.1s
+2025-08-06 13:40:00 #4 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 1.4s done
+2025-08-06 13:40:00 #4 extracting sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2
+2025-08-06 13:40:00 #4 extracting sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0.0s done
+2025-08-06 13:40:00 #4 extracting sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 done
+2025-08-06 13:40:00 #4 DONE 2.6s
+2025-08-06 13:40:00
+2025-08-06 13:40:00 #6 2/9 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+2025-08-06 13:40:00 #6 DONE 0.2s
+2025-08-06 13:40:00
+2025-08-06 13:40:00 #7 3/9 RUN apk add --no-cache python3 make g++ cairo-dev jpeg-dev pango-dev musl-dev giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev
+2025-08-06 13:40:00 #7 0.382 fetch https://mirrors.aliyun.com/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
+2025-08-06 13:40:00 #7 0.554 fetch https://mirrors.aliyun.com/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
+2025-08-06 13:40:01 #7 0.990 (1/147) Installing cairo-tools (1.18.4-r0)
+2025-08-06 13:40:01 #7 1.029 (2/147) Installing libexpat (2.7.1-r0)
+2025-08-06 13:40:01 #7 1.224 (3/147) Installing brotli-libs (1.1.0-r2)
+2025-08-06 13:40:01 #7 1.333 (4/147) Installing libbz2 (1.0.8-r6)
+2025-08-06 13:40:01 #7 1.455 (5/147) Installing libpng (1.6.47-r0)
+2025-08-06 13:40:01 #7 1.493 (6/147) Installing freetype (2.13.3-r0)
+2025-08-06 13:40:02 #7 1.839 (7/147) Installing fontconfig (2.15.0-r3)
+2025-08-06 13:40:02 #7 1.900 (8/147) Installing expat (2.7.1-r0)
+2025-08-06 13:40:02 #7 1.980 (9/147) Installing pkgconf (2.4.3-r0)
+2025-08-06 13:40:02 #7 2.043 (10/147) Installing expat-dev (2.7.1-r0)
+2025-08-06 13:40:02 #7 2.086 (11/147) Installing bzip2-dev (1.0.8-r6)
+2025-08-06 13:40:02 #7 2.122 (12/147) Installing brotli (1.1.0-r2)
+2025-08-06 13:40:02 #7 2.171 (13/147) Installing brotli-dev (1.1.0-r2)
+2025-08-06 13:40:02 #7 2.240 (14/147) Installing zlib-dev (1.3.1-r2)
+2025-08-06 13:40:02 #7 2.298 (15/147) Installing libpng-dev (1.6.47-r0)
+2025-08-06 13:40:03 #7 2.340 (16/147) Installing freetype-dev (2.13.3-r0)
+2025-08-06 13:40:03 #7 2.431 (17/147) Installing fontconfig-dev (2.15.0-r3)
+2025-08-06 13:40:03 #7 2.457 (18/147) Installing libxau (1.0.12-r0)
+2025-08-06 13:40:03 #7 2.484 (19/147) Installing xorgproto (2024.1-r0)
+2025-08-06 13:40:03 #7 2.535 (20/147) Installing libxau-dev (1.0.12-r0)
+2025-08-06 13:40:03 #7 2.563 (21/147) Installing libmd (1.1.0-r0)
+2025-08-06 13:40:03 #7 2.630 (22/147) Installing libbsd (0.12.2-r0)
+2025-08-06 13:40:03 #7 2.680 (23/147) Installing libxdmcp (1.1.5-r1)
+2025-08-06 13:40:03 #7 2.714 (24/147) Installing libxcb (1.17.0-r0)
+2025-08-06 13:40:03 #7 3.014 (25/147) Installing libx11 (1.8.11-r0)
+2025-08-06 13:40:03 #7 3.337 (26/147) Installing libxext (1.3.6-r2)
+2025-08-06 13:40:03 #7 3.403 (27/147) Installing libffi (3.4.8-r0)
+2025-08-06 13:40:04 #7 3.445 (28/147) Installing gdbm (1.24-r0)
+2025-08-06 13:40:04 #7 3.482 (29/147) Installing xz-libs (5.8.1-r0)
+2025-08-06 13:40:04 #7 3.516 (30/147) Installing mpdecimal (4.0.1-r0)
+2025-08-06 13:40:04 #7 3.701 (31/147) Installing ncurses-terminfo-base (6.5_p20250503-r0)
+2025-08-06 13:40:04 #7 3.738 (32/147) Installing libncursesw (6.5_p20250503-r0)
+2025-08-06 13:40:04 #7 3.803 (33/147) Installing libpanelw (6.5_p20250503-r0)
+2025-08-06 13:40:04 #7 3.832 (34/147) Installing readline (8.2.13-r1)
+2025-08-06 13:40:04 #7 3.867 (35/147) Installing sqlite-libs (3.49.2-r1)
+2025-08-06 13:40:04 #7 3.966 (36/147) Installing python3 (3.12.11-r0)
+2025-08-06 13:40:05 #7 4.857 (37/147) Installing python3-pycache-pyc0 (3.12.11-r0)
+2025-08-06 13:40:05 #7 5.186 (38/147) Installing pyc (3.12.11-r0)
+2025-08-06 13:40:05 #7 5.186 (39/147) Installing xcb-proto-pyc (1.17.0-r0)
+2025-08-06 13:40:05 #7 5.238 (40/147) Installing python3-pyc (3.12.11-r0)
+2025-08-06 13:40:05 #7 5.238 (41/147) Installing xcb-proto (1.17.0-r0)
+2025-08-06 13:40:05 #7 5.276 (42/147) Installing libxdmcp-dev (1.1.5-r1)
+2025-08-06 13:40:05 #7 5.299 (43/147) Installing libxcb-dev (1.17.0-r0)
+2025-08-06 13:40:05 #7 5.351 (44/147) Installing xtrans (1.5.2-r0)
+2025-08-06 13:40:05 #7 5.379 (45/147) Installing libx11-dev (1.8.11-r0)
+2025-08-06 13:40:05 #7 5.407 (46/147) Installing libxext-dev (1.3.6-r2)
+2025-08-06 13:40:05 #7 5.441 (47/147) Installing libxrender (0.9.12-r0)
+2025-08-06 13:40:05 #7 5.464 (48/147) Installing libxrender-dev (0.9.12-r0)
+2025-08-06 13:40:05 #7 5.496 (49/147) Installing pixman (0.46.4-r0)
+2025-08-06 13:40:06 #7 5.534 (50/147) Installing pixman-dev (0.46.4-r0)
+2025-08-06 13:40:06 #7 5.562 (51/147) Installing util-macros (1.20.1-r0)
+2025-08-06 13:40:06 #7 5.595 (52/147) Installing xcb-util (0.4.1-r3)
+2025-08-06 13:40:06 #7 5.623 (53/147) Installing xcb-util-dev (0.4.1-r3)
+2025-08-06 13:40:06 #7 5.650 (54/147) Installing cairo (1.18.4-r0)
+2025-08-06 13:40:06 #7 5.710 (55/147) Installing libintl (0.24.1-r0)
+2025-08-06 13:40:06 #7 5.753 (56/147) Installing libeconf (0.6.3-r0)
+2025-08-06 13:40:06 #7 5.778 (57/147) Installing libblkid (2.41-r9)
+2025-08-06 13:40:06 #7 5.815 (58/147) Installing libmount (2.41-r9)
+2025-08-06 13:40:06 #7 5.853 (59/147) Installing pcre2 (10.43-r1)
+2025-08-06 13:40:06 #7 5.915 (60/147) Installing glib (2.84.3-r0)
+2025-08-06 13:40:06 #7 6.067 (61/147) Installing cairo-gobject (1.18.4-r0)
+2025-08-06 13:40:06 #7 6.127 (62/147) Installing libxml2 (2.13.8-r0)
+2025-08-06 13:40:06 #7 6.176 (63/147) Installing libxml2-utils (2.13.8-r0)
+2025-08-06 13:40:06 #7 6.201 (64/147) Installing docbook-xml (4.5-r10)
+2025-08-06 13:40:06 #7 6.269 Executing docbook-xml-4.5-r10.post-install
+2025-08-06 13:40:06 #7 6.279 (65/147) Installing libxslt (1.1.43-r3)
+2025-08-06 13:40:06 #7 6.328 (66/147) Installing docbook-xsl-ns (1.79.2-r11)
+2025-08-06 13:40:06 #7 6.531 Executing docbook-xsl-ns-1.79.2-r11.post-install
+2025-08-06 13:40:07 #7 6.554 (67/147) Installing docbook-xsl-nons (1.79.2-r11)
+2025-08-06 13:40:07 #7 6.799 Executing docbook-xsl-nons-1.79.2-r11.post-install
+2025-08-06 13:40:07 #7 6.825 (68/147) Installing docbook-xsl (1.79.2-r11)
+2025-08-06 13:40:07 #7 6.852 (69/147) Installing xz (5.8.1-r0)
+2025-08-06 13:40:07 #7 6.877 (70/147) Installing gettext-asprintf (0.24.1-r0)
+2025-08-06 13:40:07 #7 6.906 (71/147) Installing libunistring (1.3-r0)
+2025-08-06 13:40:07 #7 6.977 (72/147) Installing gettext-libs (0.24.1-r0)
+2025-08-06 13:40:07 #7 7.419 (73/147) Installing gettext-envsubst (0.24.1-r0)
+2025-08-06 13:40:07 #7 7.522 (74/147) Installing libgomp (14.2.0-r6)
+2025-08-06 13:40:07 #7 7.554 (75/147) Installing gettext (0.24.1-r0)
+2025-08-06 13:40:07 #7 7.616 (76/147) Installing gettext-dev (0.24.1-r0)
+2025-08-06 13:40:08 #7 7.694 (77/147) Installing py3-parsing (3.2.3-r0)
+2025-08-06 13:40:08 #7 7.729 (78/147) Installing py3-parsing-pyc (3.2.3-r0)
+2025-08-06 13:40:08 #7 7.821 (79/147) Installing py3-packaging (25.0-r0)
+2025-08-06 13:40:08 #7 7.855 (80/147) Installing py3-packaging-pyc (25.0-r0)
+2025-08-06 13:40:08 #7 7.881 (81/147) Installing linux-headers (6.14.2-r0)
+2025-08-06 13:40:08 #7 8.162 (82/147) Installing libffi-dev (3.4.8-r0)
+2025-08-06 13:40:08 #7 8.190 (83/147) Installing bsd-compat-headers (0.7.2-r6)
+2025-08-06 13:40:08 #7 8.217 (84/147) Installing libformw (6.5_p20250503-r0)
+2025-08-06 13:40:08 #7 8.242 (85/147) Installing libmenuw (6.5_p20250503-r0)
+2025-08-06 13:40:08 #7 8.273 (86/147) Installing libncurses++ (6.5_p20250503-r0)
+2025-08-06 13:40:08 #7 8.298 (87/147) Installing ncurses-dev (6.5_p20250503-r0)
+2025-08-06 13:40:08 #7 8.336 (88/147) Installing libedit (20250104.3.1-r1)
+2025-08-06 13:40:08 #7 8.360 (89/147) Installing libedit-dev (20250104.3.1-r1)
+2025-08-06 13:40:08 #7 8.388 (90/147) Installing libpcre2-16 (10.43-r1)
+2025-08-06 13:40:08 #7 8.437 (91/147) Installing libpcre2-32 (10.43-r1)
+2025-08-06 13:40:08 #7 8.480 (92/147) Installing pcre2-dev (10.43-r1)
+2025-08-06 13:40:08 #7 8.504 (93/147) Installing libuuid (2.41-r9)
+2025-08-06 13:40:08 #7 8.527 (94/147) Installing libfdisk (2.41-r9)
+2025-08-06 13:40:08 #7 8.557 (95/147) Installing liblastlog2 (2.41-r9)
+2025-08-06 13:40:08 #7 8.580 (96/147) Installing libsmartcols (2.41-r9)
+2025-08-06 13:40:08 #7 8.613 (97/147) Installing sqlite (3.49.2-r1)
+2025-08-06 13:40:09 #7 8.683 (98/147) Installing sqlite-dev (3.49.2-r1)
+2025-08-06 13:40:09 #7 8.718 (99/147) Installing util-linux-dev (2.41-r9)
+2025-08-06 13:40:09 #7 8.748 (100/147) Installing glib-dev (2.84.3-r0)
+2025-08-06 13:40:09 #7 8.905 (101/147) Installing cairo-dev (1.18.4-r0)
+2025-08-06 13:40:09 #7 8.948 (102/147) Installing libstdc++-dev (14.2.0-r6)
+2025-08-06 13:40:09 #7 9.292 (103/147) Installing jansson (2.14.1-r0)
+2025-08-06 13:40:09 #7 9.333 (104/147) Installing zstd-libs (1.5.7-r0)
+2025-08-06 13:40:09 #7 9.368 (105/147) Installing binutils (2.44-r2)
+2025-08-06 13:40:09 #7 9.561 (106/147) Installing libatomic (14.2.0-r6)
+2025-08-06 13:40:10 #7 9.600 (107/147) Installing gmp (6.3.0-r3)
+2025-08-06 13:40:10 #7 9.639 (108/147) Installing isl26 (0.26-r1)
+2025-08-06 13:40:10 #7 9.739 (109/147) Installing mpfr4 (4.2.1_p1-r0)
+2025-08-06 13:40:10 #7 9.799 (110/147) Installing mpc1 (1.3.1-r1)
+2025-08-06 13:40:10 #7 9.851 (111/147) Installing gcc (14.2.0-r6)
+2025-08-06 13:40:12 #7 12.20 (112/147) Installing musl-dev (1.2.5-r10)
+2025-08-06 13:40:12 #7 12.45 (113/147) Installing g++ (14.2.0-r6)
+2025-08-06 13:40:13 #7 13.36 (114/147) Installing giflib (5.2.2-r1)
+2025-08-06 13:40:13 #7 13.39 (115/147) Installing giflib-dev (5.2.2-r1)
+2025-08-06 13:40:13 #7 13.41 (116/147) Installing libjpeg-turbo (3.1.0-r0)
+2025-08-06 13:40:13 #7 13.45 (117/147) Installing libturbojpeg (3.1.0-r0)
+2025-08-06 13:40:13 #7 13.49 (118/147) Installing libjpeg-turbo-dev (3.1.0-r0)
+2025-08-06 13:40:13 #7 13.52 (119/147) Installing jpeg-dev (9f-r0)
+2025-08-06 13:40:13 #7 13.52 (120/147) Installing make (4.4.1-r3)
+2025-08-06 13:40:14 #7 13.57 (121/147) Installing libxft (2.3.8-r3)
+2025-08-06 13:40:14 #7 13.66 (122/147) Installing graphite2 (1.3.14-r6)
+2025-08-06 13:40:14 #7 13.69 (123/147) Installing harfbuzz (11.2.1-r0)
+2025-08-06 13:40:14 #7 13.75 (124/147) Installing fribidi (1.0.16-r1)
+2025-08-06 13:40:14 #7 13.78 (125/147) Installing pango (1.56.3-r0)
+2025-08-06 13:40:14 #7 13.82 (126/147) Installing pango-tools (1.56.3-r0)
+2025-08-06 13:40:14 #7 13.85 (127/147) Installing fribidi-dev (1.0.16-r1)
+2025-08-06 13:40:14 #7 13.88 (128/147) Installing harfbuzz-cairo (11.2.1-r0)
+2025-08-06 13:40:14 #7 13.92 (129/147) Installing harfbuzz-gobject (11.2.1-r0)
+2025-08-06 13:40:14 #7 13.95 (130/147) Installing icu-data-en (76.1-r1)
+2025-08-06 13:40:14 #7 14.01 Executing icu-data-en-76.1-r1.post-install
+2025-08-06 13:40:14 #7 14.02 *
+2025-08-06 13:40:14 #7 14.02 * If you need ICU with non-English locales and legacy charset support, install
+2025-08-06 13:40:14 #7 14.02 * package icu-data-full.
+2025-08-06 13:40:14 #7 14.02 *
+2025-08-06 13:40:14 #7 14.02 (131/147) Installing icu-libs (76.1-r1)
+2025-08-06 13:40:14 #7 14.13 (132/147) Installing harfbuzz-icu (11.2.1-r0)
+2025-08-06 13:40:14 #7 14.16 (133/147) Installing harfbuzz-subset (11.2.1-r0)
+2025-08-06 13:40:14 #7 14.20 (134/147) Installing graphite2-dev (1.3.14-r6)
+2025-08-06 13:40:14 #7 14.23 (135/147) Installing icu (76.1-r1)
+2025-08-06 13:40:14 #7 14.31 (136/147) Installing icu-dev (76.1-r1)
+2025-08-06 13:40:14 #7 14.48 (137/147) Installing harfbuzz-dev (11.2.1-r0)
+2025-08-06 13:40:14 #7 14.52 (138/147) Installing libxft-dev (2.3.8-r3)
+2025-08-06 13:40:15 #7 14.55 (139/147) Installing pango-dev (1.56.3-r0)
+2025-08-06 13:40:15 #7 14.62 (140/147) Installing libsigc++3 (3.6.0-r0)
+2025-08-06 13:40:15 #7 14.65 (141/147) Installing cairomm (1.18.0-r0)
+2025-08-06 13:40:15 #7 14.70 (142/147) Installing glibmm (2.84.0-r0)
+2025-08-06 13:40:15 #7 14.77 (143/147) Installing pangomm (2.54.0-r0)
+2025-08-06 13:40:15 #7 14.80 (144/147) Installing libsigc++3-dev (3.6.0-r0)
+2025-08-06 13:40:15 #7 14.83 (145/147) Installing cairomm-dev (1.18.0-r0)
+2025-08-06 13:40:15 #7 14.86 (146/147) Installing glibmm-dev (2.84.0-r0)
+2025-08-06 13:40:15 #7 14.95 (147/147) Installing pangomm-dev (2.54.0-r0)
+2025-08-06 13:40:15 #7 14.99 Executing busybox-1.37.0-r18.trigger
+2025-08-06 13:40:15 #7 15.00 Executing glib-2.84.3-r0.trigger
+2025-08-06 13:40:15 #7 15.00 No schema files found: doing nothing.
+2025-08-06 13:40:15 #7 15.01 OK: 383 MiB in 165 packages
+2025-08-06 13:40:17 #7 DONE 17.0s
+2025-08-06 13:40:17
+2025-08-06 13:40:17 #8 4/9 WORKDIR /app
+2025-08-06 13:40:17 #8 DONE 0.0s
+2025-08-06 13:40:17
+2025-08-06 13:40:17 #9 5/9 COPY package*.json ./
+2025-08-06 13:40:17 #9 DONE 0.0s
+2025-08-06 13:40:17
+2025-08-06 13:40:17 #10 6/9 RUN npm config set registry https://registry.npmmirror.com && npm config set fetch-timeout 300000 && npm config set fetch-retry-mintimeout 5000 && npm config set fetch-retry-maxtimeout 30000 && npm config set audit false && npm ci --omit=dev --no-audit --no-fund
+2025-08-06 13:45:08 #10 289.6
+2025-08-06 13:45:08 #10 289.6 added 214 packages in 5m
+2025-08-06 13:45:08 #10 DONE 289.6s
+2025-08-06 13:45:08
+2025-08-06 13:45:08 #11 7/9 COPY . .
+2025-08-06 13:45:08 #11 DONE 0.0s
+2025-08-06 13:45:08
+2025-08-06 13:45:08 #12 8/9 RUN mkdir -p /app/logs && chmod 755 /app/logs
+2025-08-06 13:45:08 #12 DONE 0.3s
+2025-08-06 13:45:08
+2025-08-06 13:45:08 #13 9/9 RUN ls -la /app/ && ls -la /app/logger.js && ls -la /app/ai-services.js && node --check index.js
+2025-08-06 13:45:08 #13 0.394 total 220
+2025-08-06 13:45:08 #13 0.395 drwxr-xr-x 1 root root 4096 Aug 6 05:45 .
+2025-08-06 13:45:08 #13 0.395 drwxr-xr-x 1 root root 4096 Aug 6 05:45 ..
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 281 Aug 6 05:39 .dockerignore
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 1116 Aug 6 05:39 Dockerfile
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 1398 Aug 6 05:39 Dockerfile.fixed
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 998 Aug 6 05:39 Dockerfile.nocanvas
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 1380 Aug 6 05:39 Dockerfile.optimized
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 17923 Aug 6 05:39 ai-services.js
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 441 Aug 6 05:39 config.json
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 662 Aug 6 05:39 docker-compose.yml
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 34861 Aug 6 05:39 index.js
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 8106 Aug 6 05:39 logger.js
+2025-08-06 13:45:08 #13 0.395 drwxr-xr-x 2 root root 4096 Aug 6 05:45 logs
+2025-08-06 13:45:08 #13 0.395 drwxr-xr-x 206 root root 4096 Aug 6 05:45 node_modules
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 101522 Aug 6 05:39 package-lock.json
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 859 Aug 6 05:39 package.json
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 998 Aug 6 05:39 package.lightweight.json
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 798 Aug 6 05:39 package.nocanvas.json
+2025-08-06 13:45:08 #13 0.395 -rw-r--r-- 1 root root 8106 Aug 6 05:39 /app/logger.js
+2025-08-06 13:45:08 #13 0.396 -rw-r--r-- 1 root root 17923 Aug 6 05:39 /app/ai-services.js
+2025-08-06 13:45:08 #13 DONE 0.5s
+2025-08-06 13:45:08
+2025-08-06 13:45:08 #14 exporting to image
+2025-08-06 13:45:08 #14 exporting layers
+2025-08-06 13:45:10 #14 exporting layers 2.7s done
+2025-08-06 13:45:10 #14 writing image sha256:62772f8ab73e387a23120b22fa7e61e9b235539a913c8fd5745a06ee73d285e5 done
+2025-08-06 13:45:10 #14 naming to ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-040-20250806133946 done
+2025-08-06 13:45:10 #14 DONE 2.7s
+2025-08-06 13:45:10 Pipeline sh
+2025-08-06 13:45:10 + docker image ls --format {{.Repository}}:{{.Tag}} {{.Size}}
+2025-08-06 13:45:10 + grep ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-040-20250806133946
+2025-08-06 13:45:10 + awk {print $NF}
+2025-08-06 13:45:10 + echo 镜像的大小是：791MB
+2025-08-06 13:45:10 镜像的大小是：791MB
+2025-08-06 13:45:10 Pipeline echo
+2025-08-06 13:45:10 优化镜像大小具体可参考： https://docs.cloudbase.net/run/develop/image-optimization
+2025-08-06 13:45:10 Pipeline }
+2025-08-06 13:45:10 Pipeline // stage
+2025-08-06 13:45:10 Pipeline stage
+2025-08-06 13:45:10 Pipeline { (推送 Docker 镜像到 TCR)
+2025-08-06 13:45:11 Pipeline sh
+2025-08-06 13:45:11 + docker push ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-040-20250806133946
+2025-08-06 13:45:11 The push refers to repository ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url
+2025-08-06 13:45:11 40398d7f56d7: Preparing
+2025-08-06 13:45:11 ff879a32602f: Preparing
+2025-08-06 13:45:11 5701dcf9637b: Preparing
+2025-08-06 13:45:11 773564513e46: Preparing
+2025-08-06 13:45:11 c9657c64346e: Preparing
+2025-08-06 13:45:11 989d03ba5a93: Preparing
+2025-08-06 13:45:11 4f3118f9b291: Preparing
+2025-08-06 13:45:11 a099e1a169a9: Preparing
+2025-08-06 13:45:11 eadc3b779d42: Preparing
+2025-08-06 13:45:11 2e12e022f9bc: Preparing
+2025-08-06 13:45:11 54e9a650f7b7: Preparing
+2025-08-06 13:45:11 418dccb7d85a: Preparing
+2025-08-06 13:45:11 54e9a650f7b7: Waiting
+2025-08-06 13:45:11 418dccb7d85a: Waiting
+2025-08-06 13:45:11 2e12e022f9bc: Layer already exists
+2025-08-06 13:45:11 eadc3b779d42: Layer already exists
+2025-08-06 13:45:11 54e9a650f7b7: Layer already exists
+2025-08-06 13:45:11 418dccb7d85a: Layer already exists
+2025-08-06 13:45:12 40398d7f56d7: Pushed
+2025-08-06 13:45:12 a099e1a169a9: Pushed
+2025-08-06 13:45:12 989d03ba5a93: Pushed
+2025-08-06 13:45:12 5701dcf9637b: Pushed
+2025-08-06 13:45:12 c9657c64346e: Pushed
+2025-08-06 13:45:12 ff879a32602f: Pushed
+2025-08-06 13:46:08 773564513e46: Pushed
+2025-08-06 13:46:14 4f3118f9b291: Pushed
+2025-08-06 13:46:15 get-url-040-20250806133946: digest: sha256:07a992331fec8cd74113cfe8a60a6d19f0257691b58b836e9d88aa3b1fc3ba79 size: 2829
+2025-08-06 13:46:15 Pipeline }
+2025-08-06 13:46:15 Pipeline // stage
+2025-08-06 13:46:15 Pipeline }
+2025-08-06 13:46:15 Pipeline // node
+2025-08-06 13:46:15 Pipeline End of Pipeline
+2025-08-06 13:46:15 Finished: SUCCESS
+-----------构建get-url-040-----------
+2025-08-06 13:39:48 create_build_image : creating
+2025-08-06 13:46:17 check_build_image : succ
+-----------服务get-url部署get-url-040-----------
+2025-08-06 13:46:18 create_eks_virtual_service : creating
+2025-08-06 13:46:19 check_eks_virtual_service : process, 部署版本失败：Readiness probe failed: dial tcp 10.9.12.108:80: connect: connection refused, service:Liveness probe failed: dial tcp 10.9.12.108:80: connect: connection refused,Readiness probe failed: dial tcp 10.9.12.108:80: connect: connection refused,
 -----------启动日志-----------

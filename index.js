@@ -32,7 +32,7 @@ class MCPHtmlServer {
     // 初始化日志
     console.log('🔧 开始初始化服务器...');
     logger.info('SERVER', 'MCP服务器初始化开始');
-    
+
     // 加载配置
     console.log('🔧 开始加载配置...');
     this.loadConfig();
@@ -60,11 +60,11 @@ class MCPHtmlServer {
     console.log('🔧 开始设置工具处理器...');
     this.setupToolHandlers();
     console.log('✅ 工具处理器设置完成');
-    
+
     console.log('🔧 开始设置请求处理器...');
     this.setupRequestHandlers();
     console.log('✅ 请求处理器设置完成');
-    
+
     logger.info('SERVER', 'MCP服务器初始化完成');
   }
 
@@ -115,7 +115,7 @@ class MCPHtmlServer {
     console.log('🔧 设置ListTools处理器...');
     this.server.setRequestHandler(ListToolsRequestSchema, async (request) => {
       logger.mcpRequest('list_tools', {}, request.id);
-      
+
       const response = {
         tools: [
           {
@@ -138,7 +138,7 @@ class MCPHtmlServer {
           }
         ]
       };
-      
+
       logger.mcpResponse(request.id, response);
       return response;
     });
@@ -147,16 +147,16 @@ class MCPHtmlServer {
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { name, arguments: args } = request.params;
       logger.mcpRequest(name, args, request.id);
-      
+
       try {
         let result;
-        
+
         if (name === 'read_link') {
           result = await this.handleReadLink(args.url, args.prompt);
         } else {
           throw new Error(`Unknown tool: ${name}`);
         }
-        
+
         logger.mcpResponse(request.id, result);
         return result;
       } catch (error) {
@@ -169,7 +169,7 @@ class MCPHtmlServer {
   async handleReadLink(url, customPrompt) {
     const startTime = Date.now();
     logger.info('LINK_PROCESS', `开始处理链接: ${url}`, { url, customPrompt });
-    
+
     try {
       const parsedUrl = new URL(url);
       logger.debug('LINK_PROCESS', `URL解析成功`, { hostname: parsedUrl.hostname, pathname: parsedUrl.pathname });
@@ -204,17 +204,17 @@ class MCPHtmlServer {
         logger.info('LINK_PROCESS', '开始处理网页内容');
         result = await this.processWebpage(url);
       }
-      
+
       const duration = Date.now() - startTime;
       logger.performance('LINK_PROCESS', duration, { url, fileType, success: true });
       logger.info('LINK_PROCESS', `链接处理完成: ${url}`, { duration: `${duration}ms` });
-      
+
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
       logger.error('LINK_PROCESS', `处理链接失败: ${url}`, error);
       logger.performance('LINK_PROCESS', duration, { url, success: false, error: error.message });
-      
+
       return {
         content: [
           {
@@ -566,29 +566,14 @@ class MCPHtmlServer {
   async startHttpServer(port = 3000) {
     console.log(`🔧 准备启动HTTP服务器，端口: ${port}`);
     logger.info('SERVER', `开始启动HTTP服务器，端口: ${port}`);
-    
-    // 检查端口是否已被占用
-    const isPortInUse = (port) => {
-      return new Promise((resolve) => {
-        const server = createServer();
-        server.listen(port, () => {
-          server.close(() => resolve(false));
-        }).on('error', () => resolve(true));
-      });
-    };
-
-    if (await isPortInUse(port)) {
-      logger.warn('SERVER', `端口 ${port} 已被占用，服务器可能已在运行`);
-      return null;
-    }
 
     const httpServer = createServer(async (req, res) => {
       const requestStart = Date.now();
       const clientId = req.headers['x-client-id'] || `${req.connection.remoteAddress}-${Date.now()}`;
-      
+
       // 记录HTTP请求
       logger.httpRequest(req);
-      
+
       // 设置CORS头
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
@@ -603,24 +588,33 @@ class MCPHtmlServer {
         return;
       }
 
+      // 处理健康检查请求
+      if (req.method === 'GET' && (req.url === '/health' || req.url === '/healthz')) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }));
+        const responseTime = Date.now() - requestStart;
+        logger.httpResponse(res, 200, responseTime);
+        return;
+      }
+
       // 处理GET请求 - SSE连接
       if (req.method === 'GET') {
         logger.sseConnection(clientId);
-        
+
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
         res.writeHead(200);
 
         // 发送初始化事件
-        const initData = {"type":"initialized", "clientId": clientId};
+        const initData = { "type": "initialized", "clientId": clientId };
         res.write('event: initialized\n');
         res.write(`data: ${JSON.stringify(initData)}\n\n`);
         logger.sseMessage(clientId, initData);
 
         // 保持连接活跃
         const keepAlive = setInterval(() => {
-          const pingData = {"type":"ping", "timestamp": Date.now()};
+          const pingData = { "type": "ping", "timestamp": Date.now() };
           res.write('event: ping\n');
           res.write(`data: ${JSON.stringify(pingData)}\n\n`);
         }, 30000);
@@ -875,11 +869,11 @@ class MCPHtmlServer {
             res.end(JSON.stringify(response));
             logger.debug('HTTP', 'MCP响应已发送', { statusCode: 200 });
           } catch (error) {
-            logger.error('MCP_PROTOCOL', 'MCP请求处理错误', { 
-              error: error.message, 
+            logger.error('MCP_PROTOCOL', 'MCP请求处理错误', {
+              error: error.message,
               stack: error.stack,
               requestId: request?.id,
-              method: request?.method 
+              method: request?.method
             });
 
             // 确保错误响应格式正确
@@ -932,10 +926,11 @@ class MCPHtmlServer {
     });
 
     // 启动HTTP服务器
-    httpServer.listen(port, () => {
+    httpServer.listen(port, '0.0.0.0', () => {
       logger.info('SERVER', `MCP SSE Server started on port ${port}`);
-      logger.info('SERVER', `Server endpoint: http://localhost:${port}`);
-      logger.info('SERVER', `MCP Protocol endpoint: http://localhost:${port}/mcp`);
+      logger.info('SERVER', `Server endpoint: http://0.0.0.0:${port}`);
+      logger.info('SERVER', `MCP Protocol endpoint: http://0.0.0.0:${port}/mcp`);
+      logger.info('SERVER', `Health check endpoint: http://0.0.0.0:${port}/health`);
       logger.info('SERVER', 'Available tools: read_link');
       logger.info('SERVER', 'Supports MCP initialize/initialized handshake');
     });
@@ -952,13 +947,13 @@ export { MCPHtmlServer };
 async function main() {
   console.log('🚀 开始启动MCP HTML服务器...');
   logger.info('SERVER', '正在启动MCP HTML服务器...');
-  
+
   try {
     // 先初始化Canvas模块
     console.log('🔧 准备初始化Canvas模块...');
     await initializeCanvas();
     console.log('✅ Canvas模块初始化完成，开始创建服务器实例...');
-    
+
     const server = new MCPHtmlServer();
     logger.info('SERVER', '服务器实例创建成功');
 
