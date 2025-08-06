@@ -4,7 +4,15 @@
 
 在添加日志系统后，我们修复了以下Docker部署问题：
 
-### 1. 日志路径问题
+### 1. 健康检查问题
+- **问题**: Docker容器启动后健康检查失败，显示 `connection refused` 错误
+- **解决方案**: 
+  - 移除了端口占用检查逻辑（在Docker中可能误判）
+  - 添加了 `/health` 和 `/healthz` 健康检查端点
+  - 修改服务器监听地址为 `0.0.0.0`（而非 `localhost`）
+  - 更新 `Dockerfile.fixed` 中的健康检查路径
+
+### 2. 日志路径问题
 - **问题**: `logger.js`使用相对路径`./logs`在Docker容器中可能导致权限或路径问题
 - **解决方案**: 修改为根据环境变量自动选择路径
   - 生产环境(Docker): `/app/logs`
@@ -63,9 +71,24 @@ docker logs mcp-html-server
 docker inspect mcp-html-server | grep Health
 ```
 
-### 3. 测试服务
+### 3. 测试健康检查
 ```bash
+# 测试健康检查端点
 curl http://localhost/health
+
+# 或使用提供的测试脚本
+node test-health.js
+```
+
+### 4. 测试服务
+```bash
+# 测试基本连接
+curl http://localhost
+
+# 测试MCP端点
+curl -X POST http://localhost/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0.0"}}}'
 ```
 
 ### 4. 检查日志文件
