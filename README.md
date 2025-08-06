@@ -185,16 +185,10 @@ curl -X POST http://localhost:80/mcp \
 }
 ```
 
-## 测试
+## 健康检查
 
-### 运行基本测试
 ```bash
-npm test
-```
-
-### 运行图片链接测试
-```bash
-npm run test-image
+node health-check.js
 ```
 
 ## 问题修复

@@ -26,7 +26,7 @@
 ### 文档文件
 - `README.md` - 项目说明和使用指南
 - `DOCKER_DEPLOYMENT_GUIDE.md` - Docker部署详细指南
-- `test-health.js` - 健康检查测试脚本
+- `health-check.js` - 健康检查脚本
 
 ## 推荐部署方式
 
@@ -54,7 +54,7 @@ node index.js --port 3000
 curl http://localhost:3000/health
 
 # 测试功能
-node test-health.js
+node health-check.js
 ```
 
 ## 注意事项
