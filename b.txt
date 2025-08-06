@@ -1,0 +1,662 @@
+部署详情 / get-url / 072
+072
+创建失败
+基本信息
+服务名	
+get-url
+开始时间	
+2025-08-06 21:32:01
+状态	
+创建失败
+处理建议	点击查看常见服务部署失败问题，自行快速排查
+日志
+2025-08-06 21:32:11 Started by user coding
+2025-08-06 21:32:11 Running in Durability level: MAX_SURVIVABILITY
+2025-08-06 21:32:15 Pipeline Start of Pipeline
+2025-08-06 21:32:15 Pipeline node
+2025-08-06 21:32:15 Running on Jenkins in /root/workspace
+2025-08-06 21:32:15 Pipeline {
+2025-08-06 21:32:16 Pipeline stage
+2025-08-06 21:32:16 Pipeline { (检出软件包)
+2025-08-06 21:32:16 Stage "检出软件包" skipped due to when conditional
+2025-08-06 21:32:16 Pipeline }
+2025-08-06 21:32:16 Pipeline // stage
+2025-08-06 21:32:16 Pipeline stage
+2025-08-06 21:32:16 Pipeline { (检出 ZIP 包)
+2025-08-06 21:32:16 Stage "检出 ZIP 包" skipped due to when conditional
+2025-08-06 21:32:16 Pipeline }
+2025-08-06 21:32:16 Pipeline // stage
+2025-08-06 21:32:16 Pipeline stage
+2025-08-06 21:32:16 Pipeline { (检出代码仓库)
+2025-08-06 21:32:16 Pipeline sh
+2025-08-06 21:32:17 + git clone ****** .
+2025-08-06 21:32:17 Cloning into '.'...
+2025-08-06 21:32:19 Pipeline sh
+2025-08-06 21:32:19 + git checkout main
+2025-08-06 21:32:19 Already on 'main'
+2025-08-06 21:32:19 Your branch is up to date with 'origin/main'.
+2025-08-06 21:32:19 Pipeline }
+2025-08-06 21:32:19 Pipeline // stage
+2025-08-06 21:32:19 Pipeline stage
+2025-08-06 21:32:19 Pipeline { (写入 dockerfile)
+2025-08-06 21:32:19 Stage "写入 dockerfile" skipped due to when conditional
+2025-08-06 21:32:19 Pipeline }
+2025-08-06 21:32:19 Pipeline // stage
+2025-08-06 21:32:19 Pipeline stage
+2025-08-06 21:32:19 Pipeline { (构建 Docker 镜像)
+2025-08-06 21:32:19 Pipeline sh
+2025-08-06 21:32:19 + docker login -u ****** -p ****** ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-072-20250806213208
+2025-08-06 21:32:19 WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+2025-08-06 21:32:20 WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+2025-08-06 21:32:20 Configure a credential helper to remove this warning. See
+2025-08-06 21:32:20 https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+2025-08-06 21:32:20
+2025-08-06 21:32:20 Login Succeeded
+2025-08-06 21:32:20 Pipeline sh
+2025-08-06 21:32:20 + docker build -f ././/Dockerfile -t ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-072-20250806213208 ./
+2025-08-06 21:32:21 #0 building with "default" instance using docker driver
+2025-08-06 21:32:21
+2025-08-06 21:32:21 #1 internal load .dockerignore
+2025-08-06 21:32:21 #1 transferring context: 300B done
+2025-08-06 21:32:21 #1 DONE 0.1s
+2025-08-06 21:32:21
+2025-08-06 21:32:21 #2 internal load build definition from Dockerfile
+2025-08-06 21:32:21 #2 transferring dockerfile: 2.71kB done
+2025-08-06 21:32:21 #2 DONE 0.1s
+2025-08-06 21:32:21
+2025-08-06 21:32:21 #3 internal load metadata for docker.io/library/node:20-alpine
+2025-08-06 21:32:23 #3 DONE 1.2s
+2025-08-06 21:32:23
+2025-08-06 21:32:23 #4 internal load build context
+2025-08-06 21:32:23 #4 DONE 0.0s
+2025-08-06 21:32:23
+2025-08-06 21:32:23 #5 builder 1/8 FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
+2025-08-06 21:32:23 #5 resolve docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 0.0s done
+2025-08-06 21:32:23 #5 ...
+2025-08-06 21:32:23
+2025-08-06 21:32:23 #4 internal load build context
+2025-08-06 21:32:23 #4 transferring context: 171.19kB done
+2025-08-06 21:32:23 #4 DONE 0.1s
+2025-08-06 21:32:23
+2025-08-06 21:32:23 #5 builder 1/8 FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
+2025-08-06 21:32:23 #5 sha256:ae6ee91a652d927de01d550c29f863a52f1da390c89df95f3ceba256d1e62604 1.72kB / 1.72kB done
+2025-08-06 21:32:23 #5 sha256:7cdef5a331927fafa250be6166052d8599bf5eb7b014342538c2cc79b70a081f 6.42kB / 6.42kB done
+2025-08-06 21:32:23 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0B / 3.80MB 0.1s
+2025-08-06 21:32:23 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 0B / 42.99MB 0.1s
+2025-08-06 21:32:23 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0B / 1.26MB 0.1s
+2025-08-06 21:32:23 #5 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 0B / 445B 0.1s
+2025-08-06 21:32:23 #5 sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799 7.67kB / 7.67kB done
+2025-08-06 21:32:23 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 3.15MB / 3.80MB 0.4s
+2025-08-06 21:32:23 #5 sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 445B / 445B 0.3s done
+2025-08-06 21:32:23 #5 sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 3.80MB / 3.80MB 0.4s done
+2025-08-06 21:32:23 #5 sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 1.26MB / 1.26MB 0.4s done
+2025-08-06 21:32:23 #5 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0.1s
+2025-08-06 21:32:23 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 7.34MB / 42.99MB 0.6s
+2025-08-06 21:32:23 #5 extracting sha256:9824c27679d3b27c5e1cb00a73adb6f4f8d556994111c12db3c5d61a0c843df8 0.2s done
+2025-08-06 21:32:23 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 22.02MB / 42.99MB 0.8s
+2025-08-06 21:32:23 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 31.46MB / 42.99MB 0.9s
+2025-08-06 21:32:23 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 39.85MB / 42.99MB 1.0s
+2025-08-06 21:32:23 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 42.99MB / 42.99MB 1.1s
+2025-08-06 21:32:23 #5 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e
+2025-08-06 21:32:24 #5 sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 42.99MB / 42.99MB 1.1s done
+2025-08-06 21:32:25 #5 extracting sha256:8c59d92d6fc9f01af4aaa86824be72b74bd4d940c4c46aa95d9710bfa46c975e 1.8s done
+2025-08-06 21:32:25 #5 extracting sha256:54225bd601967a0aa669ec9be621c24d8eeac874b698d55874018070898685c2 0.1s done
+2025-08-06 21:32:26 #5 extracting sha256:a9e48ad1219d4d11c6456a8db0fd5c11af46242d52edf84e17ab84a7bfd93809 done
+2025-08-06 21:32:26 #5 DONE 3.5s
+2025-08-06 21:32:26
+2025-08-06 21:32:26 #6 builder 2/8 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+2025-08-06 21:32:27 #6 DONE 0.6s
+2025-08-06 21:32:27
+2025-08-06 21:32:27 #7 builder 3/8 RUN apk add --no-cache python3 py3-pip make g++ gcc libc-dev cairo-dev jpeg-dev pango-dev musl-dev giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev pkgconfig vips-dev libpng-dev
+2025-08-06 21:32:27 #7 0.542 fetch https://mirrors.aliyun.com/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
+2025-08-06 21:32:27 #7 0.806 fetch https://mirrors.aliyun.com/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
+2025-08-06 21:32:28 #7 1.427 (1/225) Installing cairo-tools (1.18.4-r0)
+2025-08-06 21:32:28 #7 1.468 (2/225) Installing libexpat (2.7.1-r0)
+2025-08-06 21:32:28 #7 1.527 (3/225) Installing brotli-libs (1.1.0-r2)
+2025-08-06 21:32:28 #7 1.628 (4/225) Installing libbz2 (1.0.8-r6)
+2025-08-06 21:32:28 #7 1.663 (5/225) Installing libpng (1.6.47-r0)
+2025-08-06 21:32:28 #7 1.721 (6/225) Installing freetype (2.13.3-r0)
+2025-08-06 21:32:28 #7 1.777 (7/225) Installing fontconfig (2.15.0-r3)
+2025-08-06 21:32:28 #7 1.864 (8/225) Installing expat (2.7.1-r0)
+2025-08-06 21:32:29 #7 2.150 (9/225) Installing pkgconf (2.4.3-r0)
+2025-08-06 21:32:29 #7 2.210 (10/225) Installing expat-dev (2.7.1-r0)
+2025-08-06 21:32:29 #7 2.272 (11/225) Installing bzip2-dev (1.0.8-r6)
+2025-08-06 21:32:29 #7 2.315 (12/225) Installing brotli (1.1.0-r2)
+2025-08-06 21:32:29 #7 2.347 (13/225) Installing brotli-dev (1.1.0-r2)
+2025-08-06 21:32:29 #7 2.402 (14/225) Installing zlib-dev (1.3.1-r2)
+2025-08-06 21:32:29 #7 2.478 (15/225) Installing libpng-dev (1.6.47-r0)
+2025-08-06 21:32:29 #7 2.516 (16/225) Installing freetype-dev (2.13.3-r0)
+2025-08-06 21:32:29 #7 2.596 (17/225) Installing fontconfig-dev (2.15.0-r3)
+2025-08-06 21:32:29 #7 2.647 (18/225) Installing libxau (1.0.12-r0)
+2025-08-06 21:32:29 #7 2.668 (19/225) Installing xorgproto (2024.1-r0)
+2025-08-06 21:32:29 #7 2.781 (20/225) Installing libxau-dev (1.0.12-r0)
+2025-08-06 21:32:29 #7 2.857 (21/225) Installing libmd (1.1.0-r0)
+2025-08-06 21:32:29 #7 2.881 (22/225) Installing libbsd (0.12.2-r0)
+2025-08-06 21:32:29 #7 2.905 (23/225) Installing libxdmcp (1.1.5-r1)
+2025-08-06 21:32:29 #7 2.931 (24/225) Installing libxcb (1.17.0-r0)
+2025-08-06 21:32:29 #7 2.979 (25/225) Installing libx11 (1.8.11-r0)
+2025-08-06 21:32:30 #7 3.058 (26/225) Installing libxext (1.3.6-r2)
+2025-08-06 21:32:30 #7 3.083 (27/225) Installing libffi (3.4.8-r0)
+2025-08-06 21:32:30 #7 3.103 (28/225) Installing gdbm (1.24-r0)
+2025-08-06 21:32:30 #7 3.140 (29/225) Installing xz-libs (5.8.1-r0)
+2025-08-06 21:32:30 #7 3.184 (30/225) Installing mpdecimal (4.0.1-r0)
+2025-08-06 21:32:30 #7 3.222 (31/225) Installing ncurses-terminfo-base (6.5_p20250503-r0)
+2025-08-06 21:32:30 #7 3.266 (32/225) Installing libncursesw (6.5_p20250503-r0)
+2025-08-06 21:32:30 #7 3.322 (33/225) Installing libpanelw (6.5_p20250503-r0)
+2025-08-06 21:32:30 #7 3.379 (34/225) Installing readline (8.2.13-r1)
+2025-08-06 21:32:30 #7 3.421 (35/225) Installing sqlite-libs (3.49.2-r1)
+2025-08-06 21:32:30 #7 3.513 (36/225) Installing python3 (3.12.11-r0)
+2025-08-06 21:32:30 #7 3.971 (37/225) Installing python3-pycache-pyc0 (3.12.11-r0)
+2025-08-06 21:32:31 #7 4.236 (38/225) Installing pyc (3.12.11-r0)
+2025-08-06 21:32:31 #7 4.236 (39/225) Installing xcb-proto-pyc (1.17.0-r0)
+2025-08-06 21:32:31 #7 4.273 (40/225) Installing python3-pyc (3.12.11-r0)
+2025-08-06 21:32:31 #7 4.273 (41/225) Installing xcb-proto (1.17.0-r0)
+2025-08-06 21:32:31 #7 4.334 (42/225) Installing libxdmcp-dev (1.1.5-r1)
+2025-08-06 21:32:31 #7 4.395 (43/225) Installing libxcb-dev (1.17.0-r0)
+2025-08-06 21:32:31 #7 4.448 (44/225) Installing xtrans (1.5.2-r0)
+2025-08-06 21:32:31 #7 4.482 (45/225) Installing libx11-dev (1.8.11-r0)
+2025-08-06 21:32:31 #7 4.531 (46/225) Installing libxext-dev (1.3.6-r2)
+2025-08-06 21:32:31 #7 4.571 (47/225) Installing libxrender (0.9.12-r0)
+2025-08-06 21:32:31 #7 4.592 (48/225) Installing libxrender-dev (0.9.12-r0)
+2025-08-06 21:32:31 #7 4.682 (49/225) Installing pixman (0.46.4-r0)
+2025-08-06 21:32:31 #7 4.769 (50/225) Installing pixman-dev (0.46.4-r0)
+2025-08-06 21:32:31 #7 4.842 (51/225) Installing util-macros (1.20.1-r0)
+2025-08-06 21:32:31 #7 4.896 (52/225) Installing xcb-util (0.4.1-r3)
+2025-08-06 21:32:31 #7 4.939 (53/225) Installing xcb-util-dev (0.4.1-r3)
+2025-08-06 21:32:31 #7 4.982 (54/225) Installing cairo (1.18.4-r0)
+2025-08-06 21:32:31 #7 5.021 (55/225) Installing libintl (0.24.1-r0)
+2025-08-06 21:32:31 #7 5.047 (56/225) Installing libeconf (0.6.3-r0)
+2025-08-06 21:32:32 #7 5.073 (57/225) Installing libblkid (2.41-r9)
+2025-08-06 21:32:32 #7 5.100 (58/225) Installing libmount (2.41-r9)
+2025-08-06 21:32:32 #7 5.124 (59/225) Installing pcre2 (10.43-r1)
+2025-08-06 21:32:32 #7 5.159 (60/225) Installing glib (2.84.3-r0)
+2025-08-06 21:32:32 #7 5.270 (61/225) Installing cairo-gobject (1.18.4-r0)
+2025-08-06 21:32:32 #7 5.303 (62/225) Installing libxml2 (2.13.8-r0)
+2025-08-06 21:32:32 #7 5.357 (63/225) Installing libxml2-utils (2.13.8-r0)
+2025-08-06 21:32:32 #7 5.412 (64/225) Installing docbook-xml (4.5-r10)
+2025-08-06 21:32:32 #7 5.510 Executing docbook-xml-4.5-r10.post-install
+2025-08-06 21:32:32 #7 5.522 (65/225) Installing libxslt (1.1.43-r3)
+2025-08-06 21:32:32 #7 5.572 (66/225) Installing docbook-xsl-ns (1.79.2-r11)
+2025-08-06 21:32:32 #7 5.776 Executing docbook-xsl-ns-1.79.2-r11.post-install
+2025-08-06 21:32:32 #7 5.804 (67/225) Installing docbook-xsl-nons (1.79.2-r11)
+2025-08-06 21:32:32 #7 6.025 Executing docbook-xsl-nons-1.79.2-r11.post-install
+2025-08-06 21:32:33 #7 6.064 (68/225) Installing docbook-xsl (1.79.2-r11)
+2025-08-06 21:32:33 #7 6.100 (69/225) Installing xz (5.8.1-r0)
+2025-08-06 21:32:33 #7 6.152 (70/225) Installing gettext-asprintf (0.24.1-r0)
+2025-08-06 21:32:33 #7 6.218 (71/225) Installing libunistring (1.3-r0)
+2025-08-06 21:32:33 #7 6.292 (72/225) Installing gettext-libs (0.24.1-r0)
+2025-08-06 21:32:33 #7 6.344 (73/225) Installing gettext-envsubst (0.24.1-r0)
+2025-08-06 21:32:33 #7 6.381 (74/225) Installing libgomp (14.2.0-r6)
+2025-08-06 21:32:33 #7 6.435 (75/225) Installing gettext (0.24.1-r0)
+2025-08-06 21:32:33 #7 6.510 (76/225) Installing gettext-dev (0.24.1-r0)
+2025-08-06 21:32:33 #7 6.619 (77/225) Installing py3-parsing (3.2.3-r0)
+2025-08-06 21:32:33 #7 6.655 (78/225) Installing py3-parsing-pyc (3.2.3-r0)
+2025-08-06 21:32:33 #7 6.694 (79/225) Installing py3-packaging (25.0-r0)
+2025-08-06 21:32:33 #7 6.729 (80/225) Installing py3-packaging-pyc (25.0-r0)
+2025-08-06 21:32:33 #7 6.803 (81/225) Installing linux-headers (6.14.2-r0)
+2025-08-06 21:32:33 #7 6.985 (82/225) Installing libffi-dev (3.4.8-r0)
+2025-08-06 21:32:34 #7 7.073 (83/225) Installing bsd-compat-headers (0.7.2-r6)
+2025-08-06 21:32:34 #7 7.107 (84/225) Installing libformw (6.5_p20250503-r0)
+2025-08-06 21:32:34 #7 7.159 (85/225) Installing libmenuw (6.5_p20250503-r0)
+2025-08-06 21:32:34 #7 7.283 (86/225) Installing libncurses++ (6.5_p20250503-r0)
+2025-08-06 21:32:34 #7 7.329 (87/225) Installing ncurses-dev (6.5_p20250503-r0)
+2025-08-06 21:32:34 #7 7.386 (88/225) Installing libedit (20250104.3.1-r1)
+2025-08-06 21:32:34 #7 7.435 (89/225) Installing libedit-dev (20250104.3.1-r1)
+2025-08-06 21:32:34 #7 7.477 (90/225) Installing libpcre2-16 (10.43-r1)
+2025-08-06 21:32:34 #7 7.543 (91/225) Installing libpcre2-32 (10.43-r1)
+2025-08-06 21:32:34 #7 7.606 (92/225) Installing pcre2-dev (10.43-r1)
+2025-08-06 21:32:34 #7 7.643 (93/225) Installing libuuid (2.41-r9)
+2025-08-06 21:32:34 #7 7.678 (94/225) Installing libfdisk (2.41-r9)
+2025-08-06 21:32:34 #7 7.723 (95/225) Installing liblastlog2 (2.41-r9)
+2025-08-06 21:32:34 #7 7.763 (96/225) Installing libsmartcols (2.41-r9)
+2025-08-06 21:32:34 #7 7.903 (97/225) Installing sqlite (3.49.2-r1)
+2025-08-06 21:32:34 #7 7.982 (98/225) Installing sqlite-dev (3.49.2-r1)
+2025-08-06 21:32:34 #7 8.037 (99/225) Installing util-linux-dev (2.41-r9)
+2025-08-06 21:32:35 #7 8.089 (100/225) Installing glib-dev (2.84.3-r0)
+2025-08-06 21:32:35 #7 8.244 (101/225) Installing cairo-dev (1.18.4-r0)
+2025-08-06 21:32:35 #7 8.294 (102/225) Installing libstdc++-dev (14.2.0-r6)
+2025-08-06 21:32:35 #7 8.698 (103/225) Installing jansson (2.14.1-r0)
+2025-08-06 21:32:35 #7 8.732 (104/225) Installing zstd-libs (1.5.7-r0)
+2025-08-06 21:32:35 #7 8.795 (105/225) Installing binutils (2.44-r2)
+2025-08-06 21:32:35 #7 9.014 (106/225) Installing libatomic (14.2.0-r6)
+2025-08-06 21:32:36 #7 9.171 (107/225) Installing gmp (6.3.0-r3)
+2025-08-06 21:32:36 #7 9.215 (108/225) Installing isl26 (0.26-r1)
+2025-08-06 21:32:36 #7 9.297 (109/225) Installing mpfr4 (4.2.1_p1-r0)
+2025-08-06 21:32:36 #7 9.378 (110/225) Installing mpc1 (1.3.1-r1)
+2025-08-06 21:32:36 #7 9.418 (111/225) Installing gcc (14.2.0-r6)
+2025-08-06 21:32:36 #7 ...
+2025-08-06 21:32:36
+2025-08-06 21:32:36 #8 production 3/8 RUN apk add --no-cache cairo pango jpeg giflib pixman libjpeg-turbo freetype vips-dev
+2025-08-06 21:32:36 #8 0.536 fetch https://mirrors.aliyun.com/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
+2025-08-06 21:32:36 #8 0.815 fetch https://mirrors.aliyun.com/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
+2025-08-06 21:32:36 #8 1.455 (1/201) Installing libxau (1.0.12-r0)
+2025-08-06 21:32:36 #8 1.516 (2/201) Installing libmd (1.1.0-r0)
+2025-08-06 21:32:36 #8 1.564 (3/201) Installing libbsd (0.12.2-r0)
+2025-08-06 21:32:36 #8 1.615 (4/201) Installing libxdmcp (1.1.5-r1)
+2025-08-06 21:32:36 #8 1.666 (5/201) Installing libxcb (1.17.0-r0)
+2025-08-06 21:32:36 #8 1.714 (6/201) Installing libx11 (1.8.11-r0)
+2025-08-06 21:32:36 #8 1.813 (7/201) Installing libxext (1.3.6-r2)
+2025-08-06 21:32:36 #8 1.850 (8/201) Installing libxrender (0.9.12-r0)
+2025-08-06 21:32:36 #8 2.030 (9/201) Installing libexpat (2.7.1-r0)
+2025-08-06 21:32:36 #8 2.054 (10/201) Installing brotli-libs (1.1.0-r2)
+2025-08-06 21:32:36 #8 2.093 (11/201) Installing libbz2 (1.0.8-r6)
+2025-08-06 21:32:36 #8 2.119 (12/201) Installing libpng (1.6.47-r0)
+2025-08-06 21:32:36 #8 2.145 (13/201) Installing freetype (2.13.3-r0)
+2025-08-06 21:32:36 #8 2.192 (14/201) Installing fontconfig (2.15.0-r3)
+2025-08-06 21:32:36 #8 2.232 (15/201) Installing pixman (0.46.4-r0)
+2025-08-06 21:32:36 #8 2.305 (16/201) Installing cairo (1.18.4-r0)
+2025-08-06 21:32:36 #8 2.452 (17/201) Installing giflib (5.2.2-r1)
+2025-08-06 21:32:36 #8 2.498 (18/201) Installing libjpeg-turbo (3.1.0-r0)
+2025-08-06 21:32:36 #8 2.558 (19/201) Installing libturbojpeg (3.1.0-r0)
+2025-08-06 21:32:36 #8 2.606 (20/201) Installing libjpeg-turbo-utils (3.1.0-r0)
+2025-08-06 21:32:36 #8 2.646 (21/201) Installing jpeg (9f-r0)
+2025-08-06 21:32:36 #8 2.646 (22/201) Installing libxft (2.3.8-r3)
+2025-08-06 21:32:36 #8 2.682 (23/201) Installing fribidi (1.0.16-r1)
+2025-08-06 21:32:36 #8 2.722 (24/201) Installing libffi (3.4.8-r0)
+2025-08-06 21:32:36 #8 2.846 (25/201) Installing libintl (0.24.1-r0)
+2025-08-06 21:32:36 #8 2.888 (26/201) Installing libeconf (0.6.3-r0)
+2025-08-06 21:32:36 #8 2.959 (27/201) Installing libblkid (2.41-r9)
+2025-08-06 21:32:36 #8 3.015 (28/201) Installing libmount (2.41-r9)
+2025-08-06 21:32:36 #8 3.124 (29/201) Installing pcre2 (10.43-r1)
+2025-08-06 21:32:36 #8 3.172 (30/201) Installing glib (2.84.3-r0)
+2025-08-06 21:32:36 #8 3.295 (31/201) Installing graphite2 (1.3.14-r6)
+2025-08-06 21:32:36 #8 3.347 (32/201) Installing harfbuzz (11.2.1-r0)
+2025-08-06 21:32:36 #8 3.420 (33/201) Installing pango (1.56.3-r0)
+2025-08-06 21:32:36 #8 3.506 (34/201) Installing libdeflate-static (1.23-r0)
+2025-08-06 21:32:36 #8 3.586 (35/201) Installing openexr-libiex (3.3.2-r0)
+2025-08-06 21:32:36 #8 3.654 (36/201) Installing openexr-libilmthread (3.3.2-r0)
+2025-08-06 21:32:36 #8 3.723 (37/201) Installing imath (3.1.12-r0)
+2025-08-06 21:32:36 #8 3.777 (38/201) Installing libdeflate (1.23-r0)
+2025-08-06 21:32:36 #8 3.832 (39/201) Installing openexr-libopenexrcore (3.3.2-r0)
+2025-08-06 21:32:36 #8 3.918 (40/201) Installing openexr-libopenexr (3.3.2-r0)
+2025-08-06 21:32:36 #8 4.088 (41/201) Installing openexr-libopenexrutil (3.3.2-r0)
+2025-08-06 21:32:36 #8 4.145 (42/201) Installing pkgconf (2.4.3-r0)
+2025-08-06 21:32:36 #8 4.168 (43/201) Installing gdbm (1.24-r0)
+2025-08-06 21:32:36 #8 4.191 (44/201) Installing xz-libs (5.8.1-r0)
+2025-08-06 21:32:36 #8 4.230 (45/201) Installing mpdecimal (4.0.1-r0)
+2025-08-06 21:32:36 #8 4.259 (46/201) Installing ncurses-terminfo-base (6.5_p20250503-r0)
+2025-08-06 21:32:36 #8 4.288 (47/201) Installing libncursesw (6.5_p20250503-r0)
+2025-08-06 21:32:36 #8 4.337 (48/201) Installing libpanelw (6.5_p20250503-r0)
+2025-08-06 21:32:36 #8 4.359 (49/201) Installing readline (8.2.13-r1)
+2025-08-06 21:32:36 #8 4.397 (50/201) Installing sqlite-libs (3.49.2-r1)
+2025-08-06 21:32:36 #8 4.454 (51/201) Installing python3 (3.12.11-r0)
+2025-08-06 21:32:36 #8 5.163 (52/201) Installing python3-pycache-pyc0 (3.12.11-r0)
+2025-08-06 21:32:36 #8 5.454 (53/201) Installing pyc (3.12.11-r0)
+2025-08-06 21:32:36 #8 5.454 (54/201) Installing python3-pyc (3.12.11-r0)
+2025-08-06 21:32:36 #8 5.454 (55/201) Installing boost1.84-python3 (1.84.0-r3)
+2025-08-06 21:32:36 #8 5.539 (56/201) Installing py3-imath (3.1.12-r0)
+2025-08-06 21:32:36 #8 5.832 (57/201) Installing imath-dev (3.1.12-r0)
+2025-08-06 21:32:36 #8 5.907 (58/201) Installing libdeflate-dev (1.23-r0)
+2025-08-06 21:32:36 #8 5.963 (59/201) Installing openexr-dev (3.3.2-r0)
+2025-08-06 21:32:36 #8 6.048 (60/201) Installing cairo-tools (1.18.4-r0)
+2025-08-06 21:32:36 #8 6.070 (61/201) Installing expat (2.7.1-r0)
+2025-08-06 21:32:36 #8 6.091 (62/201) Installing expat-dev (2.7.1-r0)
+2025-08-06 21:32:36 #8 6.113 (63/201) Installing bzip2-dev (1.0.8-r6)
+2025-08-06 21:32:36 #8 6.133 (64/201) Installing brotli (1.1.0-r2)
+2025-08-06 21:32:36 #8 6.159 (65/201) Installing brotli-dev (1.1.0-r2)
+2025-08-06 21:32:36 #8 6.182 (66/201) Installing zlib-dev (1.3.1-r2)
+2025-08-06 21:32:36 #8 6.209 (67/201) Installing libpng-dev (1.6.47-r0)
+2025-08-06 21:32:36 #8 6.234 (68/201) Installing freetype-dev (2.13.3-r0)
+2025-08-06 21:32:36 #8 6.267 (69/201) Installing fontconfig-dev (2.15.0-r3)
+2025-08-06 21:32:36 #8 6.290 (70/201) Installing xorgproto (2024.1-r0)
+2025-08-06 21:32:36 #8 6.340 (71/201) Installing libxau-dev (1.0.12-r0)
+2025-08-06 21:32:36 #8 6.363 (72/201) Installing xcb-proto (1.17.0-r0)
+2025-08-06 21:32:36 #8 6.404 (73/201) Installing xcb-proto-pyc (1.17.0-r0)
+2025-08-06 21:32:36 #8 6.432 (74/201) Installing libxdmcp-dev (1.1.5-r1)
+2025-08-06 21:32:36 #8 6.458 (75/201) Installing libxcb-dev (1.17.0-r0)
+2025-08-06 21:32:36 #8 6.501 (76/201) Installing xtrans (1.5.2-r0)
+2025-08-06 21:32:36 #8 6.531 (77/201) Installing libx11-dev (1.8.11-r0)
+2025-08-06 21:32:36 #8 6.557 (78/201) Installing libxext-dev (1.3.6-r2)
+2025-08-06 21:32:36 #8 6.590 (79/201) Installing libxrender-dev (0.9.12-r0)
+2025-08-06 21:32:36 #8 6.635 (80/201) Installing pixman-dev (0.46.4-r0)
+2025-08-06 21:32:36 #8 6.661 (81/201) Installing util-macros (1.20.1-r0)
+2025-08-06 21:32:36 #8 6.699 (82/201) Installing xcb-util (0.4.1-r3)
+2025-08-06 21:32:36 #8 6.724 (83/201) Installing xcb-util-dev (0.4.1-r3)
+2025-08-06 21:32:36 #8 6.754 (84/201) Installing cairo-gobject (1.18.4-r0)
+2025-08-06 21:32:36 #8 6.909 (85/201) Installing libxml2 (2.13.8-r0)
+2025-08-06 21:32:36 #8 6.952 (86/201) Installing libxml2-utils (2.13.8-r0)
+2025-08-06 21:32:36 #8 7.005 (87/201) Installing docbook-xml (4.5-r10)
+2025-08-06 21:32:36 #8 7.069 Executing docbook-xml-4.5-r10.post-install
+2025-08-06 21:32:36 #8 7.080 (88/201) Installing libxslt (1.1.43-r3)
+2025-08-06 21:32:36 #8 7.125 (89/201) Installing docbook-xsl-ns (1.79.2-r11)
+2025-08-06 21:32:36 #8 7.327 Executing docbook-xsl-ns-1.79.2-r11.post-install
+2025-08-06 21:32:36 #8 7.356 (90/201) Installing docbook-xsl-nons (1.79.2-r11)
+2025-08-06 21:32:36 #8 7.630 Executing docbook-xsl-nons-1.79.2-r11.post-install
+2025-08-06 21:32:36 #8 7.679 (91/201) Installing docbook-xsl (1.79.2-r11)
+2025-08-06 21:32:36 #8 7.707 (92/201) Installing xz (5.8.1-r0)
+2025-08-06 21:32:36 #8 7.731 (93/201) Installing gettext-asprintf (0.24.1-r0)
+2025-08-06 21:32:36 #8 7.760 (94/201) Installing libunistring (1.3-r0)
+2025-08-06 21:32:36 #8 7.820 (95/201) Installing gettext-libs (0.24.1-r0)
+2025-08-06 21:32:36 #8 7.857 (96/201) Installing gettext-envsubst (0.24.1-r0)
+2025-08-06 21:32:36 #8 7.887 (97/201) Installing libgomp (14.2.0-r6)
+2025-08-06 21:32:36 #8 7.917 (98/201) Installing gettext (0.24.1-r0)
+2025-08-06 21:32:36 #8 7.987 (99/201) Installing gettext-dev (0.24.1-r0)
+2025-08-06 21:32:36 #8 8.053 (100/201) Installing py3-parsing (3.2.3-r0)
+2025-08-06 21:32:36 #8 8.104 (101/201) Installing py3-parsing-pyc (3.2.3-r0)
+2025-08-06 21:32:36 #8 8.146 (102/201) Installing py3-packaging (25.0-r0)
+2025-08-06 21:32:36 #8 8.176 (103/201) Installing py3-packaging-pyc (25.0-r0)
+2025-08-06 21:32:36 #8 8.202 (104/201) Installing linux-headers (6.14.2-r0)
+2025-08-06 21:32:36 #8 8.370 (105/201) Installing libffi-dev (3.4.8-r0)
+2025-08-06 21:32:36 #8 8.397 (106/201) Installing bsd-compat-headers (0.7.2-r6)
+2025-08-06 21:32:36 #8 8.430 (107/201) Installing libformw (6.5_p20250503-r0)
+2025-08-06 21:32:36 #8 8.459 (108/201) Installing libmenuw (6.5_p20250503-r0)
+2025-08-06 21:32:36 #8 8.497 (109/201) Installing libncurses++ (6.5_p20250503-r0)
+2025-08-06 21:32:36 #8 8.535 (110/201) Installing ncurses-dev (6.5_p20250503-r0)
+2025-08-06 21:32:36 #8 8.575 (111/201) Installing libedit (20250104.3.1-r1)
+2025-08-06 21:32:36 #8 8.599 (112/201) Installing libedit-dev (20250104.3.1-r1)
+2025-08-06 21:32:36 #8 8.623 (113/201) Installing libpcre2-16 (10.43-r1)
+2025-08-06 21:32:36 #8 8.713 (114/201) Installing libpcre2-32 (10.43-r1)
+2025-08-06 21:32:36 #8 8.751 (115/201) Installing pcre2-dev (10.43-r1)
+2025-08-06 21:32:36 #8 8.778 (116/201) Installing libuuid (2.41-r9)
+2025-08-06 21:32:36 #8 8.807 (117/201) Installing libfdisk (2.41-r9)
+2025-08-06 21:32:36 #8 8.840 (118/201) Installing liblastlog2 (2.41-r9)
+2025-08-06 21:32:36 #8 8.877 (119/201) Installing libsmartcols (2.41-r9)
+2025-08-06 21:32:36 #8 8.952 (120/201) Installing sqlite (3.49.2-r1)
+2025-08-06 21:32:36 #8 9.030 (121/201) Installing sqlite-dev (3.49.2-r1)
+2025-08-06 21:32:36 #8 9.072 (122/201) Installing util-linux-dev (2.41-r9)
+2025-08-06 21:32:36 #8 9.105 (123/201) Installing glib-dev (2.84.3-r0)
+2025-08-06 21:32:36 #8 9.239 (124/201) Installing cairo-dev (1.18.4-r0)
+2025-08-06 21:32:36 #8 9.263 (125/201) Installing c-ares (1.34.5-r0)
+2025-08-06 21:32:36 #8 9.322 (126/201) Installing libidn2 (2.3.7-r0)
+2025-08-06 21:32:36 #8 9.363 (127/201) Installing nghttp2-libs (1.65.0-r0)
+2025-08-06 21:32:36 #8 9.431 (128/201) Installing libpsl (0.21.5-r3)
+2025-08-06 21:32:36 #8 9.478 (129/201) Installing zstd-libs (1.5.7-r0)
+2025-08-06 21:32:36 #8 9.532 (130/201) Installing libcurl (8.14.1-r1)
+2025-08-06 21:32:36 #8 9.580 (131/201) Installing cfitsio (4.5.0-r0)
+2025-08-06 21:32:36 #8 9.675 (132/201) Installing cfitsio-dev (4.5.0-r0)
+2025-08-06 21:32:36 #8 9.733 (133/201) Installing cgif (0.5.0-r1)
+2025-08-06 21:32:36 #8 9.805 (134/201) Installing cgif-dev (0.5.0-r1)
+2025-08-06 21:32:36 #8 9.853 (135/201) Installing fftw-double-libs (3.3.10-r6)
+2025-08-06 21:32:36 #8 9.940 (136/201) Installing fftw-long-double-libs (3.3.10-r6)
+2025-08-06 21:32:36 #8 10.01 (137/201) Installing fftw-single-libs (3.3.10-r6)
+2025-08-06 21:32:37 #8 10.12 (138/201) Installing fftw-dev (3.3.10-r6)
+2025-08-06 21:32:37 #8 10.33 (139/201) Installing libimagequant (4.2.2-r0)
+2025-08-06 21:32:37 #8 10.49 (140/201) Installing libimagequant-dev (4.2.2-r0)
+2025-08-06 21:32:37 #8 10.56 (141/201) Installing lcms2 (2.16-r0)
+2025-08-06 21:32:37 #8 10.80 (142/201) Installing lcms2-plugins (2.16-r0)
+2025-08-06 21:32:37 #8 10.85 (143/201) Installing libjpeg-turbo-dev (3.1.0-r0)
+2025-08-06 21:32:37 #8 10.90 (144/201) Installing libsharpyuv (1.5.0-r0)
+2025-08-06 21:32:37 #8 10.98 (145/201) Installing libwebp (1.5.0-r0)
+2025-08-06 21:32:37 #8 11.04 (146/201) Installing tiff (4.7.0-r0)
+2025-08-06 21:32:37 #8 11.10 (147/201) Installing libtiffxx (4.7.0-r0)
+2025-08-06 21:32:37 #8 11.16 (148/201) Installing libwebpdecoder (1.5.0-r0)
+2025-08-06 21:32:38 #8 11.21 (149/201) Installing libwebpdemux (1.5.0-r0)
+2025-08-06 21:32:38 #8 11.26 (150/201) Installing libwebpmux (1.5.0-r0)
+2025-08-06 21:32:38 #8 11.31 (151/201) Installing libwebp-dev (1.5.0-r0)
+2025-08-06 21:32:38 #8 11.37 (152/201) Installing zstd (1.5.7-r0)
+2025-08-06 21:32:38 #8 11.42 (153/201) Installing zstd-dev (1.5.7-r0)
+2025-08-06 21:32:38 #8 11.47 (154/201) Installing tiff-dev (4.7.0-r0)
+2025-08-06 21:32:38 #8 11.53 (155/201) Installing lcms2-dev (2.16-r0)
+2025-08-06 21:32:38 #8 11.58 (156/201) Installing acl-libs (2.3.2-r1)
+2025-08-06 21:32:38 #8 11.64 (157/201) Installing lz4-libs (1.10.0-r0)
+2025-08-06 21:32:38 #8 11.78 (158/201) Installing libarchive (3.8.1-r0)
+2025-08-06 21:32:38 #8 11.87 (159/201) Installing openssl-dev (3.5.1-r0)
+2025-08-06 21:32:38 #8 11.98 (160/201) Installing libarchive-dev (3.8.1-r0)
+2025-08-06 21:32:38 #8 12.03 (161/201) Installing libexif (0.6.25-r0)
+2025-08-06 21:32:38 #8 12.08 (162/201) Installing libexif-dev (0.6.25-r0)
+2025-08-06 21:32:39 #8 12.14 (163/201) Installing libhwy (1.0.7-r1)
+2025-08-06 21:32:39 #8 12.23 (164/201) Installing libhwy_contrib (1.0.7-r1)
+2025-08-06 21:32:39 #8 12.37 (165/201) Installing libhwy_test (1.0.7-r1)
+2025-08-06 21:32:39 #8 12.42 (166/201) Installing gtest (1.16.0-r0)
+2025-08-06 21:32:39 #8 12.49 (167/201) Installing gmock (1.16.0-r0)
+2025-08-06 21:32:39 #8 12.54 (168/201) Installing gtest-dev (1.16.0-r0)
+2025-08-06 21:32:39 #8 12.67 (169/201) Installing highway-dev (1.0.7-r1)
+2025-08-06 21:32:39 #8 12.75 (170/201) Installing openjpeg (2.5.3-r0)
+2025-08-06 21:32:39 #8 12.80 (171/201) Installing openjpeg-tools (2.5.3-r0)
+2025-08-06 21:32:39 #8 12.86 (172/201) Installing openjpeg-dev (2.5.3-r0)
+2025-08-06 21:32:39 #8 12.94 (173/201) Installing libdav1d (1.5.1-r0)
+2025-08-06 21:32:39 #8 13.14 (174/201) Installing rsvg-convert (2.60.0-r0)
+2025-08-06 21:32:40 #8 13.32 (175/201) Installing shared-mime-info (2.4-r6)
+2025-08-06 21:32:40 #8 13.38 (176/201) Installing gdk-pixbuf (2.42.12-r1)
+2025-08-06 21:32:40 #8 13.47 (177/201) Installing librsvg (2.60.0-r0)
+2025-08-06 21:32:40 #8 13.88 (178/201) Installing dav1d-dev (1.5.1-r0)
+2025-08-06 21:32:40 #8 13.94 (179/201) Installing gdk-pixbuf-dev (2.42.12-r1)
+2025-08-06 21:32:40 #8 14.00 (180/201) Installing harfbuzz-cairo (11.2.1-r0)
+2025-08-06 21:32:40 #8 14.02 (181/201) Installing harfbuzz-gobject (11.2.1-r0)
+2025-08-06 21:32:40 #8 14.06 (182/201) Installing icu-data-en (76.1-r1)
+2025-08-06 21:32:40 #8 14.14 Executing icu-data-en-76.1-r1.post-install
+2025-08-06 21:32:41 #8 14.14 *
+2025-08-06 21:32:41 #8 14.14 * If you need ICU with non-English locales and legacy charset support, install
+2025-08-06 21:32:41 #8 14.14 * package icu-data-full.
+2025-08-06 21:32:41 #8 14.14 *
+2025-08-06 21:32:41 #8 14.14 (183/201) Installing icu-libs (76.1-r1)
+2025-08-06 21:32:41 #8 14.25 (184/201) Installing harfbuzz-icu (11.2.1-r0)
+2025-08-06 21:32:41 #8 14.27 (185/201) Installing harfbuzz-subset (11.2.1-r0)
+2025-08-06 21:32:41 #8 14.32 (186/201) Installing graphite2-dev (1.3.14-r6)
+2025-08-06 21:32:41 #8 14.35 (187/201) Installing icu (76.1-r1)
+2025-08-06 21:32:41 #8 14.38 (188/201) Installing icu-dev (76.1-r1)
+2025-08-06 21:32:41 #8 14.49 (189/201) Installing harfbuzz-dev (11.2.1-r0)
+2025-08-06 21:32:41 #8 14.53 (190/201) Installing xz-dev (5.8.1-r0)
+2025-08-06 21:32:41 #8 14.60 (191/201) Installing libxml2-dev (2.13.8-r0)
+2025-08-06 21:32:41 #8 14.78 (192/201) Installing pango-tools (1.56.3-r0)
+2025-08-06 21:32:41 #8 14.81 (193/201) Installing fribidi-dev (1.0.16-r1)
+2025-08-06 21:32:41 #8 14.85 (194/201) Installing libxft-dev (2.3.8-r3)
+2025-08-06 21:32:41 #8 14.87 (195/201) Installing pango-dev (1.56.3-r0)
+2025-08-06 21:32:41 #8 14.91 (196/201) Installing librsvg-dev (2.60.0-r0)
+2025-08-06 21:32:41 #8 14.99 (197/201) Installing libspng (0.7.4-r1)
+2025-08-06 21:32:41 #8 15.03 (198/201) Installing libspng-dev (0.7.4-r1)
+2025-08-06 21:32:42 #8 15.20 (199/201) Installing vips (8.16.1-r0)
+2025-08-06 21:32:42 #8 15.32 (200/201) Installing vips-cpp (8.16.1-r0)
+2025-08-06 21:32:42 #8 15.37 (201/201) Installing vips-dev (8.16.1-r0)
+2025-08-06 21:32:42 #8 15.47 Executing busybox-1.37.0-r18.trigger
+2025-08-06 21:32:42 #8 15.47 Executing glib-2.84.3-r0.trigger
+2025-08-06 21:32:42 #8 15.48 No schema files found: doing nothing.
+2025-08-06 21:32:42 #8 15.49 Executing shared-mime-info-2.4-r6.trigger
+2025-08-06 21:32:42 #8 15.99 Executing gdk-pixbuf-2.42.12-r1.trigger
+2025-08-06 21:32:42 #8 16.01 OK: 235 MiB in 219 packages
+2025-08-06 21:32:43 #8 ...
+2025-08-06 21:32:43
+2025-08-06 21:32:43 #7 builder 3/8 RUN apk add --no-cache python3 py3-pip make g++ gcc libc-dev cairo-dev jpeg-dev pango-dev musl-dev giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev pkgconfig vips-dev libpng-dev
+2025-08-06 21:32:43 #7 12.05 (112/225) Installing musl-dev (1.2.5-r10)
+2025-08-06 21:32:43 #7 12.27 (113/225) Installing g++ (14.2.0-r6)
+2025-08-06 21:32:43 #7 13.06 (114/225) Installing giflib (5.2.2-r1)
+2025-08-06 21:32:43 #7 13.08 (115/225) Installing giflib-dev (5.2.2-r1)
+2025-08-06 21:32:43 #7 13.13 (116/225) Installing libjpeg-turbo (3.1.0-r0)
+2025-08-06 21:32:43 #7 13.17 (117/225) Installing libturbojpeg (3.1.0-r0)
+2025-08-06 21:32:43 #7 13.20 (118/225) Installing libjpeg-turbo-dev (3.1.0-r0)
+2025-08-06 21:32:43 #7 13.22 (119/225) Installing jpeg-dev (9f-r0)
+2025-08-06 21:32:43 #7 13.22 (120/225) Installing make (4.4.1-r3)
+2025-08-06 21:32:43 #7 13.27 (121/225) Installing libxft (2.3.8-r3)
+2025-08-06 21:32:43 #7 13.29 (122/225) Installing graphite2 (1.3.14-r6)
+2025-08-06 21:32:43 #7 13.32 (123/225) Installing harfbuzz (11.2.1-r0)
+2025-08-06 21:32:43 #7 13.57 (124/225) Installing fribidi (1.0.16-r1)
+2025-08-06 21:32:43 #7 13.61 (125/225) Installing pango (1.56.3-r0)
+2025-08-06 21:32:43 #7 13.64 (126/225) Installing pango-tools (1.56.3-r0)
+2025-08-06 21:32:43 #7 13.68 (127/225) Installing fribidi-dev (1.0.16-r1)
+2025-08-06 21:32:43 #7 13.72 (128/225) Installing harfbuzz-cairo (11.2.1-r0)
+2025-08-06 21:32:43 #7 13.76 (129/225) Installing harfbuzz-gobject (11.2.1-r0)
+2025-08-06 21:32:43 #7 13.83 (130/225) Installing icu-data-en (76.1-r1)
+2025-08-06 21:32:43 #7 13.92 Executing icu-data-en-76.1-r1.post-install
+2025-08-06 21:32:43 #7 13.92 *
+2025-08-06 21:32:43 #7 13.92 * If you need ICU with non-English locales and legacy charset support, install
+2025-08-06 21:32:43 #7 13.92 * package icu-data-full.
+2025-08-06 21:32:43 #7 13.92 *
+2025-08-06 21:32:43 #7 13.92 (131/225) Installing icu-libs (76.1-r1)
+2025-08-06 21:32:43 #7 14.05 (132/225) Installing harfbuzz-icu (11.2.1-r0)
+2025-08-06 21:32:43 #7 14.09 (133/225) Installing harfbuzz-subset (11.2.1-r0)
+2025-08-06 21:32:43 #7 14.16 (134/225) Installing graphite2-dev (1.3.14-r6)
+2025-08-06 21:32:43 #7 14.19 (135/225) Installing icu (76.1-r1)
+2025-08-06 21:32:43 #7 14.26 (136/225) Installing icu-dev (76.1-r1)
+2025-08-06 21:32:43 #7 14.36 (137/225) Installing harfbuzz-dev (11.2.1-r0)
+2025-08-06 21:32:43 #7 14.42 (138/225) Installing libxft-dev (2.3.8-r3)
+2025-08-06 21:32:43 #7 14.46 (139/225) Installing pango-dev (1.56.3-r0)
+2025-08-06 21:32:43 #7 14.66 (140/225) Installing libsigc++3 (3.6.0-r0)
+2025-08-06 21:32:43 #7 14.69 (141/225) Installing cairomm (1.18.0-r0)
+2025-08-06 21:32:43 #7 14.74 (142/225) Installing glibmm (2.84.0-r0)
+2025-08-06 21:32:43 #7 14.81 (143/225) Installing pangomm (2.54.0-r0)
+2025-08-06 21:32:43 #7 14.87 (144/225) Installing libsigc++3-dev (3.6.0-r0)
+2025-08-06 21:32:43 #7 14.91 (145/225) Installing cairomm-dev (1.18.0-r0)
+2025-08-06 21:32:43 #7 14.97 (146/225) Installing glibmm-dev (2.84.0-r0)
+2025-08-06 21:32:43 #7 15.11 (147/225) Installing pangomm-dev (2.54.0-r0)
+2025-08-06 21:32:43 #7 15.17 (148/225) Installing py3-setuptools (80.9.0-r0)
+2025-08-06 21:32:43 #7 15.32 (149/225) Installing py3-setuptools-pyc (80.9.0-r0)
+2025-08-06 21:32:43 #7 15.58 (150/225) Installing py3-pip (25.1.1-r0)
+2025-08-06 21:32:43 #7 15.72 (151/225) Installing py3-pip-pyc (25.1.1-r0)
+2025-08-06 21:32:43 #7 15.90 (152/225) Installing libdeflate-static (1.23-r0)
+2025-08-06 21:32:43 #7 15.95 (153/225) Installing openexr-libiex (3.3.2-r0)
+2025-08-06 21:32:43 #7 15.98 (154/225) Installing openexr-libilmthread (3.3.2-r0)
+2025-08-06 21:32:43 #7 16.00 (155/225) Installing imath (3.1.12-r0)
+2025-08-06 21:32:43 #7 16.02 (156/225) Installing libdeflate (1.23-r0)
+2025-08-06 21:32:43 #7 16.05 (157/225) Installing openexr-libopenexrcore (3.3.2-r0)
+2025-08-06 21:32:43 #7 16.09 (158/225) Installing openexr-libopenexr (3.3.2-r0)
+2025-08-06 21:32:43 #7 16.12 (159/225) Installing openexr-libopenexrutil (3.3.2-r0)
+2025-08-06 21:32:43 #7 16.15 (160/225) Installing boost1.84-python3 (1.84.0-r3)
+2025-08-06 21:32:43 #7 16.17 (161/225) Installing py3-imath (3.1.12-r0)
+2025-08-06 21:32:43 #7 16.44 (162/225) Installing imath-dev (3.1.12-r0)
+2025-08-06 21:32:43 #7 16.51 (163/225) Installing libdeflate-dev (1.23-r0)
+2025-08-06 21:32:43 #7 16.53 (164/225) Installing openexr-dev (3.3.2-r0)
+2025-08-06 21:32:43 #7 16.58 (165/225) Installing c-ares (1.34.5-r0)
+2025-08-06 21:32:43 #7 16.61 (166/225) Installing libidn2 (2.3.7-r0)
+2025-08-06 21:32:43 #7 16.63 (167/225) Installing nghttp2-libs (1.65.0-r0)
+2025-08-06 21:32:43 #7 16.67 (168/225) Installing libpsl (0.21.5-r3)
+2025-08-06 21:32:43 #7 16.69 (169/225) Installing libcurl (8.14.1-r1)
+2025-08-06 21:32:43 #7 16.73 (170/225) Installing cfitsio (4.5.0-r0)
+2025-08-06 21:32:43 #7 16.78 (171/225) Installing cfitsio-dev (4.5.0-r0)
+2025-08-06 21:32:43 #7 16.80 (172/225) Installing cgif (0.5.0-r1)
+2025-08-06 21:32:43 #7 16.82 (173/225) Installing cgif-dev (0.5.0-r1)
+2025-08-06 21:32:43 #7 16.85 (174/225) Installing fftw-double-libs (3.3.10-r6)
+2025-08-06 21:32:43 #7 16.92 (175/225) Installing fftw-long-double-libs (3.3.10-r6)
+2025-08-06 21:32:43 #7 16.95 (176/225) Installing fftw-single-libs (3.3.10-r6)
+2025-08-06 21:32:43 #7 17.01 (177/225) Installing fftw-dev (3.3.10-r6)
+2025-08-06 21:32:43 #7 17.17 (178/225) Installing libimagequant (4.2.2-r0)
+2025-08-06 21:32:43 #7 17.21 (179/225) Installing libimagequant-dev (4.2.2-r0)
+2025-08-06 21:32:43 #7 17.23 (180/225) Installing lcms2 (2.16-r0)
+2025-08-06 21:32:43 #7 17.27 (181/225) Installing lcms2-plugins (2.16-r0)
+2025-08-06 21:32:43 #7 17.30 (182/225) Installing libsharpyuv (1.5.0-r0)
+2025-08-06 21:32:43 #7 17.32 (183/225) Installing libwebp (1.5.0-r0)
+2025-08-06 21:32:44 #7 17.35 (184/225) Installing tiff (4.7.0-r0)
+2025-08-06 21:32:44 #7 17.38 (185/225) Installing libtiffxx (4.7.0-r0)
+2025-08-06 21:32:44 #7 17.40 (186/225) Installing libwebpdecoder (1.5.0-r0)
+2025-08-06 21:32:44 #7 17.42 (187/225) Installing libwebpdemux (1.5.0-r0)
+2025-08-06 21:32:44 #7 17.44 (188/225) Installing libwebpmux (1.5.0-r0)
+2025-08-06 21:32:44 #7 17.85 (189/225) Installing libwebp-dev (1.5.0-r0)
+2025-08-06 21:32:45 #7 18.04 (190/225) Installing zstd (1.5.7-r0)
+2025-08-06 21:32:45 #7 18.07 (191/225) Installing zstd-dev (1.5.7-r0)
+2025-08-06 21:32:45 #7 18.50 (192/225) Installing tiff-dev (4.7.0-r0)
+2025-08-06 21:32:45 #7 18.88 (193/225) Installing lcms2-dev (2.16-r0)
+2025-08-06 21:32:45 #7 19.06 (194/225) Installing acl-libs (2.3.2-r1)
+2025-08-06 21:32:45 #7 19.08 (195/225) Installing lz4-libs (1.10.0-r0)
+2025-08-06 21:32:46 #7 19.32 (196/225) Installing libarchive (3.8.1-r0)
+2025-08-06 21:32:46 #7 19.39 (197/225) Installing openssl-dev (3.5.1-r0)
+2025-08-06 21:32:46 #7 19.55 (198/225) Installing libarchive-dev (3.8.1-r0)
+2025-08-06 21:32:46 #7 19.58 (199/225) Installing libexif (0.6.25-r0)
+2025-08-06 21:32:46 #7 19.60 (200/225) Installing libexif-dev (0.6.25-r0)
+2025-08-06 21:32:46 #7 19.66 (201/225) Installing libhwy (1.0.7-r1)
+2025-08-06 21:32:46 #7 19.68 (202/225) Installing libhwy_contrib (1.0.7-r1)
+2025-08-06 21:32:47 #7 19.86 (203/225) Installing libhwy_test (1.0.7-r1)
+2025-08-06 21:32:47 #7 20.08 (204/225) Installing gtest (1.16.0-r0)
+2025-08-06 21:32:47 #7 20.11 (205/225) Installing gmock (1.16.0-r0)
+2025-08-06 21:32:47 #7 ...
+2025-08-06 21:32:47
+2025-08-06 21:32:47 #8 production 3/8 RUN apk add --no-cache cairo pango jpeg giflib pixman libjpeg-turbo freetype vips-dev
+2025-08-06 21:32:47 #8 DONE 20.2s
+2025-08-06 21:32:47
+2025-08-06 21:32:47 #7 builder 3/8 RUN apk add --no-cache python3 py3-pip make g++ gcc libc-dev cairo-dev jpeg-dev pango-dev musl-dev giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev pkgconfig vips-dev libpng-dev
+2025-08-06 21:32:47 #7 20.13 (206/225) Installing gtest-dev (1.16.0-r0)
+2025-08-06 21:32:47 #7 20.17 (207/225) Installing highway-dev (1.0.7-r1)
+2025-08-06 21:32:47 #7 ...
+2025-08-06 21:32:47
+2025-08-06 21:32:47 #9 production 4/8 WORKDIR /app
+2025-08-06 21:32:47 #9 DONE 0.1s
+2025-08-06 21:32:47
+2025-08-06 21:32:47 #7 builder 3/8 RUN apk add --no-cache python3 py3-pip make g++ gcc libc-dev cairo-dev jpeg-dev pango-dev musl-dev giflib-dev pixman-dev pangomm-dev libjpeg-turbo-dev freetype-dev pkgconfig vips-dev libpng-dev
+2025-08-06 21:32:47 #7 20.24 (208/225) Installing openjpeg (2.5.3-r0)
+2025-08-06 21:32:47 #7 20.26 (209/225) Installing openjpeg-tools (2.5.3-r0)
+2025-08-06 21:32:47 #7 20.29 (210/225) Installing openjpeg-dev (2.5.3-r0)
+2025-08-06 21:32:47 #7 20.32 (211/225) Installing libdav1d (1.5.1-r0)
+2025-08-06 21:32:47 #7 20.37 (212/225) Installing rsvg-convert (2.60.0-r0)
+2025-08-06 21:32:47 #7 20.47 (213/225) Installing shared-mime-info (2.4-r6)
+2025-08-06 21:32:47 #7 20.51 (214/225) Installing gdk-pixbuf (2.42.12-r1)
+2025-08-06 21:32:47 #7 20.53 (215/225) Installing librsvg (2.60.0-r0)
+2025-08-06 21:32:47 #7 20.63 (216/225) Installing dav1d-dev (1.5.1-r0)
+2025-08-06 21:32:47 #7 20.66 (217/225) Installing gdk-pixbuf-dev (2.42.12-r1)
+2025-08-06 21:32:47 #7 20.69 (218/225) Installing xz-dev (5.8.1-r0)
+2025-08-06 21:32:47 #7 20.71 (219/225) Installing libxml2-dev (2.13.8-r0)
+2025-08-06 21:32:47 #7 20.74 (220/225) Installing librsvg-dev (2.60.0-r0)
+2025-08-06 21:32:47 #7 20.76 (221/225) Installing libspng (0.7.4-r1)
+2025-08-06 21:32:47 #7 20.79 (222/225) Installing libspng-dev (0.7.4-r1)
+2025-08-06 21:32:47 #7 20.81 (223/225) Installing vips (8.16.1-r0)
+2025-08-06 21:32:47 #7 20.89 (224/225) Installing vips-cpp (8.16.1-r0)
+2025-08-06 21:32:47 #7 20.92 (225/225) Installing vips-dev (8.16.1-r0)
+2025-08-06 21:32:47 #7 20.96 Executing busybox-1.37.0-r18.trigger
+2025-08-06 21:32:47 #7 20.97 Executing glib-2.84.3-r0.trigger
+2025-08-06 21:32:47 #7 20.97 No schema files found: doing nothing.
+2025-08-06 21:32:47 #7 20.97 Executing shared-mime-info-2.4-r6.trigger
+2025-08-06 21:32:48 #7 21.47 Executing gdk-pixbuf-2.42.12-r1.trigger
+2025-08-06 21:32:48 #7 21.51 OK: 483 MiB in 243 packages
+2025-08-06 21:32:48 #7 DONE 21.8s
+2025-08-06 21:32:48
+2025-08-06 21:32:48 #10 builder 4/8 WORKDIR /app
+2025-08-06 21:32:48 #10 DONE 0.1s
+2025-08-06 21:32:48
+2025-08-06 21:32:48 #11 builder 5/8 COPY package*.json ./
+2025-08-06 21:32:48 #11 DONE 0.1s
+2025-08-06 21:32:48
+2025-08-06 21:32:48 #12 builder 6/8 RUN npm config set registry https://registry.npmmirror.com && npm config set fetch-timeout 300000 && npm config set fetch-retry-mintimeout 5000 && npm config set fetch-retry-maxtimeout 30000 && npm config set fetch-retries 3 && npm config set audit false && npm config set fund false && npm config set progress false && npm config set maxsockets 5
+2025-08-06 21:32:52 #12 DONE 2.9s
+2025-08-06 21:32:52
+2025-08-06 21:32:52 #13 builder 7/8 RUN npm cache clean --force && rm -rf /root/.cache/node-gyp && rm -rf /root/.npm
+2025-08-06 21:32:52 #13 0.629 npm warn using --force Recommended protections disabled.
+2025-08-06 21:32:52 #13 DONE 1.0s
+2025-08-06 21:32:52
+2025-08-06 21:32:52 #14 builder 8/8 RUN npm ci --omit=dev --no-audit --no-fund --prefer-offline
+2025-08-06 21:41:44 #14 529.7
+2025-08-06 21:41:44 #14 529.7 added 214 packages in 9m
+2025-08-06 21:41:44 #14 DONE 529.7s
+2025-08-06 21:41:44
+2025-08-06 21:41:44 #15 production 5/8 COPY --from=builder /app/node_modules ./node_modules
+2025-08-06 21:41:44 #15 DONE 1.4s
+2025-08-06 21:41:44
+2025-08-06 21:41:44 #16 production 6/8 COPY . .
+2025-08-06 21:41:44 #16 DONE 0.1s
+2025-08-06 21:41:44
+2025-08-06 21:41:44 #17 production 7/8 RUN mkdir -p /app/logs && chmod 755 /app/logs
+2025-08-06 21:41:45 #17 DONE 0.3s
+2025-08-06 21:41:45
+2025-08-06 21:41:45 #18 production 8/8 RUN node --check index.js
+2025-08-06 21:41:45 #18 DONE 0.5s
+2025-08-06 21:41:45
+2025-08-06 21:41:45 #19 exporting to image
+2025-08-06 21:41:45 #19 exporting layers
+2025-08-06 21:41:48 #19 exporting layers 2.6s done
+2025-08-06 21:41:48 #19 writing image sha256:8f193bb508cd39ff5b8156fe505c5f347b8f605b2677d0d17a989fd80609ad6c done
+2025-08-06 21:41:48 #19 naming to ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-072-20250806213208 done
+2025-08-06 21:41:48 #19 DONE 2.6s
+2025-08-06 21:41:48 Pipeline sh
+2025-08-06 21:41:48 + docker image ls --format {{.Repository}}:{{.Tag}} {{.Size}}
+2025-08-06 21:41:48 + grep ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-072-20250806213208
+2025-08-06 21:41:48 + awk {print $NF}
+2025-08-06 21:41:48 + echo 镜像的大小是：535MB
+2025-08-06 21:41:48 镜像的大小是：535MB
+2025-08-06 21:41:48 Pipeline echo
+2025-08-06 21:41:48 优化镜像大小具体可参考： https://docs.cloudbase.net/run/develop/image-optimization
+2025-08-06 21:41:48 Pipeline }
+2025-08-06 21:41:48 Pipeline // stage
+2025-08-06 21:41:48 Pipeline stage
+2025-08-06 21:41:48 Pipeline { (推送 Docker 镜像到 TCR)
+2025-08-06 21:41:48 Pipeline sh
+2025-08-06 21:41:48 + docker push ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url:get-url-072-20250806213208
+2025-08-06 21:41:48 The push refers to repository ccr.ccs.tencentyun.com/tcb-******-ofiy/ca-qgtxsdka_get-url
+2025-08-06 21:41:48 d64ddcb1f120: Preparing
+2025-08-06 21:41:48 5750275a61f5: Preparing
+2025-08-06 21:41:48 461243d52a6d: Preparing
+2025-08-06 21:41:48 7cf132540a54: Preparing
+2025-08-06 21:41:48 095b89db8fad: Preparing
+2025-08-06 21:41:48 b9a3ea0aced6: Preparing
+2025-08-06 21:41:48 6e1b41a701d2: Preparing
+2025-08-06 21:41:48 eadc3b779d42: Preparing
+2025-08-06 21:41:48 2e12e022f9bc: Preparing
+2025-08-06 21:41:48 54e9a650f7b7: Preparing
+2025-08-06 21:41:48 418dccb7d85a: Preparing
+2025-08-06 21:41:48 418dccb7d85a: Waiting
+2025-08-06 21:41:49 eadc3b779d42: Layer already exists
+2025-08-06 21:41:49 54e9a650f7b7: Layer already exists
+2025-08-06 21:41:49 2e12e022f9bc: Layer already exists
+2025-08-06 21:41:49 418dccb7d85a: Layer already exists
+2025-08-06 21:41:50 461243d52a6d: Pushed
+2025-08-06 21:41:50 5750275a61f5: Pushed
+2025-08-06 21:41:50 095b89db8fad: Pushed
+2025-08-06 21:41:50 d64ddcb1f120: Pushed
+2025-08-06 21:41:50 6e1b41a701d2: Pushed
+-----------构建get-url-072-----------
+2025-08-06 21:32:10 create_build_image : creating
