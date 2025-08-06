@@ -31,20 +31,38 @@ WORKDIR /app
 # 设置环境变量以帮助原生模块编译
 ENV PYTHON=/usr/bin/python3
 ENV CANVAS_PREBUILT=false
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV NODE_OPTIONS="--max-old-space-size=6144"
+ENV SHARP_IGNORE_GLOBAL_LIBVIPS=1
+ENV SHARP_FORCE_GLOBAL_LIBVIPS=false
+ENV npm_config_build_from_source=true
+ENV npm_config_cache_max=0
 
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
-# 设置npm配置和安装依赖
+# 设置npm配置
 RUN npm config set registry https://registry.npmmirror.com && \
-    npm config set fetch-timeout 600000 && \
-    npm config set fetch-retry-mintimeout 10000 && \
-    npm config set fetch-retry-maxtimeout 60000 && \
+    npm config set fetch-timeout 900000 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm config set fetch-retries 5 && \
     npm config set audit false && \
     npm config set fund false && \
     npm config set progress false && \
-    npm ci --omit=dev --no-audit --no-fund --verbose
+    npm config set maxsockets 1
+
+# 分阶段安装依赖 - 先安装关键的原生模块
+RUN npm install --no-save canvas@3.1.2 --verbose --timeout=900000 || \
+    (echo "First canvas install failed, retrying..." && sleep 10 && npm install --no-save canvas@3.1.2 --verbose --timeout=900000)
+
+RUN npm install --no-save sharp@0.33.5 --verbose --timeout=900000 || \
+    (echo "First sharp install failed, retrying..." && sleep 10 && npm install --no-save sharp@0.33.5 --verbose --timeout=900000)
+
+# 安装其余依赖
+RUN npm ci --omit=dev --no-audit --no-fund --verbose --timeout=900000 || \
+    (echo "First npm ci failed, cleaning and retrying..." && \
+     rm -rf node_modules package-lock.json && \
+     npm install --omit=dev --no-audit --no-fund --verbose --timeout=900000)
 
 # 复制应用代码
 COPY . .
