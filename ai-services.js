@@ -504,6 +504,38 @@ export class AIServices {
   detectFileType(url, contentType) {
     const urlLower = url.toLowerCase();
 
+    // 检测data URL格式
+    if (urlLower.startsWith('data:')) {
+      if (urlLower.includes('application/pdf') || urlLower.includes('data:application/pdf')) {
+        return 'pdf';
+      }
+      if (urlLower.includes('application/msword') || urlLower.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
+        return urlLower.includes('wordprocessingml') ? 'docx' : 'doc';
+      }
+      if (urlLower.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+        return 'xlsx';
+      }
+      if (urlLower.includes('application/vnd.ms-excel')) {
+        return 'xls';
+      }
+      if (urlLower.includes('text/plain')) {
+        return 'txt';
+      }
+      if (urlLower.includes('video/mp4')) {
+        return 'mp4';
+      }
+      if (urlLower.includes('video/avi')) {
+        return 'avi';
+      }
+      if (urlLower.includes('video/quicktime')) {
+        return 'mov';
+      }
+      if (urlLower.includes('video/x-matroska')) {
+        return 'mkv';
+      }
+    }
+
+    // 检测文件扩展名和Content-Type
     if (urlLower.includes('.pdf') || contentType?.includes('pdf')) {
       return 'pdf';
     }

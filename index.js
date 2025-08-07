@@ -175,6 +175,34 @@ class MCPHtmlServer {
     logger.info('LINK_PROCESS', `开始处理链接: ${url}`, { url, customPrompt });
 
     try {
+      // 检查是否为data URL
+      if (url.startsWith('data:')) {
+        logger.debug('LINK_PROCESS', '检测到data URL，直接解析');
+        const { contentType, buffer } = this.parseDataUrl(url);
+        logger.info('LINK_PROCESS', 'data URL解析完成', { contentType, bufferSize: buffer.length });
+        
+        // 检测文件类型
+        const fileType = this.detectFileType(url, contentType);
+        logger.debug('LINK_PROCESS', '文件类型检测完成', { fileType, contentType });
+        
+        let result;
+        if (this.isImageType(contentType, url)) {
+          logger.info('LINK_PROCESS', '开始处理图片文件');
+          result = await this.processImageWithAI(buffer, customPrompt);
+        } else if (fileType && ['pdf', 'doc', 'docx', 'xlsx', 'xls', 'mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
+          logger.info('LINK_PROCESS', `开始处理文档文件: ${fileType}`);
+          result = await this.processDocumentWithAI(buffer, fileType, customPrompt);
+        } else {
+          logger.info('LINK_PROCESS', '不支持的data URL类型');
+          throw new Error('不支持的data URL类型');
+        }
+        
+        const duration = Date.now() - startTime;
+        logger.performance('LINK_PROCESS', duration, { url, fileType, success: true });
+        logger.info('LINK_PROCESS', `链接处理完成: ${url}`, { duration: `${duration}ms` });
+        return result;
+      }
+      
       const parsedUrl = new URL(url);
       logger.debug('LINK_PROCESS', `URL解析成功`, { hostname: parsedUrl.hostname, pathname: parsedUrl.pathname });
 
@@ -229,6 +257,30 @@ class MCPHtmlServer {
         isError: true
       };
     }
+  }
+
+  parseDataUrl(dataUrl) {
+    // 解析data URL格式: data:[<mediatype>][;base64],<data>
+    const match = dataUrl.match(/^data:([^;]+)(;base64)?,(.+)$/);
+    if (!match) {
+      throw new Error('无效的data URL格式');
+    }
+    
+    const contentType = match[1] || 'text/plain';
+    const isBase64 = match[2] === ';base64';
+    const data = match[3];
+    
+    let buffer;
+    if (isBase64) {
+      buffer = Buffer.from(data, 'base64');
+    } else {
+      buffer = Buffer.from(decodeURIComponent(data), 'utf8');
+    }
+    
+    return {
+      contentType,
+      buffer
+    };
   }
 
   async downloadFile(url) {
