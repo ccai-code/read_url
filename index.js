@@ -353,8 +353,71 @@ class MCPHtmlServer {
       }
     }
 
-    // 优先使用GLM-4处理传统文档格式
-    if (this.config.glm4?.apiKey && ['pdf', 'doc', 'docx'].includes(fileType)) {
+    // PDF文件优先使用通义千问处理（更适合PDF文档分析）
+    if (fileType === 'pdf' && this.config.qwen?.apiKey) {
+      try {
+        console.log('🤖 使用通义千问处理PDF文档...');
+        const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
+        if (result.success) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `🤖 通义千问PDF分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+              }
+            ],
+            isError: false
+          };
+        }
+      } catch (error) {
+        console.error('❌ 通义千问处理PDF失败:', error.message);
+      }
+    }
+
+    // PDF文件备选方案：火山引擎
+    if (fileType === 'pdf' && this.config.volcengine?.accessKey) {
+      try {
+        console.log('🚀 使用火山引擎作为PDF处理备选方案...');
+        const result = await this.aiServices.processDocumentWithVolcengine(documentBuffer, fileType, customPrompt);
+        if (result.success) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `🚀 火山引擎PDF分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
+              }
+            ],
+            isError: false
+          };
+        }
+      } catch (error) {
+        console.error('❌ 火山引擎处理PDF失败:', error.message);
+      }
+    }
+
+    // PDF文件最后备选：GLM-4
+    if (fileType === 'pdf' && this.config.glm4?.apiKey) {
+      try {
+        console.log('🤖 使用GLM-4作为PDF处理最后备选...');
+        const result = await this.aiServices.processDocumentWithGLM4(documentBuffer, fileType, customPrompt);
+        if (result.success) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `🤖 GLM-4 PDF分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}`
+              }
+            ],
+            isError: false
+          };
+        }
+      } catch (error) {
+        console.error('❌ GLM-4处理PDF失败:', error.message);
+      }
+    }
+
+    // 非PDF文档（DOC、DOCX）优先使用GLM-4处理
+    if (this.config.glm4?.apiKey && ['doc', 'docx'].includes(fileType)) {
       try {
         console.log('🤖 尝试使用GLM-4处理文档...');
         const result = await this.aiServices.processDocumentWithGLM4(documentBuffer, fileType, customPrompt);
@@ -374,8 +437,8 @@ class MCPHtmlServer {
       }
     }
 
-    // 通义千问作为备选方案处理传统格式
-    if (this.config.qwen?.apiKey && ['pdf', 'doc', 'docx'].includes(fileType)) {
+    // 通义千问作为非PDF文档的备选方案
+    if (this.config.qwen?.apiKey && ['doc', 'docx'].includes(fileType)) {
       try {
         console.log('🤖 使用通义千问作为备选方案...');
         const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
