@@ -6,9 +6,8 @@ import fs from 'fs';
 import path from 'path';
 import mammoth from 'mammoth';
 import xlsx from 'xlsx';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-// 不设置worker，使用默认配置
+// PDF.js库将在需要时动态加载
 
 export class AIServices {
   constructor(config) {
@@ -40,6 +39,15 @@ export class AIServices {
   // PDF解析辅助方法
   async parsePDF(pdfBuffer) {
     try {
+      // 动态导入PDF.js库
+      let pdfjsLib;
+      try {
+        pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+      } catch (importError) {
+        console.warn('PDF.js库加载失败:', importError.message);
+        throw new Error('PDF处理功能暂时不可用，请联系管理员');
+      }
+      
       // 将Buffer转换为Uint8Array
       const uint8Array = new Uint8Array(pdfBuffer);
       const loadingTask = pdfjsLib.getDocument({ data: uint8Array });
