@@ -42,7 +42,21 @@ export class AIServices {
       // 动态导入PDF.js库
       let pdfjsLib;
       try {
-        pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+        // 尝试多种导入方式
+        try {
+          pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+        } catch (e1) {
+          try {
+            pdfjsLib = await import('pdfjs-dist/build/pdf.mjs');
+          } catch (e2) {
+            try {
+              pdfjsLib = await import('pdfjs-dist');
+            } catch (e3) {
+              console.warn('所有PDF.js导入方式都失败:', { e1: e1.message, e2: e2.message, e3: e3.message });
+              throw new Error('PDF.js库导入失败');
+            }
+          }
+        }
       } catch (importError) {
         console.warn('PDF.js库加载失败:', importError.message);
         throw new Error('PDF处理功能暂时不可用，请联系管理员');

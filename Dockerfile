@@ -9,7 +9,6 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 # 只安装Node.js运行时需要的最基本依赖
 RUN apk add --no-cache python3 make g++
-RUN npm install pdfjs-dist
 
 # 设置环境变量（优化npm安装）
 ENV NODE_ENV=production
