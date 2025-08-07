@@ -364,7 +364,7 @@ class MCPHtmlServer {
 
   async processPDFLocally(pdfBuffer, customPrompt) {
     console.log('📄 PDF解析功能已禁用（简化部署）');
-    
+
     return {
       content: [
         {
@@ -467,7 +467,7 @@ class MCPHtmlServer {
 
   async processImageBuffer(buffer, contentType) {
     console.log('🖼️ OCR功能已禁用（简化部署）');
-    
+
     return {
       content: [
         {

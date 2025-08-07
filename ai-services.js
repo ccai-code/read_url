@@ -6,6 +6,9 @@ import fs from 'fs';
 import path from 'path';
 import mammoth from 'mammoth';
 import xlsx from 'xlsx';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+
+// 不设置worker，使用默认配置
 
 export class AIServices {
   constructor(config) {
@@ -34,6 +37,31 @@ export class AIServices {
     }
   }
 
+  // PDF解析辅助方法
+  async parsePDF(pdfBuffer) {
+    try {
+      // 将Buffer转换为Uint8Array
+      const uint8Array = new Uint8Array(pdfBuffer);
+      const loadingTask = pdfjsLib.getDocument({ data: uint8Array });
+      const pdf = await loadingTask.promise;
+      let fullText = '';
+      
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map(item => item.str).join(' ');
+        fullText += pageText + '\n';
+      }
+      
+      return {
+        text: fullText.trim(),
+        numPages: pdf.numPages
+      };
+    } catch (error) {
+      throw new Error(`PDF解析失败: ${error.message}`);
+    }
+  }
+
   // GLM-4文档处理方法
   async processDocumentWithGLM4(documentBuffer, fileType, prompt = "请提取并整理这个文档中的所有文字内容，保持原有的结构和格式。") {
     try {
@@ -43,7 +71,15 @@ export class AIServices {
       let documentText = '';
 
       if (fileType === 'pdf') {
-        throw new Error('PDF处理功能已禁用以简化部署。请使用其他格式的文档。');
+        // PDF文档处理
+        try {
+          const pdfData = await this.parsePDF(documentBuffer);
+          documentText = pdfData.text;
+          console.log(`📄 PDF解析成功，共${pdfData.numPages}页，提取了${documentText.length}个字符`);
+        } catch (error) {
+          console.error('❌ PDF解析失败:', error.message);
+          documentText = `PDF文档解析失败：${error.message}。请确保PDF文件格式正确且未加密。`;
+        }
       } else if (fileType === 'docx') {
         const result = await mammoth.extractRawText({ buffer: documentBuffer });
         documentText = result.value;
@@ -202,8 +238,22 @@ export class AIServices {
       let extractedData = null;
 
       if (fileType === 'pdf') {
-        throw new Error('PDF处理功能已禁用以简化部署。请使用其他格式的文档。');
-        extractedData = { pages: pdfData.numpages, textLength: documentText.length };
+        // PDF文档处理
+        try {
+          const pdfData = await this.parsePDF(documentBuffer);
+          documentText = pdfData.text;
+          extractedData = {
+            pages: pdfData.numPages,
+            textLength: documentText.length,
+            fileSize: documentBuffer.length,
+            fileSizeMB: (documentBuffer.length / 1024 / 1024).toFixed(2)
+          };
+          console.log(`📄 PDF解析成功，共${pdfData.numPages}页，提取了${documentText.length}个字符`);
+        } catch (error) {
+          console.error('❌ PDF解析失败:', error.message);
+          documentText = `PDF文档解析失败：${error.message}。请确保PDF文件格式正确且未加密。`;
+          extractedData = { fileSize: documentBuffer.length, fileSizeMB: (documentBuffer.length / 1024 / 1024).toFixed(2), error: error.message };
+        }
       } else if (fileType === 'docx' || fileType === 'doc') {
         // Word文档处理
         const result = await mammoth.extractRawText({ buffer: documentBuffer });
