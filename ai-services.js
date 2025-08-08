@@ -185,43 +185,72 @@ export class AIServices {
       fs.writeFileSync(tempFilePath, documentBuffer);
 
       try {
-        // 上传文件到阿里云DashScope
+        // 上传文件到阿里云DashScope（增加超时设置）
         console.log('📤 正在上传文档到阿里云DashScope...');
-        const fileObject = await this.qwenLongClient.files.create({
-          file: fs.createReadStream(tempFilePath),
-          purpose: 'file-extract'
-        });
+        const fileObject = await Promise.race([
+          this.qwenLongClient.files.create({
+            file: fs.createReadStream(tempFilePath),
+            purpose: 'file-extract'
+          }),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('文件上传超时（60秒）')), 60000)
+          )
+        ]);
 
         console.log(`✅ 文档上传成功，文件ID: ${fileObject.id}`);
         console.log(`📋 文件状态: ${fileObject.status}`);
 
-        // 等待文档处理完成
-        if (fileObject.status === 'processing') {
-          console.log('⏳ 文档正在处理中，请稍候...');
-          await new Promise(resolve => setTimeout(resolve, 3000)); // 等待3秒
+        // 等待文档处理完成（增加重试机制）
+        let retryCount = 0;
+        const maxRetries = 10;
+        let currentFileStatus = fileObject.status;
+        
+        while (currentFileStatus === 'processing' && retryCount < maxRetries) {
+          console.log(`⏳ 文档正在处理中，第${retryCount + 1}次检查...`);
+          await new Promise(resolve => setTimeout(resolve, 5000)); // 等待5秒
+          
+          try {
+            // 检查文件状态
+            const statusCheck = await this.qwenLongClient.files.retrieve(fileObject.id);
+            currentFileStatus = statusCheck.status;
+            console.log(`📋 当前文件状态: ${currentFileStatus}`);
+          } catch (statusError) {
+            console.warn(`⚠️ 状态检查失败: ${statusError.message}`);
+          }
+          
+          retryCount++;
+        }
+        
+        if (currentFileStatus === 'processing') {
+          console.warn('⚠️ 文档处理时间较长，继续尝试分析...');
         }
 
-        // 使用Qwen-Long模型分析文档
+        // 使用Qwen-Long模型分析文档（增加超时设置）
         console.log('🤖 正在使用Qwen-Long分析文档内容...');
-        const completion = await this.qwenLongClient.chat.completions.create({
-          model: this.config.qwenLong.model,
-          messages: [
-            {
-              role: 'system',
-              content: '你是一个专业的文档分析助手，擅长从各种文档中提取和整理信息。请仔细分析用户上传的文档内容。'
-            },
-            {
-              role: 'system',
-              content: `fileid://${fileObject.id}`
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          max_tokens: 4000,
-          temperature: 0.1
-        });
+        const completion = await Promise.race([
+          this.qwenLongClient.chat.completions.create({
+            model: this.config.qwenLong.model,
+            messages: [
+              {
+                role: 'system',
+                content: '你是一个专业的文档分析助手，擅长从各种文档中提取和整理信息。请仔细分析用户上传的文档内容。'
+              },
+              {
+                role: 'system',
+                content: `fileid://${fileObject.id}`
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
+            max_tokens: 4000,
+            temperature: 0.1
+          }),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('文档分析超时（90秒）')), 90000)
+          )
+        ]);
 
         console.log('✅ Qwen-Long文档分析完成');
 

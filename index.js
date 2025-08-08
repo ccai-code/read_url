@@ -180,11 +180,11 @@ class MCPHtmlServer {
         logger.debug('LINK_PROCESS', '检测到data URL，直接解析');
         const { contentType, buffer } = this.parseDataUrl(url);
         logger.info('LINK_PROCESS', 'data URL解析完成', { contentType, bufferSize: buffer.length });
-        
+
         // 检测文件类型
         const fileType = this.detectFileType(url, contentType);
         logger.debug('LINK_PROCESS', '文件类型检测完成', { fileType, contentType });
-        
+
         let result;
         if (this.isImageType(contentType, url)) {
           logger.info('LINK_PROCESS', '开始处理图片文件');
@@ -196,13 +196,13 @@ class MCPHtmlServer {
           logger.info('LINK_PROCESS', '不支持的data URL类型');
           throw new Error('不支持的data URL类型');
         }
-        
+
         const duration = Date.now() - startTime;
         logger.performance('LINK_PROCESS', duration, { url, fileType, success: true });
         logger.info('LINK_PROCESS', `链接处理完成: ${url}`, { duration: `${duration}ms` });
         return result;
       }
-      
+
       const parsedUrl = new URL(url);
       logger.debug('LINK_PROCESS', `URL解析成功`, { hostname: parsedUrl.hostname, pathname: parsedUrl.pathname });
 
@@ -265,18 +265,18 @@ class MCPHtmlServer {
     if (!match) {
       throw new Error('无效的data URL格式');
     }
-    
+
     const contentType = match[1] || 'text/plain';
     const isBase64 = match[2] === ';base64';
     const data = match[3];
-    
+
     let buffer;
     if (isBase64) {
       buffer = Buffer.from(data, 'base64');
     } else {
       buffer = Buffer.from(decodeURIComponent(data), 'utf8');
     }
-    
+
     return {
       contentType,
       buffer
@@ -286,7 +286,7 @@ class MCPHtmlServer {
   async downloadFile(url) {
     const response = await axios.get(url, {
       responseType: 'arraybuffer',
-      timeout: 30000,
+      timeout: 120000, // 增加到120秒，支持大文件下载
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       },
@@ -514,7 +514,7 @@ class MCPHtmlServer {
   async processWebpage(url) {
     try {
       const response = await axios.get(url, {
-        timeout: 15000,
+        timeout: 60000, // 增加到60秒，与文件下载保持一致
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
@@ -588,7 +588,7 @@ class MCPHtmlServer {
       // 下载图片
       const response = await axios.get(url, {
         responseType: 'arraybuffer',
-        timeout: 15000,
+        timeout: 60000, // 增加到60秒，与其他方法保持一致
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         },
@@ -646,6 +646,10 @@ class MCPHtmlServer {
     const httpServer = createServer(async (req, res) => {
       const requestStart = Date.now();
       const clientId = req.headers['x-client-id'] || `${req.connection.remoteAddress}-${Date.now()}`;
+      
+      // 设置请求超时时间为3分钟，支持大文件处理
+      req.setTimeout(180000);
+      res.setTimeout(180000);
 
       // 记录HTTP请求
       logger.httpRequest(req);
