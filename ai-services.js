@@ -192,7 +192,7 @@ export class AIServices {
             file: fs.createReadStream(tempFilePath),
             purpose: 'file-extract'
           }),
-          new Promise((_, reject) => 
+          new Promise((_, reject) =>
             setTimeout(() => reject(new Error('文件上传超时（60秒）')), 60000)
           )
         ]);
@@ -204,11 +204,11 @@ export class AIServices {
         let retryCount = 0;
         const maxRetries = 10;
         let currentFileStatus = fileObject.status;
-        
+
         while (currentFileStatus === 'processing' && retryCount < maxRetries) {
           console.log(`⏳ 文档正在处理中，第${retryCount + 1}次检查...`);
           await new Promise(resolve => setTimeout(resolve, 5000)); // 等待5秒
-          
+
           try {
             // 检查文件状态
             const statusCheck = await this.qwenLongClient.files.retrieve(fileObject.id);
@@ -217,10 +217,10 @@ export class AIServices {
           } catch (statusError) {
             console.warn(`⚠️ 状态检查失败: ${statusError.message}`);
           }
-          
+
           retryCount++;
         }
-        
+
         if (currentFileStatus === 'processing') {
           console.warn('⚠️ 文档处理时间较长，继续尝试分析...');
         }
@@ -247,7 +247,7 @@ export class AIServices {
             max_tokens: 4000,
             temperature: 0.1
           }),
-          new Promise((_, reject) => 
+          new Promise((_, reject) =>
             setTimeout(() => reject(new Error('文档分析超时（90秒）')), 90000)
           )
         ]);

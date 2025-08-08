@@ -353,10 +353,24 @@ class MCPHtmlServer {
       }
     }
 
-    // PDF文件最高优先级：使用Qwen-Long处理（专门的文档理解模型）
+    // PDF文件最高优先级：使用本地文本提取 + 通义千问分析
+    if (fileType === 'pdf') {
+      try {
+        console.log('📄 使用本地PDF文本提取 + 通义千问分析（推荐方式）...');
+        const result = await this.processPDFLocally(documentBuffer, customPrompt);
+        if (!result.isError) {
+          return result;
+        }
+        console.log('⚠️ 本地PDF处理失败，尝试备选方案...');
+      } catch (error) {
+        console.error('❌ 本地PDF处理失败:', error.message);
+      }
+    }
+
+    // PDF文件备选方案1：使用Qwen-Long处理（专门的文档理解模型）
     if (fileType === 'pdf' && this.config.qwenLong?.apiKey) {
       try {
-        console.log('🚀 使用Qwen-Long处理PDF文档（专业文档理解模型）...');
+        console.log('🚀 使用Qwen-Long处理PDF文档（备选方案1）...');
         const result = await this.aiServices.processDocumentWithQwenLong(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
@@ -374,10 +388,10 @@ class MCPHtmlServer {
       }
     }
 
-    // PDF文件备选方案1：使用通义千问VL处理
+    // PDF文件备选方案2：使用通义千问VL处理
     if (fileType === 'pdf' && this.config.qwen?.apiKey) {
       try {
-        console.log('🤖 使用通义千问VL作为PDF处理备选方案...');
+        console.log('🤖 使用通义千问VL作为PDF处理备选方案2...');
         const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
@@ -395,10 +409,10 @@ class MCPHtmlServer {
       }
     }
 
-    // PDF文件备选方案2：火山引擎
+    // PDF文件备选方案3：火山引擎
     if (fileType === 'pdf' && this.config.volcengine?.accessKey) {
       try {
-        console.log('🚀 使用火山引擎作为PDF处理备选方案2...');
+        console.log('🚀 使用火山引擎作为PDF处理备选方案3...');
         const result = await this.aiServices.processDocumentWithVolcengine(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
@@ -416,10 +430,10 @@ class MCPHtmlServer {
       }
     }
 
-    // PDF文件备选方案3：GLM-4
+    // PDF文件备选方案4：GLM-4
     if (fileType === 'pdf' && this.config.glm4?.apiKey) {
       try {
-        console.log('🤖 使用GLM-4作为PDF处理备选方案3...');
+        console.log('🤖 使用GLM-4作为PDF处理备选方案4...');
         const result = await this.aiServices.processDocumentWithGLM4(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
@@ -499,16 +513,82 @@ class MCPHtmlServer {
   }
 
   async processPDFLocally(pdfBuffer, customPrompt) {
-    console.log('📄 PDF解析功能已禁用（简化部署）');
+    console.log('📄 开始本地PDF文本提取...');
 
-    return {
-      content: [
-        {
-          type: 'text',
-          text: '抱歉，PDF解析功能暂时不可用。请提供其他格式的文档或网页链接。'
+    try {
+      // 使用AI服务中的PDF解析功能
+      const pdfData = await this.aiServices.parsePDF(pdfBuffer);
+      console.log(`✅ PDF解析成功，共${pdfData.numPages}页，提取了${pdfData.text.length}个字符`);
+
+      // 将提取的文本发送给通义千问进行分析
+      if (this.config.qwen?.apiKey && pdfData.text.trim()) {
+        console.log('🤖 使用通义千问分析PDF文本内容...');
+
+        const prompt = customPrompt || "请分析这个PDF文档的内容，提取关键信息并进行总结。";
+
+        try {
+          const response = await this.aiServices.openai.chat.completions.create({
+            model: this.config.qwen.model,
+            messages: [
+              {
+                role: "system",
+                content: "你是一个专业的文档分析助手。用户会提供从PDF文档中提取出来的文本内容，你需要对这些内容进行分析、整理和总结。"
+              },
+              {
+                role: "user",
+                content: `以下是我从PDF文档中提取出来的文本内容，请帮我${prompt}\n\n文档信息：\n- 总页数：${pdfData.numPages}页\n- 文本长度：${pdfData.text.length}个字符\n\n提取的文本内容：\n${pdfData.text}`
+              }
+            ],
+            max_tokens: 4000,
+            temperature: 0.1
+          });
+
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `📄 PDF文本提取+AI分析结果:\n\n${response.choices[0].message.content}\n\n📊 文档统计：\n- 页数：${pdfData.numPages}页\n- 提取字符数：${pdfData.text.length}个\n- 处理方式：本地文本提取 + 通义千问分析`
+              }
+            ],
+            isError: false
+          };
+        } catch (aiError) {
+          console.error('❌ 通义千问分析失败:', aiError.message);
+          // 如果AI分析失败，返回原始文本
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `📄 PDF文本提取成功（AI分析失败）:\n\n${pdfData.text}\n\n📊 文档统计：\n- 页数：${pdfData.numPages}页\n- 提取字符数：${pdfData.text.length}个\n- 处理方式：本地文本提取\n\n⚠️ AI分析失败：${aiError.message}`
+              }
+            ],
+            isError: false
+          };
         }
-      ]
-    };
+      } else {
+        // 如果没有配置通义千问或文本为空，直接返回提取的文本
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `📄 PDF文本提取结果:\n\n${pdfData.text || '未能提取到文本内容'}\n\n📊 文档统计：\n- 页数：${pdfData.numPages}页\n- 提取字符数：${pdfData.text.length}个\n- 处理方式：本地文本提取`
+            }
+          ],
+          isError: false
+        };
+      }
+    } catch (error) {
+      console.error('❌ PDF处理失败:', error.message);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ PDF处理失败：${error.message}\n\n建议：\n1. 确保PDF文件格式正确且未加密\n2. 检查文件是否损坏\n3. 尝试使用其他格式的文档`
+          }
+        ],
+        isError: true
+      };
+    }
   }
 
   async processWebpage(url) {
@@ -646,7 +726,7 @@ class MCPHtmlServer {
     const httpServer = createServer(async (req, res) => {
       const requestStart = Date.now();
       const clientId = req.headers['x-client-id'] || `${req.connection.remoteAddress}-${Date.now()}`;
-      
+
       // 设置请求超时时间为3分钟，支持大文件处理
       req.setTimeout(180000);
       res.setTimeout(180000);
