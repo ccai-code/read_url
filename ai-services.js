@@ -34,6 +34,14 @@ export class AIServices {
         baseURL: this.config.volcengine.baseUrl
       });
     }
+
+    // 初始化Qwen-Long客户端（专门用于PDF文档处理）
+    if (this.config.qwenLong && this.config.qwenLong.apiKey) {
+      this.qwenLongClient = new OpenAI({
+        apiKey: this.config.qwenLong.apiKey,
+        baseURL: this.config.qwenLong.baseUrl
+      });
+    }
   }
 
   // PDF解析辅助方法
@@ -61,20 +69,20 @@ export class AIServices {
         console.warn('PDF.js库加载失败:', importError.message);
         throw new Error('PDF处理功能暂时不可用，请联系管理员');
       }
-      
+
       // 将Buffer转换为Uint8Array
       const uint8Array = new Uint8Array(pdfBuffer);
       const loadingTask = pdfjsLib.getDocument({ data: uint8Array });
       const pdf = await loadingTask.promise;
       let fullText = '';
-      
+
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
         const textContent = await page.getTextContent();
         const pageText = textContent.items.map(item => item.str).join(' ');
         fullText += pageText + '\n';
       }
-      
+
       return {
         text: fullText.trim(),
         numPages: pdf.numPages
@@ -157,6 +165,99 @@ export class AIServices {
       return {
         success: false,
         error: error.message
+      };
+    }
+  }
+
+  // Qwen-Long PDF文档处理方法（使用文档上传接口）
+  async processDocumentWithQwenLong(documentBuffer, fileType, prompt = "请提取并整理这个文档中的所有文字内容，保持原有的结构和格式。") {
+    try {
+      console.log('🔍 使用Qwen-Long处理PDF文档...');
+      console.log(`📄 文件类型: ${fileType}`);
+      console.log(`📊 文件大小: ${(documentBuffer.length / 1024 / 1024).toFixed(2)}MB`);
+
+      if (!this.qwenLongClient) {
+        throw new Error('Qwen-Long客户端未初始化，请检查配置');
+      }
+
+      // 将Buffer写入临时文件
+      const tempFilePath = path.join(process.cwd(), `temp_${Date.now()}.${fileType}`);
+      fs.writeFileSync(tempFilePath, documentBuffer);
+
+      try {
+        // 上传文件到阿里云DashScope
+        console.log('📤 正在上传文档到阿里云DashScope...');
+        const fileObject = await this.qwenLongClient.files.create({
+          file: fs.createReadStream(tempFilePath),
+          purpose: 'file-extract'
+        });
+
+        console.log(`✅ 文档上传成功，文件ID: ${fileObject.id}`);
+        console.log(`📋 文件状态: ${fileObject.status}`);
+
+        // 等待文档处理完成
+        if (fileObject.status === 'processing') {
+          console.log('⏳ 文档正在处理中，请稍候...');
+          await new Promise(resolve => setTimeout(resolve, 3000)); // 等待3秒
+        }
+
+        // 使用Qwen-Long模型分析文档
+        console.log('🤖 正在使用Qwen-Long分析文档内容...');
+        const completion = await this.qwenLongClient.chat.completions.create({
+          model: this.config.qwenLong.model,
+          messages: [
+            {
+              role: 'system',
+              content: '你是一个专业的文档分析助手，擅长从各种文档中提取和整理信息。请仔细分析用户上传的文档内容。'
+            },
+            {
+              role: 'system',
+              content: `fileid://${fileObject.id}`
+            },
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          max_tokens: 4000,
+          temperature: 0.1
+        });
+
+        console.log('✅ Qwen-Long文档分析完成');
+
+        return {
+          success: true,
+          content: completion.choices[0].message.content,
+          usage: completion.usage,
+          model: completion.model,
+          fileId: fileObject.id,
+          fileStatus: fileObject.status,
+          extractedData: {
+            fileSize: documentBuffer.length,
+            fileSizeMB: (documentBuffer.length / 1024 / 1024).toFixed(2),
+            fileName: fileObject.filename || `document.${fileType}`,
+            uploadTime: new Date().toISOString()
+          }
+        };
+
+      } finally {
+        // 清理临时文件
+        try {
+          if (fs.existsSync(tempFilePath)) {
+            fs.unlinkSync(tempFilePath);
+            console.log('🗑️ 临时文件已清理');
+          }
+        } catch (cleanupError) {
+          console.warn('⚠️ 临时文件清理失败:', cleanupError.message);
+        }
+      }
+
+    } catch (error) {
+      console.error('❌ Qwen-Long文档处理失败:', error.message);
+      return {
+        success: false,
+        error: error.message,
+        fileType: fileType
       };
     }
   }

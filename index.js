@@ -353,31 +353,52 @@ class MCPHtmlServer {
       }
     }
 
-    // PDF文件优先使用通义千问处理（更适合PDF文档分析）
-    if (fileType === 'pdf' && this.config.qwen?.apiKey) {
+    // PDF文件最高优先级：使用Qwen-Long处理（专门的文档理解模型）
+    if (fileType === 'pdf' && this.config.qwenLong?.apiKey) {
       try {
-        console.log('🤖 使用通义千问处理PDF文档...');
-        const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
+        console.log('🚀 使用Qwen-Long处理PDF文档（专业文档理解模型）...');
+        const result = await this.aiServices.processDocumentWithQwenLong(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
             content: [
               {
                 type: 'text',
-                text: `🤖 通义千问PDF分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+                text: `🚀 Qwen-Long PDF专业分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}\n\n🆔 文件ID: ${result.fileId}`
               }
             ],
             isError: false
           };
         }
       } catch (error) {
-        console.error('❌ 通义千问处理PDF失败:', error.message);
+        console.error('❌ Qwen-Long处理PDF失败:', error.message);
       }
     }
 
-    // PDF文件备选方案：火山引擎
+    // PDF文件备选方案1：使用通义千问VL处理
+    if (fileType === 'pdf' && this.config.qwen?.apiKey) {
+      try {
+        console.log('🤖 使用通义千问VL作为PDF处理备选方案...');
+        const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
+        if (result.success) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `🤖 通义千问VL PDF分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+              }
+            ],
+            isError: false
+          };
+        }
+      } catch (error) {
+        console.error('❌ 通义千问VL处理PDF失败:', error.message);
+      }
+    }
+
+    // PDF文件备选方案2：火山引擎
     if (fileType === 'pdf' && this.config.volcengine?.accessKey) {
       try {
-        console.log('🚀 使用火山引擎作为PDF处理备选方案...');
+        console.log('🚀 使用火山引擎作为PDF处理备选方案2...');
         const result = await this.aiServices.processDocumentWithVolcengine(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
@@ -395,10 +416,10 @@ class MCPHtmlServer {
       }
     }
 
-    // PDF文件最后备选：GLM-4
+    // PDF文件备选方案3：GLM-4
     if (fileType === 'pdf' && this.config.glm4?.apiKey) {
       try {
-        console.log('🤖 使用GLM-4作为PDF处理最后备选...');
+        console.log('🤖 使用GLM-4作为PDF处理备选方案3...');
         const result = await this.aiServices.processDocumentWithGLM4(documentBuffer, fileType, customPrompt);
         if (result.success) {
           return {
