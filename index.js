@@ -172,7 +172,8 @@ class MCPHtmlServer {
 
   async handleReadLink(url, customPrompt) {
     const startTime = Date.now();
-    logger.info('LINK_PROCESS', `开始处理链接: ${url}`, { url, customPrompt });
+    const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    logger.info('LINK_PROCESS', `开始处理链接: ${url}`, { taskId, url, customPrompt });
 
     try {
       // 检查是否为data URL
@@ -231,7 +232,14 @@ class MCPHtmlServer {
         result = await this.processImageWithAI(buffer, customPrompt);
       } else if (fileType && ['pdf', 'doc', 'docx', 'xlsx', 'xls', 'mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
         logger.info('LINK_PROCESS', `开始处理文档文件: ${fileType}`);
-        result = await this.processDocumentWithAI(buffer, fileType, customPrompt);
+        
+        // 对于PDF文件，使用快速响应机制避免云端超时
+        if (fileType === 'pdf' && buffer.length > 1024 * 1024) { // 大于1MB的PDF
+          logger.info('LINK_PROCESS', '检测到大型PDF文件，使用快速处理模式');
+          result = await this.processPDFQuickly(buffer, customPrompt, taskId);
+        } else {
+          result = await this.processDocumentWithAI(buffer, fileType, customPrompt);
+        }
       } else {
         logger.info('LINK_PROCESS', '开始处理网页内容');
         result = await this.processWebpage(url);
@@ -584,6 +592,73 @@ class MCPHtmlServer {
           {
             type: 'text',
             text: `❌ PDF处理失败：${error.message}\n\n建议：\n1. 确保PDF文件格式正确且未加密\n2. 检查文件是否损坏\n3. 尝试使用其他格式的文档`
+          }
+        ],
+        isError: true
+      };
+    }
+  }
+
+  async processPDFQuickly(pdfBuffer, customPrompt, taskId) {
+    console.log('📄 开始快速PDF处理...');
+    logger.info('PDF_QUICK_PROCESS', '开始快速PDF处理', { taskId });
+
+    try {
+      // 使用AI服务中的PDF解析功能，但只提取前几页
+      const pdfData = await this.aiServices.parsePDF(pdfBuffer, { maxPages: 3 });
+      logger.info('PDF_QUICK_PROCESS', `PDF快速解析成功，共${pdfData.numPages}页，已处理${Math.min(3, pdfData.numPages)}页`, { taskId });
+
+      if (!pdfData.text || !pdfData.text.trim()) {
+        // 如果文本提取失败，返回基本信息
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `📄 PDF文档信息:\n\n文档页数: ${pdfData.numPages}页\n文件大小: ${(pdfBuffer.length / 1024 / 1024).toFixed(2)}MB\n\n⚠️ 注意：由于云端处理时间限制，仅提取了前3页内容。如需完整分析，请使用本地服务器。\n\n任务ID: ${taskId}`
+            }
+          ],
+          isError: false
+        };
+      }
+
+      // 如果提取到文本且有AI服务，进行快速分析
+      let analysisResult = null;
+      if (pdfData.text.trim() && this.config.qwen?.apiKey) {
+        console.log('🤖 进行快速AI分析...');
+        const prompt = customPrompt || "请快速分析这个PDF文档的内容，提取关键信息并进行总结。";
+        analysisResult = await this.aiServices.analyzeTextWithQwen(pdfData.text, prompt);
+      }
+
+      // 构建返回结果
+      let resultText = `📄 PDF快速分析结果:\n\n文档页数: ${pdfData.numPages}页\n已分析页数: ${Math.min(3, pdfData.numPages)}页\n文件大小: ${(pdfBuffer.length / 1024 / 1024).toFixed(2)}MB\n\n`;
+
+      if (analysisResult && analysisResult.success) {
+        resultText += `🤖 AI分析结果:\n${analysisResult.content}\n\n📊 使用情况: ${JSON.stringify(analysisResult.usage)}\n\n`;
+      } else {
+        // 快速分析（限制文本长度避免超时）
+        const limitedText = pdfData.text.length > 2000 ? pdfData.text.substring(0, 2000) + '...' : pdfData.text;
+        resultText += `📝 内容预览:\n${limitedText}\n\n`;
+      }
+
+      resultText += `⚠️ 注意：由于云端处理时间限制，这是快速分析结果。如需完整分析，请使用本地服务器。\n\n任务ID: ${taskId}`;
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: resultText
+          }
+        ],
+        isError: false
+      };
+
+    } catch (error) {
+      logger.error('PDF_QUICK_PROCESS', 'PDF快速处理失败', { taskId, error: error.message });
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `❌ PDF快速处理失败: ${error.message}\n\n任务ID: ${taskId}\n\n建议：请尝试使用本地服务器进行完整处理。`
           }
         ],
         isError: true

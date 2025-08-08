@@ -45,7 +45,7 @@ export class AIServices {
   }
 
   // PDF解析辅助方法
-  async parsePDF(pdfBuffer) {
+  async parsePDF(pdfBuffer, options = {}) {
     try {
       // 动态导入PDF.js库
       let pdfjsLib;
@@ -76,7 +76,11 @@ export class AIServices {
       const pdf = await loadingTask.promise;
       let fullText = '';
 
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      // 支持限制页数（用于快速处理）
+      const maxPages = options.maxPages || pdf.numPages;
+      const pagesToProcess = Math.min(maxPages, pdf.numPages);
+
+      for (let pageNum = 1; pageNum <= pagesToProcess; pageNum++) {
         const page = await pdf.getPage(pageNum);
         const textContent = await page.getTextContent();
         const pageText = textContent.items.map(item => item.str).join(' ');
@@ -85,7 +89,8 @@ export class AIServices {
 
       return {
         text: fullText.trim(),
-        numPages: pdf.numPages
+        numPages: pdf.numPages,
+        processedPages: pagesToProcess
       };
     } catch (error) {
       throw new Error(`PDF解析失败: ${error.message}`);
@@ -642,6 +647,50 @@ export class AIServices {
       'txt': 'text/plain'
     };
     return types[fileType] || 'application/octet-stream';
+  }
+
+  // 快速文本分析方法（用于云端快速处理）
+  async analyzeTextWithQwen(text, prompt = "请分析这段文本内容，提取关键信息并进行总结。") {
+    try {
+      console.log('🤖 使用通义千问快速分析文本...');
+      console.log(`📝 文本长度: ${text.length}个字符`);
+
+      if (!this.openai) {
+        throw new Error('通义千问客户端未初始化');
+      }
+
+      const response = await this.openai.chat.completions.create({
+        model: this.config.qwen.model,
+        messages: [
+          {
+            role: "system",
+            content: "你是一个专业的文档分析助手。用户会提供文本内容，你需要对这些内容进行快速分析、整理和总结。"
+          },
+          {
+            role: "user",
+            content: `请帮我${prompt}\n\n文本内容：\n${text}`
+          }
+        ],
+        max_tokens: 2000,
+        temperature: 0.1
+      });
+
+      console.log('✅ 通义千问文本分析完成');
+
+      return {
+        success: true,
+        content: response.choices[0].message.content,
+        usage: response.usage,
+        model: response.model
+      };
+
+    } catch (error) {
+      console.error('❌ 通义千问文本分析失败:', error.message);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
   }
 
   // 检测文件类型
