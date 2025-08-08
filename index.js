@@ -338,11 +338,34 @@ class MCPHtmlServer {
   async processDocumentWithAI(documentBuffer, fileType, customPrompt) {
     console.log(`📄 使用AI处理${fileType.toUpperCase()}文档...`);
 
-    // 对于新支持的文件类型（Excel、视频），优先使用通义千问
-    if (['xlsx', 'xls', 'mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
+    // PDF和视频文件优先使用Seed大模型
+    if (['pdf', 'mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
+      if (this.config.seed?.apiKey) {
+        try {
+          console.log('🌱 使用Seed大模型处理文档...');
+          const result = await this.aiServices.processDocumentWithSeed(documentBuffer, fileType, customPrompt);
+          if (result.success) {
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: `🌱 Seed大模型文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+                }
+              ],
+              isError: false
+            };
+          }
+        } catch (error) {
+          console.error('❌ Seed大模型处理失败:', error.message);
+        }
+      }
+    }
+
+    // 对于Excel文件，优先使用通义千问
+    if (['xlsx', 'xls'].includes(fileType)) {
       if (this.config.qwen?.apiKey) {
         try {
-          console.log('🤖 使用通义千问处理文档...');
+          console.log('🤖 使用通义千问处理Excel文档...');
           const result = await this.aiServices.processDocumentWithQwen(documentBuffer, fileType, customPrompt);
           if (result.success) {
             return {
@@ -528,15 +551,15 @@ class MCPHtmlServer {
       const pdfData = await this.aiServices.parsePDF(pdfBuffer);
       console.log(`✅ PDF解析成功，共${pdfData.numPages}页，提取了${pdfData.text.length}个字符`);
 
-      // 将提取的文本发送给通义千问进行分析
-      if (this.config.qwen?.apiKey && pdfData.text.trim()) {
-        console.log('🤖 使用通义千问分析PDF文本内容...');
+      // 优先使用Seed大模型分析PDF文本内容
+      if (this.config.seed?.apiKey && pdfData.text.trim()) {
+        console.log('🌱 使用Seed大模型分析PDF文本内容...');
 
         const prompt = customPrompt || "请分析这个PDF文档的内容，提取关键信息并进行总结。";
 
         try {
-          const response = await this.aiServices.openai.chat.completions.create({
-            model: this.config.qwen.model,
+          const response = await this.aiServices.seedClient.chat.completions.create({
+            model: this.config.seed.model,
             messages: [
               {
                 role: "system",
@@ -555,13 +578,13 @@ class MCPHtmlServer {
             content: [
               {
                 type: 'text',
-                text: `📄 PDF文本提取+AI分析结果:\n\n${response.choices[0].message.content}\n\n📊 文档统计：\n- 页数：${pdfData.numPages}页\n- 提取字符数：${pdfData.text.length}个\n- 处理方式：本地文本提取 + 通义千问分析`
+                text: `📄 PDF文本提取+AI分析结果:\n\n${response.choices[0].message.content}\n\n📊 文档统计：\n- 页数：${pdfData.numPages}页\n- 提取字符数：${pdfData.text.length}个\n- 处理方式：本地文本提取 + Seed大模型分析`
               }
             ],
             isError: false
           };
         } catch (aiError) {
-          console.error('❌ 通义千问分析失败:', aiError.message);
+          console.error('❌ Seed大模型分析失败:', aiError.message);
           // 如果AI分析失败，返回原始文本
           return {
             content: [
@@ -574,7 +597,7 @@ class MCPHtmlServer {
           };
         }
       } else {
-        // 如果没有配置通义千问或文本为空，直接返回提取的文本
+        // 如果没有配置Seed大模型或文本为空，直接返回提取的文本
         return {
           content: [
             {
@@ -623,10 +646,10 @@ class MCPHtmlServer {
 
       // 如果提取到文本且有AI服务，进行快速分析
       let analysisResult = null;
-      if (pdfData.text.trim() && this.config.qwen?.apiKey) {
-        console.log('🤖 进行快速AI分析...');
+      if (pdfData.text.trim() && this.config.seed?.apiKey) {
+        console.log('🌱 进行快速AI分析...');
         const prompt = customPrompt || "请快速分析这个PDF文档的内容，提取关键信息并进行总结。";
-        analysisResult = await this.aiServices.analyzeTextWithQwen(pdfData.text, prompt);
+        analysisResult = await this.aiServices.analyzeTextWithSeed(pdfData.text, prompt);
       }
 
       // 构建返回结果

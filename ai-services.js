@@ -42,6 +42,14 @@ export class AIServices {
         baseURL: this.config.qwenLong.baseUrl
       });
     }
+
+    // 初始化Seed大模型客户端
+    if (this.config.seed && this.config.seed.apiKey) {
+      this.seedClient = new OpenAI({
+        apiKey: this.config.seed.apiKey,
+        baseURL: this.config.seed.baseUrl
+      });
+    }
   }
 
   // PDF解析辅助方法
@@ -649,6 +657,119 @@ export class AIServices {
     return types[fileType] || 'application/octet-stream';
   }
 
+  // Seed大模型文档处理方法（支持PDF、视频等多种格式）
+  async processDocumentWithSeed(documentBuffer, fileType, prompt = "请提取并整理这个文档中的所有文字内容，保持原有的结构和格式。") {
+    try {
+      console.log('🌱 使用Seed大模型处理文档...');
+      console.log(`📄 文件类型: ${fileType}`);
+
+      if (!this.seedClient) {
+        throw new Error('Seed大模型客户端未初始化，请检查配置');
+      }
+
+      // 提取文档文本
+      let documentText = '';
+      let extractedData = null;
+
+      if (fileType === 'pdf') {
+        // PDF文档处理
+        try {
+          const pdfData = await this.parsePDF(documentBuffer);
+          documentText = pdfData.text;
+          extractedData = {
+            pages: pdfData.numPages,
+            textLength: documentText.length,
+            fileSize: documentBuffer.length,
+            fileSizeMB: (documentBuffer.length / 1024 / 1024).toFixed(2)
+          };
+          console.log(`📄 PDF解析成功，共${pdfData.numPages}页，提取了${documentText.length}个字符`);
+        } catch (error) {
+          console.error('❌ PDF解析失败:', error.message);
+          documentText = `PDF文档解析失败：${error.message}。请确保PDF文件格式正确且未加密。`;
+          extractedData = { fileSize: documentBuffer.length, fileSizeMB: (documentBuffer.length / 1024 / 1024).toFixed(2), error: error.message };
+        }
+      } else if (fileType === 'docx' || fileType === 'doc') {
+        // Word文档处理
+        const result = await mammoth.extractRawText({ buffer: documentBuffer });
+        documentText = result.value;
+        extractedData = { textLength: documentText.length, hasImages: result.messages.some(m => m.type === 'warning' && m.message.includes('image')) };
+      } else if (fileType === 'xlsx' || fileType === 'xls') {
+        // Excel文档处理
+        const workbook = xlsx.read(documentBuffer, { type: 'buffer' });
+        const sheets = [];
+
+        workbook.SheetNames.forEach(sheetName => {
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+          const csvData = xlsx.utils.sheet_to_csv(worksheet);
+
+          sheets.push({
+            name: sheetName,
+            data: jsonData,
+            csv: csvData
+          });
+        });
+
+        // 将Excel数据转换为文本描述
+        documentText = this.formatExcelDataToText(sheets);
+        extractedData = {
+          sheetsCount: workbook.SheetNames.length,
+          sheetNames: workbook.SheetNames,
+          totalRows: sheets.reduce((sum, sheet) => sum + sheet.data.length, 0)
+        };
+      } else if (fileType === 'txt') {
+        // 文本文件处理
+        documentText = documentBuffer.toString('utf-8');
+        extractedData = {
+          textLength: documentText.length,
+          encoding: 'utf-8'
+        };
+      } else if (fileType === 'mp4' || fileType === 'avi' || fileType === 'mov' || fileType === 'mkv') {
+        // 视频文件处理（提取基本信息）
+        documentText = `这是一个${fileType.toUpperCase()}格式的视频文件，文件大小约为${(documentBuffer.length / 1024 / 1024).toFixed(2)}MB。\n\n由于当前版本暂不支持视频内容分析，建议：\n1. 如果视频包含字幕，请提供字幕文件\n2. 如果需要分析视频内容，请提供视频的文字描述\n3. 可以尝试将视频转换为音频文件进行语音识别\n\n请提供更多信息以便进行更准确的分析。`;
+        extractedData = {
+          fileSize: documentBuffer.length,
+          fileSizeMB: (documentBuffer.length / 1024 / 1024).toFixed(2)
+        };
+      } else {
+        throw new Error(`不支持的文件类型: ${fileType}`);
+      }
+
+      // 发送给Seed大模型进行分析
+      const response = await this.seedClient.chat.completions.create({
+        model: this.config.seed.model,
+        messages: [
+          {
+            role: "system",
+            content: "你是一个专业的文档分析助手。用户会提供已经从各种文档（PDF、Word、Excel、视频等）中提取出来的文本内容或数据，你需要对这些内容进行分析、整理和总结。"
+          },
+          {
+            role: "user",
+            content: `以下是我已经从${fileType}文档中提取出来的内容，请帮我${prompt}\n\n文件信息：${JSON.stringify(extractedData, null, 2)}\n\n提取的内容：\n${documentText}`
+          }
+        ],
+        max_tokens: 4000,
+        temperature: 0.1
+      });
+
+      return {
+        success: true,
+        content: response.choices[0].message.content,
+        usage: response.usage,
+        model: response.model,
+        extractedData: extractedData
+      };
+
+    } catch (error) {
+      console.error('❌ Seed大模型文档处理失败:', error.message);
+      return {
+        success: false,
+        error: error.message,
+        fileType: fileType
+      };
+    }
+  }
+
   // 快速文本分析方法（用于云端快速处理）
   async analyzeTextWithQwen(text, prompt = "请分析这段文本内容，提取关键信息并进行总结。") {
     try {
@@ -686,6 +807,49 @@ export class AIServices {
 
     } catch (error) {
       console.error('❌ 通义千问文本分析失败:', error.message);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  async analyzeTextWithSeed(text, prompt = "请分析这段文本内容，提取关键信息并进行总结。") {
+    try {
+      console.log('🌱 使用Seed大模型快速分析文本...');
+      console.log(`📝 文本长度: ${text.length}个字符`);
+
+      if (!this.seedClient) {
+        throw new Error('Seed大模型客户端未初始化');
+      }
+
+      const response = await this.seedClient.chat.completions.create({
+        model: this.config.seed.model,
+        messages: [
+          {
+            role: "system",
+            content: "你是一个专业的文档分析助手。用户会提供文本内容，你需要对这些内容进行快速分析、整理和总结。"
+          },
+          {
+            role: "user",
+            content: `请帮我${prompt}\n\n文本内容：\n${text}`
+          }
+        ],
+        max_tokens: 2000,
+        temperature: 0.1
+      });
+
+      console.log('✅ Seed大模型文本分析完成');
+
+      return {
+        success: true,
+        content: response.choices[0].message.content,
+        usage: response.usage,
+        model: response.model
+      };
+
+    } catch (error) {
+      console.error('❌ Seed大模型文本分析失败:', error.message);
       return {
         success: false,
         error: error.message
