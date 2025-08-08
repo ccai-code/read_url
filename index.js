@@ -927,19 +927,70 @@ class MCPHtmlServer {
 
       const $ = cheerio.load(response.data);
       
-      // 提取视频信息
+      // 改进的视频信息提取
       const videoInfo = {
-        title: $('title').text() || '未找到标题',
-        description: $('meta[name="description"]').attr('content') || '未找到描述',
-        keywords: $('meta[name="keywords"]').attr('content') || '未找到关键词',
-        url: url
+        title: '抖音短视频',
+        description: '抖音平台视频内容',
+        keywords: '抖音,短视频,社交媒体',
+        url: url,
+        platform: '抖音',
+        extractedContent: ''
       };
+
+      // 多种方式提取信息
+      try {
+        // 提取标题
+        const titleSources = [
+          $('title').text(),
+          $('meta[property="og:title"]').attr('content'),
+          $('meta[name="title"]').attr('content'),
+          $('h1').first().text(),
+          $('[class*="title"]').first().text()
+        ];
+        
+        for (const title of titleSources) {
+          if (title && title.trim() && title.length > 3 && !title.includes('抖音')) {
+            videoInfo.title = title.trim().substring(0, 100);
+            break;
+          }
+        }
+
+        // 提取描述
+        const descSources = [
+          $('meta[name="description"]').attr('content'),
+          $('meta[property="og:description"]').attr('content'),
+          $('meta[name="twitter:description"]').attr('content'),
+          $('[class*="desc"]').first().text(),
+          $('p').first().text()
+        ];
+        
+        for (const desc of descSources) {
+          if (desc && desc.trim() && desc.length > 5) {
+            videoInfo.description = desc.trim().substring(0, 200);
+            break;
+          }
+        }
+
+        // 提取关键词
+        const keywords = $('meta[name="keywords"]').attr('content');
+        if (keywords && keywords.trim()) {
+          videoInfo.keywords = keywords.trim();
+        }
+
+        // 提取页面中的文本内容作为补充
+        const textContent = $('body').text().replace(/\s+/g, ' ').trim();
+        if (textContent && textContent.length > 10) {
+          videoInfo.extractedContent = textContent.substring(0, 500);
+        }
+      } catch (extractError) {
+        logger.warn('DOUYIN_PROCESS', '视频信息提取部分失败', { error: extractError.message });
+      }
 
       logger.info('DOUYIN_PROCESS', '抖音视频信息提取完成', videoInfo);
 
-      // 使用Seed大模型分析视频内容
-      const prompt = customPrompt || '请分析这个抖音视频的内容，包括标题、描述和可能的主题。';
-      const analysisPrompt = `${prompt}\n\n视频信息：\n标题：${videoInfo.title}\n描述：${videoInfo.description}\n关键词：${videoInfo.keywords}\n链接：${videoInfo.url}`;
+      // 使用Seed大模型进行智能分析
+      const prompt = customPrompt || '请作为专业的短视频内容分析师，分析这个抖音视频的内容特征、可能主题和观看价值。';
+      const analysisPrompt = `${prompt}\n\n请基于以下抖音视频信息进行智能分析：\n\n📱 平台：${videoInfo.platform}\n🎬 标题：${videoInfo.title}\n📝 描述：${videoInfo.description}\n🏷️ 关键词：${videoInfo.keywords}\n🔗 链接：${videoInfo.url}\n\n📄 页面内容摘要：${videoInfo.extractedContent}\n\n请提供：\n1. 视频内容主题分析\n2. 目标受众推测\n3. 内容价值评估\n4. 观看建议`;
 
       const result = await this.aiServices.processWithSeed(analysisPrompt, 'douyin_video');
       
@@ -948,10 +999,13 @@ class MCPHtmlServer {
       logger.info('DOUYIN_PROCESS', `抖音视频处理完成: ${url}`, { duration: `${duration}ms` });
       
       return {
-        type: 'douyin_video',
-        content: result,
-        videoInfo: videoInfo,
-        processingTime: `${duration}ms`
+        content: [
+          {
+            type: 'text',
+            text: `🎵 抖音视频智能分析结果:\n\n${result}\n\n📱 视频详细信息:\n- 🎬 标题：${videoInfo.title}\n- 📝 描述：${videoInfo.description}\n- 🏷️ 关键词：${videoInfo.keywords}\n- 🔗 链接：${videoInfo.url}\n- 📱 平台：${videoInfo.platform}\n\n📄 提取内容摘要：${videoInfo.extractedContent ? videoInfo.extractedContent.substring(0, 100) + '...' : '无额外内容'}\n\n⏱️ 处理时间：${duration}ms`
+          }
+        ],
+        isError: false
       };
 
     } catch (error) {
@@ -961,18 +1015,24 @@ class MCPHtmlServer {
       // 超时处理
       if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
         return {
-          type: 'error',
-          content: '抖音视频处理超时，请稍后重试或检查网络连接。',
-          error: 'timeout',
-          processingTime: `${duration}ms`
+          content: [
+            {
+              type: 'text',
+              text: `❌ 抖音视频处理超时（${duration}ms），请稍后重试或检查网络连接。\n\n错误详情：${error.message}`
+            }
+          ],
+          isError: true
         };
       }
       
       return {
-        type: 'error',
-        content: `抖音视频处理失败：${error.message}`,
-        error: error.message,
-        processingTime: `${duration}ms`
+        content: [
+          {
+            type: 'text',
+            text: `❌ 抖音视频处理失败：${error.message}\n\n处理时间：${duration}ms`
+          }
+        ],
+        isError: true
       };
     }
   }

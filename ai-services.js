@@ -468,6 +468,11 @@ export class AIServices {
         throw new Error(`不支持的文件类型: ${fileType}`);
       }
 
+      // 如果是视频文件，使用专门的视频分析提示词
+      if (['mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
+        prompt = `作为专业的视频内容分析师，请基于提供的视频文件信息进行智能分析。${prompt || '请分析这个视频文件的特征、可能内容和使用建议。'}`;
+      }
+
       // 发送给通义千问进行分析
       const response = await this.openai.chat.completions.create({
         model: this.config.qwen.model,
@@ -727,17 +732,26 @@ export class AIServices {
           encoding: 'utf-8'
         };
       } else if (fileType === 'mp4' || fileType === 'avi' || fileType === 'mov' || fileType === 'mkv') {
-        // 视频文件处理（提取基本信息）
-        documentText = `这是一个${fileType.toUpperCase()}格式的视频文件，文件大小约为${(documentBuffer.length / 1024 / 1024).toFixed(2)}MB。\n\n由于当前版本暂不支持视频内容分析，建议：\n1. 如果视频包含字幕，请提供字幕文件\n2. 如果需要分析视频内容，请提供视频的文字描述\n3. 可以尝试将视频转换为音频文件进行语音识别\n\n请提供更多信息以便进行更准确的分析。`;
+        // 视频文件处理（智能分析）
+        const fileSizeMB = (documentBuffer.length / 1024 / 1024).toFixed(2);
+        documentText = `这是一个${fileType.toUpperCase()}格式的视频文件，文件大小约为${fileSizeMB}MB。\n\n请基于以下信息对这个视频进行智能分析：\n\n1. 文件格式：${fileType.toUpperCase()}\n2. 文件大小：${fileSizeMB}MB\n3. 可能的内容类型：根据文件大小和格式推测\n\n请提供以下分析：\n- 根据文件大小推测视频时长和质量\n- 分析可能的视频内容类型（教育、娱乐、商业等）\n- 提供观看建议和注意事项\n- 如果是常见的视频分享链接，请分析其可能的来源和用途`;
         extractedData = {
           fileSize: documentBuffer.length,
-          fileSizeMB: (documentBuffer.length / 1024 / 1024).toFixed(2)
+          fileSizeMB: fileSizeMB,
+          fileType: fileType.toUpperCase(),
+          estimatedDuration: this.estimateVideoDuration(documentBuffer.length, fileType),
+          qualityEstimate: this.estimateVideoQuality(documentBuffer.length)
         };
       } else {
         throw new Error(`不支持的文件类型: ${fileType}`);
       }
 
-      // 发送给Seed大模型进行分析
+      // 如果是视频文件，使用专门的视频分析提示词
+      if (['mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
+        prompt = `作为专业的视频内容分析师，请基于提供的视频文件信息进行智能分析。${prompt || '请分析这个视频文件的特征、可能内容和使用建议。'}`;
+      }
+
+      // 发送给通义千问进行分析
       const response = await this.seedClient.chat.completions.create({
         model: this.config.seed.model,
         messages: [
@@ -896,6 +910,49 @@ export class AIServices {
   }
 
   // 检测文件类型
+  // 估算视频时长（基于文件大小的粗略估算）
+  estimateVideoDuration(fileSize, fileType) {
+    // 不同格式的平均比特率（KB/s）
+    const avgBitrates = {
+      'mp4': 500,  // 中等质量
+      'avi': 800,  // 较高质量
+      'mov': 600,  // 中高质量
+      'mkv': 700   // 高质量
+    };
+    
+    const fileSizeKB = fileSize / 1024;
+    const avgBitrate = avgBitrates[fileType] || 500;
+    const estimatedSeconds = fileSizeKB / avgBitrate;
+    
+    if (estimatedSeconds < 60) {
+      return `约${Math.round(estimatedSeconds)}秒`;
+    } else if (estimatedSeconds < 3600) {
+      const minutes = Math.round(estimatedSeconds / 60);
+      return `约${minutes}分钟`;
+    } else {
+      const hours = Math.floor(estimatedSeconds / 3600);
+      const minutes = Math.round((estimatedSeconds % 3600) / 60);
+      return `约${hours}小时${minutes}分钟`;
+    }
+  }
+
+  // 估算视频质量
+  estimateVideoQuality(fileSize) {
+    const fileSizeMB = fileSize / (1024 * 1024);
+    
+    if (fileSizeMB < 10) {
+      return '低质量或短视频';
+    } else if (fileSizeMB < 50) {
+      return '标清质量';
+    } else if (fileSizeMB < 200) {
+      return '高清质量';
+    } else if (fileSizeMB < 500) {
+      return '超清质量';
+    } else {
+      return '4K或超高质量';
+    }
+  }
+
   detectFileType(url, contentType) {
     const urlLower = url.toLowerCase();
 
