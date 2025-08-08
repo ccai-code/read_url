@@ -217,6 +217,12 @@ class MCPHtmlServer {
         }
       }
 
+      // 检测抖音视频链接
+      if (this.isDouyinUrl(parsedUrl)) {
+        logger.info('LINK_PROCESS', '检测到抖音视频链接，开始处理');
+        return await this.processDouyinVideo(url, customPrompt);
+      }
+
       // 获取文件信息
       logger.debug('LINK_PROCESS', '开始下载文件');
       const { contentType, buffer } = await this.downloadFile(url);
@@ -337,26 +343,86 @@ class MCPHtmlServer {
 
   async processDocumentWithAI(documentBuffer, fileType, customPrompt) {
     console.log(`📄 使用AI处理${fileType.toUpperCase()}文档...`);
+    const startTime = Date.now();
 
-    // PDF和视频文件优先使用Seed大模型
-    if (['pdf', 'mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
+    // PDF文件强制使用Seed大模型
+    if (fileType === 'pdf') {
+      if (!this.config.seed?.apiKey) {
+        throw new Error('PDF处理需要Seed大模型，但未配置API密钥');
+      }
+      
+      try {
+        console.log('🌱 使用Seed大模型处理PDF文档...');
+        const result = await this.aiServices.processDocumentWithSeed(documentBuffer, fileType, customPrompt);
+        
+        const duration = Date.now() - startTime;
+        logger.performance('PDF_PROCESS', duration, { fileType, success: true });
+        
+        if (result.success) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `🌱 Seed大模型PDF分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}\n\n⏱️ 处理时间: ${duration}ms`
+              }
+            ],
+            isError: false
+          };
+        }
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        logger.error('PDF_PROCESS', `PDF处理失败: ${error.message}`, { duration: `${duration}ms` });
+        
+        // 超时处理
+        if (error.message.includes('timeout') || error.message.includes('超时')) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `❌ PDF处理超时（${duration}ms），请稍后重试或检查网络连接。\n\n错误详情: ${error.message}`
+              }
+            ],
+            isError: true
+          };
+        }
+        
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `❌ PDF处理失败: ${error.message}\n\n处理时间: ${duration}ms`
+            }
+          ],
+          isError: true
+        };
+      }
+    }
+
+    // 视频文件优先使用Seed大模型
+    if (['mp4', 'avi', 'mov', 'mkv'].includes(fileType)) {
       if (this.config.seed?.apiKey) {
         try {
-          console.log('🌱 使用Seed大模型处理文档...');
+          console.log('🌱 使用Seed大模型处理视频文件...');
           const result = await this.aiServices.processDocumentWithSeed(documentBuffer, fileType, customPrompt);
+          
+          const duration = Date.now() - startTime;
+          logger.performance('VIDEO_PROCESS', duration, { fileType, success: true });
+          
           if (result.success) {
             return {
               content: [
                 {
                   type: 'text',
-                  text: `🌱 Seed大模型文档分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}`
+                  text: `🌱 Seed大模型视频分析结果:\n\n${result.content}\n\n📊 使用情况: ${JSON.stringify(result.usage)}\n\n📄 文件信息: ${JSON.stringify(result.extractedData, null, 2)}\n\n⏱️ 处理时间: ${duration}ms`
                 }
               ],
               isError: false
             };
           }
         } catch (error) {
-          console.error('❌ Seed大模型处理失败:', error.message);
+          const duration = Date.now() - startTime;
+          logger.error('VIDEO_PROCESS', `视频处理失败: ${error.message}`, { duration: `${duration}ms` });
+          console.error('❌ Seed大模型处理视频失败:', error.message);
         }
       }
     }
@@ -644,12 +710,42 @@ class MCPHtmlServer {
         };
       }
 
-      // 如果提取到文本且有AI服务，进行快速分析
+      // 强制使用Seed大模型进行快速分析
       let analysisResult = null;
-      if (pdfData.text.trim() && this.config.seed?.apiKey) {
-        console.log('🌱 进行快速AI分析...');
-        const prompt = customPrompt || "请快速分析这个PDF文档的内容，提取关键信息并进行总结。";
-        analysisResult = await this.aiServices.analyzeTextWithSeed(pdfData.text, prompt);
+      if (!this.config.seed?.apiKey) {
+        throw new Error('PDF快速处理需要Seed大模型，但未配置API密钥');
+      }
+      
+      if (pdfData.text.trim()) {
+        try {
+          console.log('🌱 使用Seed大模型进行快速PDF分析...');
+          const prompt = customPrompt || "请快速分析这个PDF文档的内容，提取关键信息并进行总结。";
+          const startAnalysisTime = Date.now();
+          
+          analysisResult = await this.aiServices.analyzeTextWithSeed(pdfData.text, prompt);
+          
+          const analysisDuration = Date.now() - startAnalysisTime;
+          logger.performance('PDF_QUICK_ANALYSIS', analysisDuration, { taskId, success: true });
+          
+        } catch (error) {
+          const analysisDuration = Date.now() - startAnalysisTime;
+          logger.error('PDF_QUICK_ANALYSIS', `PDF快速分析失败: ${error.message}`, { taskId, duration: `${analysisDuration}ms` });
+          
+          // 超时处理
+          if (error.message.includes('timeout') || error.message.includes('超时')) {
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: `❌ PDF快速分析超时（${analysisDuration}ms）\n\n文档信息:\n- 页数：${pdfData.numPages}页\n- 已处理页数：${Math.min(3, pdfData.numPages)}页\n- 文件大小：${(pdfBuffer.length / 1024 / 1024).toFixed(2)}MB\n\n任务ID: ${taskId}\n\n请稍后重试或检查网络连接。`
+                }
+              ],
+              isError: true
+            };
+          }
+          
+          console.error('❌ Seed大模型快速分析失败:', error.message);
+        }
       }
 
       // 构建返回结果
@@ -800,6 +896,85 @@ class MCPHtmlServer {
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.tiff', '.ico'];
     const urlLower = url.toLowerCase();
     return contentType?.startsWith('image/') || imageExtensions.some(ext => urlLower.endsWith(ext));
+  }
+
+  // 检测是否为抖音视频链接
+  isDouyinUrl(parsedUrl) {
+    const douyinDomains = [
+      'douyin.com',
+      'v.douyin.com',
+      'www.douyin.com',
+      'iesdouyin.com',
+      'www.iesdouyin.com'
+    ];
+    return douyinDomains.some(domain => parsedUrl.hostname.includes(domain));
+  }
+
+  // 处理抖音视频
+  async processDouyinVideo(url, customPrompt) {
+    const startTime = Date.now();
+    logger.info('DOUYIN_PROCESS', `开始处理抖音视频: ${url}`);
+
+    try {
+      // 使用axios获取抖音页面内容，设置超时
+      const response = await axios.get(url, {
+        timeout: 30000, // 30秒超时
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        },
+        maxRedirects: 5
+      });
+
+      const $ = cheerio.load(response.data);
+      
+      // 提取视频信息
+      const videoInfo = {
+        title: $('title').text() || '未找到标题',
+        description: $('meta[name="description"]').attr('content') || '未找到描述',
+        keywords: $('meta[name="keywords"]').attr('content') || '未找到关键词',
+        url: url
+      };
+
+      logger.info('DOUYIN_PROCESS', '抖音视频信息提取完成', videoInfo);
+
+      // 使用Seed大模型分析视频内容
+      const prompt = customPrompt || '请分析这个抖音视频的内容，包括标题、描述和可能的主题。';
+      const analysisPrompt = `${prompt}\n\n视频信息：\n标题：${videoInfo.title}\n描述：${videoInfo.description}\n关键词：${videoInfo.keywords}\n链接：${videoInfo.url}`;
+
+      const result = await this.aiServices.processWithSeed(analysisPrompt, 'douyin_video');
+      
+      const duration = Date.now() - startTime;
+      logger.performance('DOUYIN_PROCESS', duration, { url, success: true });
+      logger.info('DOUYIN_PROCESS', `抖音视频处理完成: ${url}`, { duration: `${duration}ms` });
+      
+      return {
+        type: 'douyin_video',
+        content: result,
+        videoInfo: videoInfo,
+        processingTime: `${duration}ms`
+      };
+
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      logger.error('DOUYIN_PROCESS', `抖音视频处理失败: ${error.message}`, { url, error: error.message, duration: `${duration}ms` });
+      
+      // 超时处理
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        return {
+          type: 'error',
+          content: '抖音视频处理超时，请稍后重试或检查网络连接。',
+          error: 'timeout',
+          processingTime: `${duration}ms`
+        };
+      }
+      
+      return {
+        type: 'error',
+        content: `抖音视频处理失败：${error.message}`,
+        error: error.message,
+        processingTime: `${duration}ms`
+      };
+    }
   }
 
   setupRequestHandlers() {

@@ -47,7 +47,9 @@ export class AIServices {
     if (this.config.seed && this.config.seed.apiKey) {
       this.seedClient = new OpenAI({
         apiKey: this.config.seed.apiKey,
-        baseURL: this.config.seed.baseUrl
+        baseURL: this.config.seed.baseUrl,
+        timeout: this.config.seed.timeout || 30000, // 30秒超时
+        maxRetries: this.config.seed.maxRetries || 3
       });
     }
   }
@@ -854,6 +856,42 @@ export class AIServices {
         success: false,
         error: error.message
       };
+    }
+  }
+
+  // 通用Seed大模型处理方法
+  async processWithSeed(prompt, contentType = 'text') {
+    if (!this.seedClient) {
+      throw new Error('Seed大模型客户端未初始化');
+    }
+
+    try {
+      console.log(`🔍 使用Seed大模型处理${contentType}内容...`);
+      
+      const response = await this.seedClient.chat.completions.create({
+        model: this.config.seed.model,
+        messages: [
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 4000
+      });
+
+      const result = response.choices[0].message.content;
+      console.log('✅ Seed大模型处理完成');
+      return result;
+    } catch (error) {
+      console.error('❌ Seed大模型处理失败:', error.message);
+      
+      // 超时处理
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        throw new Error('Seed大模型请求超时，请稍后重试');
+      }
+      
+      throw new Error(`Seed大模型处理失败: ${error.message}`);
     }
   }
 

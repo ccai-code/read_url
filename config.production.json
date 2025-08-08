@@ -14,6 +14,13 @@
         "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
         "model": "qwen-long"
     },
+    "seed": {
+        "apiKey": "aed27704-80ca-4e30-9e43-9562842d7ef6",
+        "baseUrl": "https://ark.cn-beijing.volces.com/api/v3",
+        "model": "doubao-seed-1-6-250615",
+        "timeout": 30000,
+        "maxRetries": 3
+    },
     "fallback": {
         "useOCR": true,
         "maxFileSize": 10485760
